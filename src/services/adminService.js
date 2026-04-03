@@ -1,0 +1,413 @@
+// frontend/src/services/adminService.js
+
+import api from './api';
+
+const adminService = {
+  // ==================== DASHBOARD ====================
+  getDashboardStats: async () => {
+    try {
+      const response = await api.get('/admin/dashboard');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching dashboard:', error);
+      throw error;
+    }
+  },
+
+  // ==================== HOSTEL MANAGEMENT ====================
+  getHostels: async () => {
+    try {
+      const response = await api.get('/admin/hostels');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching hostels:', error);
+      throw error;
+    }
+  },
+
+  createHostel: async (data) => {
+    try {
+      const response = await api.post('/admin/create-hostel', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating hostel:', error);
+      throw error;
+    }
+  },
+
+  updateHostel: async (id, data) => {
+    try {
+      const response = await api.put(`/admin/hostels/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating hostel:', error);
+      throw error;
+    }
+  },
+
+  deleteHostel: async (id) => {
+    try {
+      const response = await api.delete(`/admin/hostels/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting hostel:', error);
+      throw error;
+    }
+  },
+
+  // ==================== WARDEN MANAGEMENT ====================
+  getWardens: async () => {
+    try {
+      const response = await api.get('/admin/wardens');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching wardens:', error);
+      throw error;
+    }
+  },
+
+  createWarden: async (data) => {
+    try {
+      const response = await api.post('/admin/create-warden', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating warden:', error);
+      throw error;
+    }
+  },
+
+  updateWarden: async (id, data) => {
+    try {
+      const response = await api.put(`/admin/wardens/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating warden:', error);
+      throw error;
+    }
+  },
+
+  deleteWarden: async (id) => {
+    try {
+      const response = await api.delete(`/admin/wardens/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting warden:', error);
+      throw error;
+    }
+  },
+
+  // ==================== STUDENT MANAGEMENT ====================
+  getStudents: async () => {
+    try {
+      const response = await api.get('/admin/students');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching students:', error);
+      throw error;
+    }
+  },
+
+  // ✅ ADD THESE STUDENT METHODS
+  getStudentById: async (id) => {
+    try {
+      const response = await api.get(`/admin/students/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching student:', error);
+      throw error;
+    }
+  },
+
+  createStudent: async (data) => {
+    try {
+      const response = await api.post('/admin/students', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating student:', error);
+      throw error;
+    }
+  },
+
+  updateStudent: async (id, data) => {
+    try {
+      const response = await api.put(`/admin/students/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating student:', error);
+      throw error;
+    }
+  },
+
+  deleteStudent: async (id) => {
+    try {
+      const response = await api.delete(`/admin/students/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting student:', error);
+      throw error;
+    }
+  },
+
+  // ==================== ROOM MANAGEMENT ====================
+  getRooms: async () => {
+    try {
+      const response = await api.get('/admin/rooms');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching rooms:', error);
+      throw error;
+    }
+  },
+
+  // ✅ ADD ROOM CRUD METHODS
+  createRoom: async (data) => {
+    try {
+      const response = await api.post('/admin/rooms', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error creating room:', error);
+      throw error;
+    }
+  },
+
+  updateRoom: async (id, data) => {
+    try {
+      const response = await api.put(`/admin/rooms/${id}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating room:', error);
+      throw error;
+    }
+  },
+
+  deleteRoom: async (id) => {
+    try {
+      const response = await api.delete(`/admin/rooms/${id}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting room:', error);
+      throw error;
+    }
+  },
+
+  // ==================== LEAVE MANAGEMENT ====================
+  getLeaves: async () => {
+    try {
+      const response = await api.get('/admin/leaves');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching leaves:', error);
+      throw error;
+    }
+  },
+
+  // ✅ ADD LEAVE UPDATE METHOD
+  updateLeaveStatus: async (id, status) => {
+    try {
+      const response = await api.put(`/admin/leaves/${id}`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating leave:', error);
+      throw error;
+    }
+  },
+
+  // ==================== COMPLAINT MANAGEMENT ====================
+  getComplaints: async () => {
+    try {
+      const response = await api.get('/admin/complaints');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching complaints:', error);
+      throw error;
+    }
+  },
+
+  // ✅ ADD COMPLAINT UPDATE METHOD
+  updateComplaintStatus: async (id, status) => {
+    try {
+      const response = await api.put(`/admin/complaints/${id}`, { status });
+      return response.data;
+    } catch (error) {
+      console.error('Error updating complaint:', error);
+      throw error;
+    }
+  },
+
+  // ==================== FEE MANAGEMENT ====================
+  getAllFees: async (filters = {}) => {
+    try {
+      const params = new URLSearchParams();
+      if (filters.status && filters.status !== 'all') params.append('status', filters.status);
+      if (filters.month) params.append('month', filters.month);
+      if (filters.year) params.append('year', filters.year);
+      if (filters.search) params.append('search', filters.search);
+      
+      const response = await api.get(`/admin/fees?${params.toString()}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching fees:', error);
+      throw error;
+    }
+  },
+
+  generateFee: async (data) => {
+    try {
+      const response = await api.post('/admin/generate-fee', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error generating fee:', error);
+      throw error;
+    }
+  },
+
+  generateAllFees: async (data) => {
+    try {
+      const response = await api.post('/admin/generate-all-fees', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error generating all fees:', error);
+      throw error;
+    }
+  },
+
+  updateFee: async (feeId, data) => {
+    try {
+      const response = await api.put(`/admin/fees/${feeId}`, data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating fee:', error);
+      throw error;
+    }
+  },
+
+  deleteFee: async (feeId) => {
+    try {
+      const response = await api.delete(`/admin/fees/${feeId}`);
+      return response.data;
+    } catch (error) {
+      console.error('Error deleting fee:', error);
+      throw error;
+    }
+  },
+
+  getAnalytics: async (params = {}) => {
+    try {
+      const response = await api.get('/admin/analytics', { params });
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching analytics:', error);
+      throw error;
+    }
+  },
+
+  // ==================== ATTENDANCE MANAGEMENT ====================
+  getWeeklyAttendance: async () => {
+    try {
+      const response = await api.get('/admin/attendance/weekly');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching weekly attendance:', error);
+      throw error;
+    }
+  },
+
+  getAttendanceStats: async () => {
+    try {
+      const response = await api.get('/admin/attendance/stats');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching attendance stats:', error);
+      throw error;
+    }
+  },
+
+  // ==================== VISITOR MANAGEMENT ====================
+  getWeeklyVisitors: async () => {
+    try {
+      const response = await api.get('/admin/visitors/weekly');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching weekly visitors:', error);
+      throw error;
+    }
+  },
+
+  getVisitorStats: async () => {
+    try {
+      const response = await api.get('/admin/visitors/stats');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching visitor stats:', error);
+      throw error;
+    }
+  },
+
+  // ==================== ACTIVITY MANAGEMENT ====================
+  getRecentActivities: async () => {
+    try {
+      const response = await api.get('/admin/activities/recent');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching recent activities:', error);
+      throw error;
+    }
+  },
+
+  // ==================== REPORTS ====================
+  exportReport: async (type, format = 'pdf') => {
+    try {
+      const response = await api.get(`/admin/reports/export?type=${type}&format=${format}`, {
+        responseType: 'blob'
+      });
+      return response.data;
+    } catch (error) {
+      console.error('Error exporting report:', error);
+      throw error;
+    }
+  },
+
+  // ==================== PROFILE ====================
+  getProfile: async () => {
+    try {
+      const response = await api.get('/admin/profile');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching profile:', error);
+      throw error;
+    }
+  },
+
+  updateProfile: async (data) => {
+    try {
+      const response = await api.put('/admin/profile', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      throw error;
+    }
+  },
+
+  // ==================== SETTINGS ====================
+  getSettings: async () => {
+    try {
+      const response = await api.get('/admin/settings');
+      return response.data;
+    } catch (error) {
+      console.error('Error fetching settings:', error);
+      throw error;
+    }
+  },
+
+  updateSettings: async (data) => {
+    try {
+      const response = await api.put('/admin/settings', data);
+      return response.data;
+    } catch (error) {
+      console.error('Error updating settings:', error);
+      throw error;
+    }
+  }
+};
+
+export default adminService;
