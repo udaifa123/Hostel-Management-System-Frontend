@@ -13,7 +13,7 @@ import {
   TableContainer,
   TableHead,
   TableRow,
-  Chip,
+  // Chip,
   IconButton,
   Dialog,
   DialogTitle,
@@ -56,14 +56,14 @@ const ParentLeaves = () => {
     }
   };
 
-  const getStatusColor = (status) => {
-    switch (status?.toLowerCase()) {
-      case 'approved': return 'success';
-      case 'rejected': return 'error';
-      case 'pending': return 'warning';
-      default: return 'default';
-    }
-  };
+  // const getStatusColor = (status) => {
+  //   switch (status?.toLowerCase()) {
+  //     case 'approved': return 'success';
+  //     case 'rejected': return 'error';
+  //     case 'pending': return 'warning';
+  //     default: return 'default';
+  //   }
+  // };
 
   const getStatusStyle = (status) => {
     switch (status?.toLowerCase()) {

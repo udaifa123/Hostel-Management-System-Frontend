@@ -81,13 +81,13 @@ const AdminLogin = () => {
     }
   };
 
-  const handleDemoLogin = () => {
-    setFormData({
-      email: 'admin@hostel.com',
-      password: 'admin123'
-    });
-    setErrorMessage('');
-  };
+  // const handleDemoLogin = () => {
+  //   setFormData({
+  //     email: 'admin@hostel.com',
+  //     password: 'admin123'
+  //   });
+  //   setErrorMessage('');
+  // };
 
   return (
     <div className="admin-login-wrapper">
@@ -247,7 +247,7 @@ const AdminLogin = () => {
                 )}
               </button>
 
-              <div className="demo-section">
+              {/* <div className="demo-section">
                 <p className="demo-note">Demo Credentials</p>
                 <div className="demo-credentials">
                   <code>admin@hostel.com</code>
@@ -260,7 +260,7 @@ const AdminLogin = () => {
                 >
                   Use Demo Credentials
                 </button>
-              </div>
+              </div> */}
 
               <div className="back-link">
                 <Link to="/login">

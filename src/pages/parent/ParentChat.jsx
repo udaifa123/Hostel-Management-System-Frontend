@@ -14,22 +14,26 @@ import {
   IconButton,
   CircularProgress,
   Badge,
-  Chip
+  Chip,
+  Divider
 } from '@mui/material';
 import {
   Send as SendIcon,
   Chat as ChatIcon,
   Circle as CircleIcon,
-  WifiOff as WifiOffIcon
+  WifiOff as WifiOffIcon,
+  Refresh as RefreshIcon
 } from '@mui/icons-material';
 import { useAuth } from '../../context/AuthContext';
-import { useSocket } from '../../context/SocketContext';
 import parentService from '../../services/parentService';
 import ParentLayout from '../../components/Layout/ParentLayout';
 import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
+import io from 'socket.io-client';
 
-// ─── Color Tokens ───────────────────────────────────────────────
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+
+// Color Tokens
 const G = {
   50:  '#f0fdf4',
   100: '#dcfce7',
@@ -43,54 +47,79 @@ const G = {
   900: '#14532d',
 };
 
-// ─── Helper ─────────────────────────────────────────────────────
-const isMine = (msg, userId) =>
-  msg.sender === userId || msg.senderId === userId;
-
-// ─── Component ──────────────────────────────────────────────────
 const ParentChat = () => {
-  const { user } = useAuth();
-  const { socket, isConnected, sendMessage: socketSendMessage } = useSocket();
+  const { user, token } = useAuth();
   const messagesEndRef = useRef(null);
+  const socketRef = useRef(null);
 
-  const [loading, setLoading]           = useState(true);
-  const [wardens, setWardens]           = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [wardens, setWardens] = useState([]);
   const [selectedWarden, setSelectedWarden] = useState(null);
-  const [messages, setMessages]         = useState([]);
-  const [newMessage, setNewMessage]     = useState('');
-  const [sending, setSending]           = useState(false);
+  const [messages, setMessages] = useState([]);
+  const [newMessage, setNewMessage] = useState('');
+  const [sending, setSending] = useState(false);
+  const [isConnected, setIsConnected] = useState(false);
 
-  useEffect(() => { fetchWardens(); }, []);
+  // Setup Socket
+  useEffect(() => {
+    if (!token) return;
+    
+    const socket = io(API_URL, {
+      auth: { token },
+      transports: ['websocket', 'polling']
+    });
+    
+    socket.on('connect', () => {
+      console.log('✅ Chat socket connected');
+      setIsConnected(true);
+    });
+    
+    socket.on('disconnect', () => {
+      console.log('❌ Chat socket disconnected');
+      setIsConnected(false);
+    });
+    
+    socket.on('new_message', (message) => {
+      console.log('📩 New message received:', message);
+      if (selectedWarden && message.sender._id === selectedWarden._id) {
+        setMessages(prev => [...prev, message]);
+      }
+    });
+    
+    socketRef.current = socket;
+    
+    return () => {
+      socket.disconnect();
+    };
+  }, [token]);
 
   useEffect(() => {
-    if (selectedWarden) fetchChatHistory(selectedWarden._id);
+    fetchWardens();
+  }, []);
+
+  useEffect(() => {
+    if (selectedWarden) {
+      fetchChatHistory();
+    }
   }, [selectedWarden]);
 
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    scrollToBottom();
   }, [messages]);
-
-  useEffect(() => {
-    if (!socket) return;
-    const handleReceiveMessage = (message) => {
-      if (selectedWarden && (message.sender === selectedWarden._id || message.senderId === selectedWarden._id)) {
-        setMessages(prev => [...prev, message]);
-      }
-    };
-    socket.on('receive_message', handleReceiveMessage);
-    socket.on('new_message', handleReceiveMessage);
-    return () => {
-      socket.off('receive_message', handleReceiveMessage);
-      socket.off('new_message', handleReceiveMessage);
-    };
-  }, [socket, selectedWarden]);
 
   const fetchWardens = async () => {
     try {
       setLoading(true);
       const response = await parentService.getWardens();
-      setWardens(response.data || []);
-      if (response.data.length > 0) setSelectedWarden(response.data[0]);
+      console.log('Wardens response:', response);
+      
+      if (response.success && response.data && response.data.length > 0) {
+        setWardens(response.data);
+        setSelectedWarden(response.data[0]);
+      } else {
+        setWardens([]);
+        toast.error(response.message || 'No warden found');
+      }
     } catch (error) {
       console.error('Error fetching wardens:', error);
       toast.error('Failed to load wardens');
@@ -99,30 +128,33 @@ const ParentChat = () => {
     }
   };
 
-  const fetchChatHistory = async (wardenId) => {
+  const fetchChatHistory = async () => {
+    if (!selectedWarden) return;
+    
     try {
-      const response = await parentService.getChatHistory(wardenId);
-      setMessages(response.data || []);
+      const response = await parentService.getChatHistory(selectedWarden._id);
+      console.log('Chat history:', response);
+      
+      if (response.success) {
+        setMessages(response.data || []);
+      }
     } catch (error) {
       console.error('Error fetching chat history:', error);
-      toast.error('Failed to load chat history');
     }
   };
 
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !selectedWarden || sending) return;
+    
     setSending(true);
     try {
       const response = await parentService.sendMessage(selectedWarden._id, newMessage);
-      setMessages(prev => [...prev, response.data]);
-      setNewMessage('');
-      if (socket && isConnected) {
-        socket.emit('send_message', {
-          receiverId: selectedWarden._id,
-          message: newMessage,
-          senderId: user?.id,
-          senderName: user?.name
-        });
+      console.log('Send message response:', response);
+      
+      if (response.success) {
+        setMessages(prev => [...prev, response.data]);
+        setNewMessage('');
+        scrollToBottom();
       }
     } catch (error) {
       console.error('Send message error:', error);
@@ -139,6 +171,10 @@ const ParentChat = () => {
     }
   };
 
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  };
+
   if (loading) {
     return (
       <ParentLayout>
@@ -153,69 +189,44 @@ const ParentChat = () => {
     <ParentLayout>
       <Box sx={{ minHeight: '100vh', background: `linear-gradient(160deg, ${G[50]} 0%, #fff 60%, ${G[100]} 100%)`, py: 4 }}>
         <Container maxWidth="xl">
-
-          {/* ── Page Header ── */}
+          {/* Header */}
           <Paper
             elevation={0}
             sx={{
               background: `linear-gradient(135deg, ${G[700]} 0%, ${G[500]} 100%)`,
               borderRadius: 3,
-              p: { xs: 2.5, sm: 3 },
+              p: 3,
               mb: 3,
               boxShadow: `0 8px 32px ${G[200]}`,
-              position: 'relative',
-              overflow: 'hidden',
-              '&::before': {
-                content: '""', position: 'absolute',
-                top: -40, right: -40,
-                width: 150, height: 150,
-                borderRadius: '50%',
-                background: 'rgba(255,255,255,0.07)',
-              },
             }}
           >
-            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', position: 'relative', zIndex: 1 }}>
+            <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-                <Avatar sx={{ width: 48, height: 48, bgcolor: 'rgba(255,255,255,0.2)', border: '2px solid rgba(255,255,255,0.3)' }}>
+                <Avatar sx={{ width: 48, height: 48, bgcolor: 'rgba(255,255,255,0.2)' }}>
                   <ChatIcon sx={{ color: '#fff', fontSize: 24 }} />
                 </Avatar>
                 <Box>
-                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#fff', letterSpacing: '-0.3px' }}>
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: '#fff' }}>
                     Chat with Warden
                   </Typography>
-                  <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.75)', fontSize: '0.82rem' }}>
+                  <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.75)' }}>
                     Real-time messaging
                   </Typography>
                 </Box>
               </Box>
-
-              {/* Connection Badge */}
               <Chip
-                icon={
-                  isConnected
-                    ? <CircleIcon sx={{ fontSize: '10px !important', color: G[400] }} />
-                    : <WifiOffIcon sx={{ fontSize: '14px !important', color: '#fca5a5' }} />
-                }
+                icon={isConnected ? <CircleIcon sx={{ fontSize: 10, color: '#4ade80' }} /> : <WifiOffIcon sx={{ fontSize: 14, color: '#fca5a5' }} />}
                 label={isConnected ? 'Connected' : 'Connecting...'}
                 size="small"
-                sx={{
-                  bgcolor: 'rgba(255,255,255,0.15)',
-                  color: '#fff',
-                  fontWeight: 600,
-                  fontSize: '0.72rem',
-                  border: '1px solid rgba(255,255,255,0.25)',
-                  backdropFilter: 'blur(8px)',
-                  '& .MuiChip-icon': { ml: 0.5 },
-                }}
+                sx={{ bgcolor: 'rgba(255,255,255,0.15)', color: '#fff' }}
               />
             </Box>
           </Paper>
 
-          {/* ── Main Grid ── */}
+          {/* Chat Grid */}
           <Grid container spacing={2.5} sx={{ height: 620 }}>
-
-            {/* ── Warden Sidebar ── */}
-            <Grid size={{ xs: 12, md: 3 }}>
+            {/* Wardens List */}
+            <Grid size={{ xs: 12, md: 3.5 }}>
               <Paper
                 elevation={0}
                 sx={{
@@ -227,76 +238,71 @@ const ParentChat = () => {
                   flexDirection: 'column',
                 }}
               >
-                {/* Sidebar Header */}
-                <Box sx={{
-                  px: 2.5, py: 2,
-                  background: G[50],
-                  borderBottom: `1px solid ${G[100]}`,
-                }}>
-                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: G[800], fontSize: '0.8rem', textTransform: 'uppercase', letterSpacing: 0.8 }}>
-                    Wardens
+                <Box sx={{ px: 2.5, py: 2, background: G[50], borderBottom: `1px solid ${G[100]}` }}>
+                  <Typography variant="subtitle2" sx={{ fontWeight: 700, color: G[800] }}>
+                    WARDENS
                   </Typography>
                 </Box>
-
-                {/* Warden List */}
-                <List disablePadding sx={{ flex: 1, overflowY: 'auto' }}>
-                  {wardens.length === 0 ? (
-                    <ListItem sx={{ py: 4, justifyContent: 'center' }}>
-                      <Typography variant="body2" color="text.secondary" textAlign="center">
-                        No wardens available
-                      </Typography>
-                    </ListItem>
-                  ) : wardens.map((warden) => {
-                    const selected = selectedWarden?._id === warden._id;
-                    return (
+                
+                {wardens.length === 0 ? (
+                  <Box sx={{ p: 4, textAlign: 'center' }}>
+                    <Typography variant="body2" color="text.secondary">
+                      No wardens available
+                    </Typography>
+                  </Box>
+                ) : (
+                  <List disablePadding sx={{ flex: 1, overflowY: 'auto' }}>
+                    {wardens.map((warden) => (
                       <ListItem
                         key={warden._id}
                         button
-                        selected={selected}
+                        selected={selectedWarden?._id === warden._id}
                         onClick={() => setSelectedWarden(warden)}
                         sx={{
-                          px: 2, py: 1.5,
-                          borderLeft: selected ? `4px solid ${G[500]}` : '4px solid transparent',
-                          bgcolor: selected ? G[50] : 'transparent',
-                          transition: 'all 0.15s',
-                          '&:hover': { bgcolor: G[50] },
-                          '&.Mui-selected': { bgcolor: G[50] },
+                          px: 2.5,
+                          py: 1.5,
+                          borderLeft: selectedWarden?._id === warden._id ? `4px solid ${G[500]}` : '4px solid transparent',
+                          bgcolor: selectedWarden?._id === warden._id ? G[50] : 'transparent',
+                          '&:hover': { bgcolor: G[50] }
                         }}
                       >
-                        <ListItemAvatar sx={{ minWidth: 44 }}>
-                          <Avatar
-                            sx={{
-                              width: 36, height: 36,
-                              bgcolor: selected ? G[600] : G[200],
-                              color: selected ? '#fff' : G[800],
-                              fontWeight: 700,
-                              fontSize: '0.85rem',
-                            }}
+                        <ListItemAvatar>
+                          <Badge
+                            overlap="circular"
+                            anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
+                            badgeContent={
+                              <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: G[500], border: '2px solid #fff' }} />
+                            }
                           >
-                            {warden.name?.charAt(0)?.toUpperCase()}
-                          </Avatar>
+                            <Avatar sx={{ bgcolor: selectedWarden?._id === warden._id ? G[600] : G[200], color: G[800] }}>
+                              {warden.name?.charAt(0)?.toUpperCase()}
+                            </Avatar>
+                          </Badge>
                         </ListItemAvatar>
                         <ListItemText
                           primary={
-                            <Typography variant="body2" sx={{ fontWeight: selected ? 700 : 500, color: selected ? G[800] : 'text.primary', fontSize: '0.88rem' }}>
+                            <Typography variant="body2" sx={{ fontWeight: selectedWarden?._id === warden._id ? 700 : 500 }}>
                               {warden.name}
                             </Typography>
                           }
                           secondary={
-                            <Typography variant="caption" sx={{ color: G[600], fontSize: '0.72rem', fontWeight: 500 }}>
-                              Warden
+                            <Typography variant="caption" sx={{ color: G[600] }}>
+                              {warden.unreadCount > 0 ? `${warden.unreadCount} unread` : 'Warden'}
                             </Typography>
                           }
                         />
+                        {warden.unreadCount > 0 && (
+                          <Chip label={warden.unreadCount} size="small" sx={{ bgcolor: G[500], color: '#fff', height: 20, fontSize: '0.7rem' }} />
+                        )}
                       </ListItem>
-                    );
-                  })}
-                </List>
+                    ))}
+                  </List>
+                )}
               </Paper>
             </Grid>
 
-            {/* ── Chat Area ── */}
-            <Grid size={{ xs: 12, md: 9 }}>
+            {/* Chat Area */}
+            <Grid size={{ xs: 12, md: 8.5 }}>
               <Paper
                 elevation={0}
                 sx={{
@@ -319,131 +325,88 @@ const ParentChat = () => {
                       alignItems: 'center',
                       gap: 2,
                     }}>
-                      <Badge
-                        overlap="circular"
-                        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-                        badgeContent={
-                          <Box sx={{ width: 10, height: 10, borderRadius: '50%', bgcolor: isConnected ? G[500] : '#9ca3af', border: '2px solid #fff' }} />
-                        }
-                      >
-                        <Avatar sx={{ width: 42, height: 42, bgcolor: G[600], fontWeight: 700 }}>
-                          {selectedWarden.name?.charAt(0)?.toUpperCase()}
-                        </Avatar>
-                      </Badge>
+                      <Avatar sx={{ width: 42, height: 42, bgcolor: G[600] }}>
+                        {selectedWarden.name?.charAt(0)?.toUpperCase()}
+                      </Avatar>
                       <Box>
-                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: G[800], lineHeight: 1.2 }}>
+                        <Typography variant="subtitle1" sx={{ fontWeight: 700, color: G[800] }}>
                           {selectedWarden.name}
                         </Typography>
-                        <Typography variant="caption" sx={{ color: G[600], fontSize: '0.72rem', fontWeight: 500 }}>
+                        <Typography variant="caption" sx={{ color: G[600] }}>
                           Hostel Warden
                         </Typography>
                       </Box>
+                      <IconButton onClick={fetchChatHistory} sx={{ ml: 'auto' }}>
+                        <RefreshIcon />
+                      </IconButton>
                     </Box>
 
                     {/* Messages */}
-                    <Box
-                      sx={{
-                        flex: 1,
-                        overflowY: 'auto',
-                        p: 2.5,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        gap: 1.5,
-                        background: '#fafafa',
-                        '&::-webkit-scrollbar': { width: 4 },
-                        '&::-webkit-scrollbar-thumb': { bgcolor: G[200], borderRadius: 4 },
-                      }}
-                    >
-                      {messages.length === 0 && (
-                        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1, py: 6 }}>
+                    <Box sx={{
+                      flex: 1,
+                      overflowY: 'auto',
+                      p: 2.5,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: 1.5,
+                      background: '#fafafa',
+                    }}>
+                      {messages.length === 0 ? (
+                        <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1 }}>
                           <Avatar sx={{ width: 56, height: 56, bgcolor: G[100] }}>
                             <ChatIcon sx={{ fontSize: 28, color: G[400] }} />
                           </Avatar>
                           <Typography variant="body2" color="text.secondary">
-                            No messages yet. Say hello!
+                            No messages yet. Start a conversation!
                           </Typography>
                         </Box>
-                      )}
-
-                      {messages.map((msg, index) => {
-                        const mine = isMine(msg, user?.id);
-                        return (
-                          <Box
-                            key={index}
-                            sx={{
-                              display: 'flex',
-                              justifyContent: mine ? 'flex-end' : 'flex-start',
-                            }}
-                          >
-                            {!mine && (
-                              <Avatar
-                                sx={{
-                                  width: 28, height: 28,
-                                  bgcolor: G[200], color: G[800],
-                                  fontSize: '0.75rem', fontWeight: 700,
-                                  mr: 1, mt: 'auto', mb: 0.5, flexShrink: 0,
-                                }}
-                              >
-                                {selectedWarden.name?.charAt(0)?.toUpperCase()}
-                              </Avatar>
-                            )}
-                            <Box sx={{ maxWidth: '65%' }}>
-                              <Box
-                                sx={{
-                                  px: 2, py: 1.2,
-                                  borderRadius: mine
-                                    ? '18px 18px 4px 18px'
-                                    : '18px 18px 18px 4px',
-                                  background: mine
-                                    ? `linear-gradient(135deg, ${G[600]}, ${G[500]})`
-                                    : '#fff',
-                                  boxShadow: mine
-                                    ? `0 4px 14px ${G[200]}`
-                                    : '0 2px 8px rgba(0,0,0,0.06)',
-                                  border: mine ? 'none' : `1px solid ${G[100]}`,
-                                }}
-                              >
-                                <Typography
-                                  variant="body2"
-                                  sx={{
-                                    color: mine ? '#fff' : 'text.primary',
-                                    fontSize: '0.88rem',
-                                    lineHeight: 1.5,
-                                  }}
-                                >
-                                  {msg.content || msg.message}
-                                </Typography>
-                                <Typography
-                                  variant="caption"
-                                  sx={{
-                                    display: 'block',
-                                    mt: 0.5,
-                                    fontSize: '0.68rem',
-                                    color: mine ? 'rgba(255,255,255,0.65)' : G[400],
-                                    textAlign: 'right',
-                                  }}
-                                >
-                                  {format(parseISO(msg.createdAt), 'hh:mm a')}
-                                </Typography>
+                      ) : (
+                        messages.map((msg, idx) => {
+                          const isMyMessage = msg.sender?._id === user?.id || msg.sender === user?.id;
+                          return (
+                            <Box
+                              key={idx}
+                              sx={{
+                                display: 'flex',
+                                justifyContent: isMyMessage ? 'flex-end' : 'flex-start',
+                              }}
+                            >
+                              {!isMyMessage && (
+                                <Avatar sx={{ width: 28, height: 28, bgcolor: G[200], mr: 1, fontSize: '0.75rem' }}>
+                                  {selectedWarden.name?.charAt(0)?.toUpperCase()}
+                                </Avatar>
+                              )}
+                              <Box sx={{ maxWidth: '65%' }}>
+                                <Paper sx={{
+                                  px: 2, py: 1,
+                                  borderRadius: isMyMessage ? '18px 18px 4px 18px' : '18px 18px 18px 4px',
+                                  bgcolor: isMyMessage ? G[600] : '#fff',
+                                  color: isMyMessage ? '#fff' : '#333',
+                                  boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+                                }}>
+                                  <Typography variant="body2" sx={{ wordBreak: 'break-word' }}>
+                                    {msg.content}
+                                  </Typography>
+                                  <Typography variant="caption" sx={{ display: 'block', mt: 0.5, textAlign: 'right', color: isMyMessage ? 'rgba(255,255,255,0.7)' : G[400], fontSize: '0.65rem' }}>
+                                    {msg.createdAt ? format(parseISO(msg.createdAt), 'hh:mm a') : new Date().toLocaleTimeString()}
+                                  </Typography>
+                                </Paper>
                               </Box>
                             </Box>
-                          </Box>
-                        );
-                      })}
+                          );
+                        })
+                      )}
                       <div ref={messagesEndRef} />
                     </Box>
 
-                    {/* Input Bar */}
-                    <Box
-                      sx={{
-                        px: 2.5, py: 2,
-                        borderTop: `1px solid ${G[100]}`,
-                        background: '#fff',
-                        display: 'flex',
-                        alignItems: 'flex-end',
-                        gap: 1.5,
-                      }}
-                    >
+                    {/* Input */}
+                    <Box sx={{
+                      px: 2.5, py: 2,
+                      borderTop: `1px solid ${G[100]}`,
+                      background: '#fff',
+                      display: 'flex',
+                      gap: 1.5,
+                    }}>
                       <TextField
                         fullWidth
                         multiline
@@ -457,11 +420,9 @@ const ParentChat = () => {
                         sx={{
                           '& .MuiOutlinedInput-root': {
                             borderRadius: 3,
-                            fontSize: '0.88rem',
                             '& fieldset': { borderColor: G[200] },
                             '&:hover fieldset': { borderColor: G[400] },
-                            '&.Mui-focused fieldset': { borderColor: G[500] },
-                          },
+                          }
                         }}
                       />
                       <IconButton
@@ -469,46 +430,30 @@ const ParentChat = () => {
                         disabled={!newMessage.trim() || sending}
                         sx={{
                           width: 42, height: 42,
-                          background: newMessage.trim() && !sending
-                            ? `linear-gradient(135deg, ${G[600]}, ${G[500]})`
-                            : G[100],
+                          bgcolor: newMessage.trim() && !sending ? G[600] : G[100],
                           color: newMessage.trim() && !sending ? '#fff' : G[300],
                           borderRadius: 2.5,
-                          flexShrink: 0,
-                          transition: 'all 0.2s',
                           '&:hover': {
-                            background: newMessage.trim() && !sending
-                              ? `linear-gradient(135deg, ${G[700]}, ${G[600]})`
-                              : G[100],
-                            transform: newMessage.trim() && !sending ? 'scale(1.05)' : 'none',
-                          },
-                          '&.Mui-disabled': { background: G[100], color: G[300] },
+                            bgcolor: newMessage.trim() && !sending ? G[700] : G[100],
+                          }
                         }}
                       >
-                        {sending
-                          ? <CircularProgress size={18} sx={{ color: G[400] }} />
-                          : <SendIcon sx={{ fontSize: 18 }} />
-                        }
+                        {sending ? <CircularProgress size={20} /> : <SendIcon />}
                       </IconButton>
                     </Box>
                   </>
                 ) : (
-                  <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 1.5 }}>
+                  <Box sx={{ flex: 1, display: 'flex', alignItems: 'center', justifyContent: 'center', flexDirection: 'column', gap: 2 }}>
                     <Avatar sx={{ width: 64, height: 64, bgcolor: G[100] }}>
                       <ChatIcon sx={{ fontSize: 34, color: G[400] }} />
                     </Avatar>
-                    <Typography variant="subtitle1" sx={{ fontWeight: 600, color: G[800] }}>
-                      Select a Warden
-                    </Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Choose a warden from the list to start chatting
-                    </Typography>
+                    <Typography variant="h6" sx={{ color: G[600] }}>Select a Warden</Typography>
+                    <Typography variant="body2" color="text.secondary">Choose a warden from the list to start chatting</Typography>
                   </Box>
                 )}
               </Paper>
             </Grid>
           </Grid>
-
         </Container>
       </Box>
     </ParentLayout>

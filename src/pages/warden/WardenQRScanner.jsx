@@ -25,10 +25,15 @@ import {
   Divider,
   InputAdornment,
   Avatar,
-  LinearProgress
+  LinearProgress,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Zoom,
+  Fade
 } from '@mui/material';
 import {
-  QrCodeScanner as QrScannerIcon,
   Refresh as RefreshIcon,
   History as HistoryIcon,
   Download as DownloadIcon,
@@ -36,16 +41,22 @@ import {
   Visibility as VisibilityIcon,
   ContentPaste as PasteIcon,
   QrCode as QrCodeIcon,
-  CameraAlt as CameraIcon
+  CameraAlt as CameraIcon,
+  CheckCircle as CheckCircleIcon,
+  Error as ErrorIcon,
+  Print as PrintIcon,
+  Close as CloseIcon,
+  Person as PersonIcon
 } from '@mui/icons-material';
 import { Html5Qrcode } from 'html5-qrcode';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
+import WardenLayout from '../../components/Layout/WardenLayout';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// ==================== Green Design Tokens ====================
+// Green Design Tokens
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -71,12 +82,13 @@ const WardenQRScanner = () => {
   const [qrHistory, setQrHistory] = useState([]);
   const [qrCodeData, setQrCodeData] = useState(null);
   const [manualQrCode, setManualQrCode] = useState('');
+  const [openQRDialog, setOpenQRDialog] = useState(false);
+  const [selectedQR, setSelectedQR] = useState(null);
   const [qrConfig, setQrConfig] = useState({
     sessionName: `Attendance - ${new Date().toLocaleDateString()}`,
     expiryMinutes: 30
   });
   
-  const scannerRef = useRef(null);
   const html5QrCodeRef = useRef(null);
   const [cameraError, setCameraError] = useState(false);
   const [fetchingStudents, setFetchingStudents] = useState(true);
@@ -97,18 +109,57 @@ const WardenQRScanner = () => {
       const response = await axios.get(`${API_URL}/warden/students`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      console.log('Students response:', response.data);
+      console.log('Students API Response:', response.data);
       
-      let studentsData = [];
-      if (response.data.success && response.data.students) {
-        studentsData = response.data.students;
-      } else if (Array.isArray(response.data)) {
-        studentsData = response.data;
-      } else if (response.data.data && Array.isArray(response.data.data)) {
-        studentsData = response.data.data;
+      let studentsArray = [];
+      
+      // Handle different response structures
+      if (response.data && response.data.success && response.data.students) {
+        studentsArray = response.data.students;
+      } else if (response.data && response.data.data && response.data.data.students) {
+        studentsArray = response.data.data.students;
+      } else if (response.data && Array.isArray(response.data)) {
+        studentsArray = response.data;
+      } else if (response.data && response.data.data && Array.isArray(response.data.data)) {
+        studentsArray = response.data.data;
       }
       
-      setStudents(studentsData);
+      // Transform student data to ensure we have proper display values
+      const transformedStudents = studentsArray.map(student => {
+        // Get student name from various possible locations
+        let name = 'Unknown Student';
+        if (student.user?.name) name = student.user.name;
+        else if (student.name) name = student.name;
+        else if (student.studentName) name = student.studentName;
+        else if (student.fullName) name = student.fullName;
+        
+        // Get roll number
+        let rollNo = 'N/A';
+        if (student.rollNumber) rollNo = student.rollNumber;
+        else if (student.registrationNumber) rollNo = student.registrationNumber;
+        else if (student.enrollmentNumber) rollNo = student.enrollmentNumber;
+        else if (student.studentId) rollNo = student.studentId;
+        
+        // Get email
+        let email = '';
+        if (student.user?.email) email = student.user.email;
+        else if (student.email) email = student.email;
+        
+        return {
+          id: student._id || student.id,
+          name: name,
+          rollNumber: rollNo,
+          email: email,
+          phone: student.user?.phone || student.phone || ''
+        };
+      }).filter(student => student.id); // Remove any students without ID
+      
+      console.log('Transformed students:', transformedStudents);
+      setStudents(transformedStudents);
+      
+      if (transformedStudents.length === 0) {
+        toast.error('No students found. Please add students first.');
+      }
     } catch (error) {
       console.error('Error fetching students:', error);
       toast.error('Failed to load students');
@@ -125,9 +176,9 @@ const WardenQRScanner = () => {
       console.log('QR History response:', response.data);
       
       let historyData = [];
-      if (response.data.success && response.data.data) {
+      if (response.data && response.data.success && response.data.data) {
         historyData = response.data.data;
-      } else if (Array.isArray(response.data)) {
+      } else if (response.data && Array.isArray(response.data)) {
         historyData = response.data;
       }
       
@@ -151,12 +202,12 @@ const WardenQRScanner = () => {
 
       console.log('QR Generation response:', response.data);
       
-      if (response.data.success) {
+      if (response.data && response.data.success) {
         setQrCodeData(response.data.data);
         toast.success('QR Code generated successfully!');
         fetchQRHistory();
       } else {
-        toast.error(response.data.message || 'Failed to generate QR code');
+        toast.error(response.data?.message || 'Failed to generate QR code');
       }
     } catch (error) {
       console.error('Error generating QR:', error);
@@ -172,7 +223,6 @@ const WardenQRScanner = () => {
       return;
     }
 
-    // Stop existing scanner if any
     await stopScanner();
 
     setScanning(true);
@@ -180,19 +230,15 @@ const WardenQRScanner = () => {
     setCameraError(false);
     setCameraStarted(false);
     
-    // Wait for DOM to update
     setTimeout(async () => {
       try {
-        // Get the scanner container element
         const scannerContainer = document.getElementById('qr-reader-container');
         if (!scannerContainer) {
           throw new Error('Scanner container not found');
         }
         
-        // Clear any existing content
         scannerContainer.innerHTML = '';
         
-        // Create new scanner
         const html5QrCode = new Html5Qrcode("qr-reader-container");
         html5QrCodeRef.current = html5QrCode;
         
@@ -202,7 +248,6 @@ const WardenQRScanner = () => {
           aspectRatio: 1.0
         };
         
-        // Try to start with back camera
         await html5QrCode.start(
           { facingMode: "environment" },
           config,
@@ -210,7 +255,6 @@ const WardenQRScanner = () => {
             onScanSuccess(decodedText);
           },
           (errorMessage) => {
-            // Silent error handling
             if (errorMessage && !errorMessage.includes('No MultiFormat Readers')) {
               console.log("Scan attempt:", errorMessage);
             }
@@ -223,7 +267,6 @@ const WardenQRScanner = () => {
       } catch (err) {
         console.error("Error starting scanner:", err);
         
-        // Try with default camera as fallback
         try {
           if (html5QrCodeRef.current) {
             await html5QrCodeRef.current.stop();
@@ -268,7 +311,6 @@ const WardenQRScanner = () => {
   const onScanSuccess = async (decodedText) => {
     if (!scanning) return;
     
-    // Stop scanner immediately after successful scan
     await stopScanner();
     
     try {
@@ -281,10 +323,10 @@ const WardenQRScanner = () => {
 
       console.log('Scan response:', response.data);
 
-      if (response.data.success) {
+      if (response.data && response.data.success) {
         setScanResult({
           success: true,
-          message: 'Attendance marked successfully!',
+          message: '✅ Attendance marked successfully!',
           data: response.data.data
         });
         toast.success('Attendance marked successfully!');
@@ -292,10 +334,10 @@ const WardenQRScanner = () => {
       } else {
         setScanResult({
           success: false,
-          message: response.data.message || 'Failed to mark attendance',
+          message: response.data?.message || 'Failed to mark attendance',
           data: null
         });
-        toast.error(response.data.message || 'Failed to mark attendance');
+        toast.error(response.data?.message || 'Failed to mark attendance');
       }
     } catch (error) {
       console.error('Scan error:', error);
@@ -330,10 +372,10 @@ const WardenQRScanner = () => {
 
       console.log('Manual scan response:', response.data);
 
-      if (response.data.success) {
+      if (response.data && response.data.success) {
         setScanResult({
           success: true,
-          message: 'Attendance marked successfully!',
+          message: '✅ Attendance marked successfully!',
           data: response.data.data
         });
         toast.success('Attendance marked successfully!');
@@ -342,10 +384,10 @@ const WardenQRScanner = () => {
       } else {
         setScanResult({
           success: false,
-          message: response.data.message || 'Failed to mark attendance',
+          message: response.data?.message || 'Failed to mark attendance',
           data: null
         });
-        toast.error(response.data.message || 'Failed to mark attendance');
+        toast.error(response.data?.message || 'Failed to mark attendance');
       }
     } catch (error) {
       console.error('Manual scan error:', error);
@@ -374,6 +416,44 @@ const WardenQRScanner = () => {
     }
   };
 
+  const printQR = () => {
+    if (qrCodeData?.qrCode) {
+      const printWindow = window.open('', '_blank');
+      printWindow.document.write(`
+        <html>
+          <head>
+            <title>QR Code - ${qrCodeData.sessionName}</title>
+            <style>
+              body { font-family: Arial, sans-serif; text-align: center; padding: 40px; }
+              .container { max-width: 400px; margin: 0 auto; }
+              img { max-width: 100%; margin: 20px 0; }
+              .info { margin-top: 20px; color: #666; }
+              h2 { color: #1A5C2A; }
+            </style>
+          </head>
+          <body>
+            <div class="container">
+              <h2>Attendance QR Code</h2>
+              <img src="${qrCodeData.qrCode}" alt="QR Code" />
+              <div class="info">
+                <p><strong>Session:</strong> ${qrCodeData.sessionName}</p>
+                <p><strong>Expires:</strong> ${new Date(qrCodeData.expiresAt).toLocaleString()}</p>
+              </div>
+            </div>
+          </body>
+        </html>
+      `);
+      printWindow.document.close();
+      printWindow.print();
+      printWindow.close();
+    }
+  };
+
+  const handleViewDetails = (qr) => {
+    setSelectedQR(qr);
+    setOpenQRDialog(true);
+  };
+
   const getStatusColor = (status, expiresAt) => {
     const isActive = status === 'active' && new Date(expiresAt) > new Date();
     if (isActive) {
@@ -385,387 +465,553 @@ const WardenQRScanner = () => {
 
   if (fetchingStudents) {
     return (
-      <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-        <LinearProgress sx={{ borderRadius: 5, bgcolor: G[100], '& .MuiLinearProgress-bar': { bgcolor: G[600] } }} />
-        <Typography sx={{ textAlign: 'center', mt: 2, color: G[600] }}>
-          Loading students...
-        </Typography>
-      </Box>
+      <WardenLayout>
+        <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
+          <LinearProgress sx={{ borderRadius: 5, bgcolor: G[100], '& .MuiLinearProgress-bar': { bgcolor: G[600] } }} />
+          <Typography sx={{ textAlign: 'center', mt: 2, color: G[600] }}>
+            Loading students...
+          </Typography>
+        </Box>
+      </WardenLayout>
     );
   }
 
   return (
-    <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
-      <Box sx={{ height: 4, bgcolor: G[600] }} />
+    <WardenLayout>
+      <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
+        <Box sx={{ height: 4, bgcolor: G[600] }} />
 
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Header */}
-        <Paper elevation={0} sx={{
-          p: 3,
-          mb: 4,
-          borderRadius: 3,
-          bgcolor: '#ffffff',
-          border: `1px solid ${G[200]}`,
-          boxShadow: '0 2px 8px rgba(13,51,24,0.10)',
-          display: 'flex',
-          alignItems: 'center',
-          gap: 2,
-          flexWrap: 'wrap'
-        }}>
-          <Avatar sx={{ bgcolor: G[800], width: 46, height: 46, borderRadius: 2 }}>
-            <QrCodeIcon sx={{ color: G[200], fontSize: 22 }} />
-          </Avatar>
-          <Box>
-            <Typography variant="h5" sx={{ fontWeight: 700, color: G[800], letterSpacing: '-0.01em' }}>
-              QR Attendance Scanner
-            </Typography>
-            <Typography variant="body2" sx={{ color: G[500], mt: 0.25 }}>
-              Generate QR codes and scan to mark student attendance
-            </Typography>
-          </Box>
-        </Paper>
-
-        <Grid container spacing={3}>
-          {/* Generate QR Section */}
-          <Grid size={{ xs: 12, md: 6 }}>
+        <Container maxWidth="xl" sx={{ py: 4 }}>
+          {/* Header */}
+          <Fade in timeout={500}>
             <Paper elevation={0} sx={{
               p: 3,
+              mb: 4,
               borderRadius: 3,
               bgcolor: '#ffffff',
               border: `1px solid ${G[200]}`,
-              boxShadow: CARD_SHADOW,
-              height: '100%'
+              boxShadow: '0 2px 8px rgba(13,51,24,0.10)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-between',
+              flexWrap: 'wrap',
+              gap: 2
             }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], mb: 3 }}>
-                Generate Attendance QR Code
-              </Typography>
+              <Box display="flex" alignItems="center" gap={2}>
+                <Avatar sx={{ bgcolor: G[800], width: 46, height: 46, borderRadius: 2 }}>
+                  <QrCodeIcon sx={{ color: G[200], fontSize: 22 }} />
+                </Avatar>
+                <Box>
+                  <Typography variant="h5" sx={{ fontWeight: 700, color: G[800], letterSpacing: '-0.01em' }}>
+                    QR Attendance Scanner
+                  </Typography>
+                  <Typography variant="body2" sx={{ color: G[500], mt: 0.25 }}>
+                    Generate QR codes and scan to mark student attendance
+                  </Typography>
+                </Box>
+              </Box>
+              <Button
+                variant="outlined"
+                startIcon={<RefreshIcon />}
+                onClick={fetchQRHistory}
+                sx={{ borderColor: G[200], color: G[600] }}
+              >
+                Refresh History
+              </Button>
+            </Paper>
+          </Fade>
 
-              <Grid container spacing={2.5}>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    label="Session Name"
-                    value={qrConfig.sessionName}
-                    onChange={(e) => setQrConfig({ ...qrConfig, sessionName: e.target.value })}
-                    placeholder="e.g., Morning Attendance - March 25"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
+          <Grid container spacing={3}>
+            {/* Generate QR Section */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Zoom in timeout={300}>
+                <Paper elevation={0} sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  bgcolor: '#ffffff',
+                  border: `1px solid ${G[200]}`,
+                  boxShadow: CARD_SHADOW,
+                  height: '100%'
+                }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <QrCodeIcon sx={{ color: G[600] }} />
+                    Generate Attendance QR Code
+                  </Typography>
+
+                  <Grid container spacing={2.5}>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        fullWidth
+                        label="Session Name"
+                        value={qrConfig.sessionName}
+                        onChange={(e) => setQrConfig({ ...qrConfig, sessionName: e.target.value })}
+                        placeholder="e.g., Morning Attendance - March 25"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 2,
+                            bgcolor: G[50],
+                            '& fieldset': { borderColor: G[200] },
+                            '&:hover fieldset': { borderColor: G[400] },
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <TextField
+                        fullWidth
+                        type="number"
+                        label="Expiry (Minutes)"
+                        value={qrConfig.expiryMinutes}
+                        onChange={(e) => setQrConfig({ ...qrConfig, expiryMinutes: parseInt(e.target.value) })}
+                        InputProps={{ inputProps: { min: 5, max: 120 } }}
+                        helperText="QR code will expire after this many minutes"
+                        sx={{
+                          '& .MuiOutlinedInput-root': {
+                            borderRadius: 2,
+                            bgcolor: G[50],
+                            '& fieldset': { borderColor: G[200] },
+                          },
+                        }}
+                      />
+                    </Grid>
+                    <Grid size={{ xs: 12 }}>
+                      <Button
+                        fullWidth
+                        variant="contained"
+                        onClick={generateQR}
+                        disabled={loading}
+                        sx={{
+                          bgcolor: G[700],
+                          color: '#ffffff',
+                          fontWeight: 600,
+                          borderRadius: 2,
+                          textTransform: 'none',
+                          py: 1.5,
+                          '&:hover': { bgcolor: G[800] }
+                        }}
+                      >
+                        {loading ? <CircularProgress size={24} color="inherit" /> : 'Generate QR Code'}
+                      </Button>
+                    </Grid>
+                  </Grid>
+
+                  {qrCodeData && (
+                    <Fade in timeout={500}>
+                      <Box sx={{ mt: 3, p: 3, bgcolor: G[50], borderRadius: 2, textAlign: 'center' }}>
+                        <img 
+                          src={qrCodeData.qrCode} 
+                          alt="QR Code" 
+                          style={{ maxWidth: '200px', margin: '0 auto', display: 'block' }} 
+                        />
+                        <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold', color: G[800] }}>
+                          {qrCodeData.sessionName}
+                        </Typography>
+                        <Typography variant="caption" sx={{ color: G[500], display: 'block' }}>
+                          Expires: {new Date(qrCodeData.expiresAt).toLocaleString()}
+                        </Typography>
+                        <Box display="flex" gap={1} justifyContent="center" sx={{ mt: 2 }}>
+                          <Button
+                            variant="outlined"
+                            startIcon={<DownloadIcon />}
+                            onClick={downloadQR}
+                            size="small"
+                            sx={{ borderColor: G[200], color: G[600] }}
+                          >
+                            Download
+                          </Button>
+                          <Button
+                            variant="outlined"
+                            startIcon={<PrintIcon />}
+                            onClick={printQR}
+                            size="small"
+                            sx={{ borderColor: G[200], color: G[600] }}
+                          >
+                            Print
+                          </Button>
+                        </Box>
+                      </Box>
+                    </Fade>
+                  )}
+                </Paper>
+              </Zoom>
+            </Grid>
+
+            {/* Scan QR Section */}
+            <Grid size={{ xs: 12, md: 6 }}>
+              <Zoom in timeout={300}>
+                <Paper elevation={0} sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  bgcolor: '#ffffff',
+                  border: `1px solid ${G[200]}`,
+                  boxShadow: CARD_SHADOW,
+                  height: '100%'
+                }}>
+                  <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], mb: 3, display: 'flex', alignItems: 'center', gap: 1 }}>
+                    <CameraIcon sx={{ color: G[600] }} />
+                    Scan QR to Mark Attendance
+                  </Typography>
+
+                  <FormControl fullWidth sx={{ mb: 3 }}>
+                    <InputLabel>Select Student</InputLabel>
+                    <Select
+                      value={selectedStudent || ''}
+                      onChange={(e) => setSelectedStudent(e.target.value)}
+                      label="Select Student"
+                      sx={{
                         borderRadius: 2,
                         bgcolor: G[50],
-                        '& fieldset': { borderColor: G[200] },
-                        '&:hover fieldset': { borderColor: G[400] },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <TextField
-                    fullWidth
-                    type="number"
-                    label="Expiry (Minutes)"
-                    value={qrConfig.expiryMinutes}
-                    onChange={(e) => setQrConfig({ ...qrConfig, expiryMinutes: parseInt(e.target.value) })}
-                    InputProps={{ inputProps: { min: 5, max: 120 } }}
-                    helperText="QR code will expire after this many minutes"
-                    sx={{
-                      '& .MuiOutlinedInput-root': {
-                        borderRadius: 2,
-                        bgcolor: G[50],
-                        '& fieldset': { borderColor: G[200] },
-                      },
-                    }}
-                  />
-                </Grid>
-                <Grid item xs={12}>
-                  <Button
-                    fullWidth
-                    variant="contained"
-                    onClick={generateQR}
-                    disabled={loading}
-                    sx={{
-                      bgcolor: G[700],
-                      color: '#ffffff',
-                      fontWeight: 600,
+                        '& .MuiOutlinedInput-notchedOutline': { borderColor: G[200] },
+                      }}
+                      renderValue={(selected) => {
+                        if (!selected) return 'Select Student';
+                        const student = students.find(s => s.id === selected);
+                        if (!student) return 'Select Student';
+                        return `${student.name} - ${student.rollNumber}`;
+                      }}
+                    >
+                      {students.length === 0 ? (
+                        <MenuItem disabled>
+                          <Typography variant="body2" color="text.secondary">
+                            No students available
+                          </Typography>
+                        </MenuItem>
+                      ) : (
+                        students.map((student) => (
+                          <MenuItem key={student.id} value={student.id}>
+                            <Box display="flex" alignItems="center" gap={2}>
+                              <Avatar sx={{ bgcolor: G[100], width: 32, height: 32 }}>
+                                <PersonIcon sx={{ color: G[600], fontSize: 18 }} />
+                              </Avatar>
+                              <Box>
+                                <Typography variant="body2" fontWeight={500}>
+                                  {student.name}
+                                </Typography>
+                                <Typography variant="caption" color="text.secondary">
+                                  Roll: {student.rollNumber}
+                                  {student.email && ` | ${student.email}`}
+                                </Typography>
+                              </Box>
+                            </Box>
+                          </MenuItem>
+                        ))
+                      )}
+                    </Select>
+                  </FormControl>
+
+                  {/* Scanner Container */}
+                  <Box 
+                    id="qr-reader-container"
+                    sx={{ 
+                      width: '100%',
+                      minHeight: scanning ? 350 : 0,
                       borderRadius: 2,
-                      textTransform: 'none',
-                      py: 1.5,
-                      '&:hover': { bgcolor: G[800] }
-                    }}
-                  >
-                    {loading ? <CircularProgress size={24} color="inherit" /> : 'Generate QR Code'}
-                  </Button>
+                      overflow: 'hidden',
+                      bgcolor: '#000',
+                      display: scanning ? 'block' : 'none',
+                      position: 'relative',
+                      '& video': {
+                        width: '100% !important',
+                        height: 'auto !important',
+                        objectFit: 'cover'
+                      }
+                    }} 
+                  />
+
+                  {!scanning ? (
+                    <Button
+                      fullWidth
+                      variant="contained"
+                      startIcon={<CameraIcon />}
+                      onClick={startScanner}
+                      disabled={!selectedStudent}
+                      sx={{
+                        bgcolor: G[700],
+                        color: '#ffffff',
+                        fontWeight: 600,
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        py: 1.5,
+                        '&:hover': { bgcolor: G[800] }
+                      }}
+                    >
+                      Start Camera Scanner
+                    </Button>
+                  ) : (
+                    <>
+                      {!cameraStarted && !cameraError && (
+                        <Box sx={{ textAlign: 'center', mt: 2 }}>
+                          <CircularProgress size={30} sx={{ color: G[600] }} />
+                          <Typography variant="caption" sx={{ display: 'block', mt: 1, color: G[600] }}>
+                            Starting camera...
+                          </Typography>
+                        </Box>
+                      )}
+                      <Button
+                        fullWidth
+                        variant="outlined"
+                        startIcon={<CancelIcon />}
+                        onClick={stopScanner}
+                        sx={{ mt: 2, borderColor: G[200], color: G[600] }}
+                      >
+                        Stop Scanning
+                      </Button>
+                    </>
+                  )}
+
+                  {cameraError && (
+                    <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
+                      <strong>Camera Error:</strong> Could not access camera.
+                      <ul style={{ marginTop: 8, marginBottom: 0 }}>
+                        <li>Check if camera is not in use by another app</li>
+                        <li>Allow camera permission in browser settings</li>
+                        <li>Refresh the page and try again</li>
+                        <li>Use the manual entry option below</li>
+                      </ul>
+                    </Alert>
+                  )}
+
+                  {scanResult && (
+                    <Alert 
+                      severity={scanResult.success ? 'success' : 'error'} 
+                      sx={{ mt: 2, borderRadius: 2 }}
+                      icon={scanResult.success ? <CheckCircleIcon /> : <ErrorIcon />}
+                    >
+                      {scanResult.message}
+                    </Alert>
+                  )}
+
+                  <Divider sx={{ my: 3, borderColor: G[100] }} />
+
+                  <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: G[800] }}>
+                    Or Enter QR Code Manually
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <TextField
+                      fullWidth
+                      size="small"
+                      placeholder="Paste QR code data here..."
+                      value={manualQrCode}
+                      onChange={(e) => setManualQrCode(e.target.value)}
+                      sx={{
+                        '& .MuiOutlinedInput-root': {
+                          borderRadius: 2,
+                          bgcolor: G[50],
+                          '& fieldset': { borderColor: G[200] },
+                        },
+                      }}
+                      InputProps={{
+                        startAdornment: (
+                          <InputAdornment position="start">
+                            <PasteIcon sx={{ color: G[400] }} />
+                          </InputAdornment>
+                        ),
+                      }}
+                    />
+                    <Button
+                      variant="contained"
+                      onClick={handleManualQR}
+                      disabled={!selectedStudent || !manualQrCode.trim()}
+                      sx={{ bgcolor: G[600], '&:hover': { bgcolor: G[700] } }}
+                    >
+                      Submit
+                    </Button>
+                  </Box>
+                </Paper>
+              </Zoom>
+            </Grid>
+
+            {/* QR History Section */}
+            <Grid size={{ xs: 12 }}>
+              <Fade in timeout={500}>
+                <Paper elevation={0} sx={{
+                  p: 3,
+                  borderRadius: 3,
+                  bgcolor: '#ffffff',
+                  border: `1px solid ${G[200]}`,
+                  boxShadow: CARD_SHADOW
+                }}>
+                  <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
+                    <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], display: 'flex', alignItems: 'center', gap: 1 }}>
+                      <HistoryIcon sx={{ color: G[600] }} />
+                      QR Code History
+                    </Typography>
+                    <Button
+                      startIcon={<RefreshIcon />}
+                      onClick={fetchQRHistory}
+                      size="small"
+                      sx={{ color: G[600] }}
+                    >
+                      Refresh
+                    </Button>
+                  </Box>
+
+                  <TableContainer>
+                    <Table>
+                      <TableHead sx={{ bgcolor: G[50] }}>
+                        <TableRow>
+                          <TableCell sx={{ color: G[700], fontWeight: 700 }}>Session Name</TableCell>
+                          <TableCell sx={{ color: G[700], fontWeight: 700 }}>Generated</TableCell>
+                          <TableCell sx={{ color: G[700], fontWeight: 700 }}>Expires</TableCell>
+                          <TableCell sx={{ color: G[700], fontWeight: 700 }}>Used By</TableCell>
+                          <TableCell sx={{ color: G[700], fontWeight: 700 }}>Status</TableCell>
+                          <TableCell align="right" sx={{ color: G[700], fontWeight: 700 }}>Actions</TableCell>
+                        </TableRow>
+                      </TableHead>
+                      <TableBody>
+                        {qrHistory.map((qr) => {
+                          const statusConfig = getStatusColor(qr.status, qr.expiresAt);
+                          return (
+                            <TableRow key={qr._id} hover>
+                              <TableCell>{qr.sessionName}</TableCell>
+                              <TableCell>{new Date(qr.createdAt).toLocaleString()}</TableCell>
+                              <TableCell>{new Date(qr.expiresAt).toLocaleString()}</TableCell>
+                              <TableCell>{qr.usedBy?.length || 0} students</TableCell>
+                              <TableCell>
+                                <Chip 
+                                  label={statusConfig.label}
+                                  size="small"
+                                  sx={{ bgcolor: statusConfig.bg, color: statusConfig.color, fontWeight: 600 }}
+                                />
+                              </TableCell>
+                              <TableCell align="right">
+                                <Tooltip title="View Details">
+                                  <IconButton size="small" onClick={() => handleViewDetails(qr)} sx={{ color: G[600] }}>
+                                    <VisibilityIcon fontSize="small" />
+                                  </IconButton>
+                                </Tooltip>
+                              </TableCell>
+                            </TableRow>
+                          );
+                        })}
+                        {qrHistory.length === 0 && (
+                          <TableRow>
+                            <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
+                              <QrCodeIcon sx={{ fontSize: 48, color: G[400], mb: 1 }} />
+                              <Typography sx={{ color: G[600] }}>No QR codes generated yet</Typography>
+                              <Button
+                                variant="text"
+                                startIcon={<QrCodeIcon />}
+                                onClick={() => {
+                                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                                }}
+                                sx={{ mt: 1, color: G[600] }}
+                              >
+                                Generate your first QR code
+                              </Button>
+                            </TableCell>
+                          </TableRow>
+                        )}
+                      </TableBody>
+                    </Table>
+                  </TableContainer>
+                </Paper>
+              </Fade>
+            </Grid>
+          </Grid>
+        </Container>
+      </Box>
+
+      {/* QR Details Dialog */}
+      <Dialog 
+        open={openQRDialog} 
+        onClose={() => setOpenQRDialog(false)} 
+        maxWidth="sm" 
+        fullWidth
+        TransitionComponent={Zoom}
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            bgcolor: '#ffffff',
+            border: `1px solid ${G[200]}`,
+            boxShadow: '0 24px 48px rgba(13,51,24,0.15)',
+          }
+        }}
+      >
+        <Box sx={{ height: 4, bgcolor: G[600], borderRadius: '12px 12px 0 0' }} />
+        <DialogTitle>
+          <Box display="flex" justifyContent="space-between" alignItems="center">
+            <Typography variant="h6" fontWeight={700} sx={{ color: G[800] }}>
+              QR Code Details
+            </Typography>
+            <IconButton onClick={() => setOpenQRDialog(false)}>
+              <CloseIcon />
+            </IconButton>
+          </Box>
+        </DialogTitle>
+        <DialogContent>
+          {selectedQR && (
+            <Box sx={{ mt: 2 }}>
+              <Box textAlign="center" mb={3}>
+                <img 
+                  src={selectedQR.qrCode} 
+                  alt="QR Code" 
+                  style={{ maxWidth: '180px', margin: '0 auto', display: 'block' }} 
+                />
+              </Box>
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <Typography variant="caption" color="text.secondary">Session Name</Typography>
+                  <Typography variant="body1" fontWeight={600} sx={{ color: G[800] }}>
+                    {selectedQR.sessionName}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="caption" color="text.secondary">Generated At</Typography>
+                  <Typography variant="body2" sx={{ color: G[600] }}>
+                    {new Date(selectedQR.createdAt).toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={6}>
+                  <Typography variant="caption" color="text.secondary">Expires At</Typography>
+                  <Typography variant="body2" sx={{ color: G[600] }}>
+                    {new Date(selectedQR.expiresAt).toLocaleString()}
+                  </Typography>
+                </Grid>
+                <Grid item xs={12}>
+                  <Typography variant="caption" color="text.secondary">Used By Students</Typography>
+                  <Box sx={{ mt: 1 }}>
+                    {selectedQR.usedBy && selectedQR.usedBy.length > 0 ? (
+                      selectedQR.usedBy.map((student, idx) => (
+                        <Chip 
+                          key={idx}
+                          label={student.name || student.studentName || `Student ${idx + 1}`}
+                          size="small"
+                          sx={{ m: 0.5, bgcolor: G[100], color: G[700] }}
+                        />
+                      ))
+                    ) : (
+                      <Typography variant="body2" color="text.secondary">No students have used this QR code yet</Typography>
+                    )}
+                  </Box>
                 </Grid>
               </Grid>
-
-              {qrCodeData && (
-                <Box sx={{ mt: 3, p: 3, bgcolor: G[50], borderRadius: 2, textAlign: 'center' }}>
-                  <img 
-                    src={qrCodeData.qrCode} 
-                    alt="QR Code" 
-                    style={{ maxWidth: '200px', margin: '0 auto', display: 'block' }} 
-                  />
-                  <Typography variant="body2" sx={{ mt: 2, fontWeight: 'bold', color: G[800] }}>
-                    {qrCodeData.sessionName}
-                  </Typography>
-                  <Typography variant="caption" sx={{ color: G[500], display: 'block' }}>
-                    Expires: {new Date(qrCodeData.expiresAt).toLocaleString()}
-                  </Typography>
-                  <Button
-                    variant="outlined"
-                    startIcon={<DownloadIcon />}
-                    onClick={downloadQR}
-                    sx={{ mt: 2, borderColor: G[200], color: G[600] }}
-                  >
-                    Download QR Code
-                  </Button>
-                </Box>
-              )}
-            </Paper>
-          </Grid>
-
-          {/* Scan QR Section */}
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Paper elevation={0} sx={{
-              p: 3,
-              borderRadius: 3,
-              bgcolor: '#ffffff',
-              border: `1px solid ${G[200]}`,
-              boxShadow: CARD_SHADOW,
-              height: '100%'
-            }}>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], mb: 3 }}>
-                Scan QR to Mark Attendance
-              </Typography>
-
-              <FormControl fullWidth sx={{ mb: 3 }}>
-                <InputLabel>Select Student</InputLabel>
-                <Select
-                  value={selectedStudent}
-                  onChange={(e) => setSelectedStudent(e.target.value)}
-                  label="Select Student"
-                  sx={{
-                    borderRadius: 2,
-                    bgcolor: G[50],
-                    '& .MuiOutlinedInput-notchedOutline': { borderColor: G[200] },
-                  }}
-                >
-                  {students.map((student) => (
-                    <MenuItem key={student._id} value={student._id}>
-                      {student.name} - {student.rollNumber || student.registrationNumber}
-                    </MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-
-              {/* Scanner Container */}
-              <Box 
-                id="qr-reader-container"
-                sx={{ 
-                  width: '100%',
-                  minHeight: scanning ? 400 : 0,
-                  borderRadius: 2,
-                  overflow: 'hidden',
-                  bgcolor: '#000',
-                  display: scanning ? 'block' : 'none',
-                  position: 'relative',
-                  '& video': {
-                    width: '100% !important',
-                    height: 'auto !important',
-                    objectFit: 'cover'
-                  }
-                }} 
-              />
-
-              {!scanning ? (
-                <Button
-                  fullWidth
-                  variant="contained"
-                  startIcon={<CameraIcon />}
-                  onClick={startScanner}
-                  disabled={!selectedStudent}
-                  sx={{
-                    bgcolor: G[700],
-                    color: '#ffffff',
-                    fontWeight: 600,
-                    borderRadius: 2,
-                    textTransform: 'none',
-                    py: 1.5,
-                    '&:hover': { bgcolor: G[800] }
-                  }}
-                >
-                  Start Camera Scanner
-                </Button>
-              ) : (
-                <>
-                  {!cameraStarted && !cameraError && (
-                    <Box sx={{ textAlign: 'center', mt: 2 }}>
-                      <CircularProgress size={30} sx={{ color: G[600] }} />
-                      <Typography variant="caption" sx={{ display: 'block', mt: 1, color: G[600] }}>
-                        Starting camera...
-                      </Typography>
-                    </Box>
-                  )}
-                  <Button
-                    fullWidth
-                    variant="outlined"
-                    startIcon={<CancelIcon />}
-                    onClick={stopScanner}
-                    sx={{ mt: 2, borderColor: G[200], color: G[600] }}
-                  >
-                    Stop Scanning
-                  </Button>
-                </>
-              )}
-
-              {cameraError && (
-                <Alert severity="error" sx={{ mt: 2, borderRadius: 2 }}>
-                  <strong>Camera Error:</strong> Could not access camera.
-                  <ul style={{ marginTop: 8, marginBottom: 0 }}>
-                    <li>Check if camera is not in use by another app</li>
-                    <li>Allow camera permission in browser settings</li>
-                    <li>Refresh the page and try again</li>
-                    <li>Use the manual entry option below</li>
-                  </ul>
-                </Alert>
-              )}
-
-              {scanResult && (
-                <Alert 
-                  severity={scanResult.success ? 'success' : 'error'} 
-                  sx={{ mt: 2, borderRadius: 2 }}
-                >
-                  {scanResult.message}
-                </Alert>
-              )}
-
-              <Divider sx={{ my: 3, borderColor: G[100] }} />
-
-              <Typography variant="subtitle2" sx={{ mb: 2, fontWeight: 600, color: G[800] }}>
-                Or Enter QR Code Manually
-              </Typography>
-              <Box sx={{ display: 'flex', gap: 1 }}>
-                <TextField
-                  fullWidth
-                  size="small"
-                  placeholder="Paste QR code data here..."
-                  value={manualQrCode}
-                  onChange={(e) => setManualQrCode(e.target.value)}
-                  sx={{
-                    '& .MuiOutlinedInput-root': {
-                      borderRadius: 2,
-                      bgcolor: G[50],
-                      '& fieldset': { borderColor: G[200] },
-                    },
-                  }}
-                  InputProps={{
-                    startAdornment: (
-                      <InputAdornment position="start">
-                        <PasteIcon sx={{ color: G[400] }} />
-                      </InputAdornment>
-                    ),
-                  }}
-                />
-                <Button
-                  variant="outlined"
-                  onClick={handleManualQR}
-                  disabled={!selectedStudent || !manualQrCode.trim()}
-                  sx={{ borderColor: G[200], color: G[600] }}
-                >
-                  Submit
-                </Button>
-              </Box>
-            </Paper>
-          </Grid>
-
-          {/* QR History Section */}
-          <Grid item xs={12}>
-            <Paper elevation={0} sx={{
-              p: 3,
-              borderRadius: 3,
-              bgcolor: '#ffffff',
-              border: `1px solid ${G[200]}`,
-              boxShadow: CARD_SHADOW
-            }}>
-              <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
-                <Typography variant="h6" sx={{ fontWeight: 700, color: G[800] }}>
-                  <HistoryIcon sx={{ mr: 1, verticalAlign: 'middle', color: G[600] }} />
-                  QR Code History
-                </Typography>
-                <Button
-                  startIcon={<RefreshIcon />}
-                  onClick={fetchQRHistory}
-                  size="small"
-                  sx={{ color: G[600] }}
-                >
-                  Refresh
-                </Button>
-              </Box>
-
-              <TableContainer>
-                <Table>
-                  <TableHead sx={{ bgcolor: G[50] }}>
-                    <TableRow>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Session Name</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Generated</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Expires</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Used By</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Status</TableCell>
-                      <TableCell align="right" sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Actions</TableCell>
-                    </TableRow>
-                  </TableHead>
-                  <TableBody>
-                    {qrHistory.map((qr) => {
-                      const statusConfig = getStatusColor(qr.status, qr.expiresAt);
-                      return (
-                        <TableRow key={qr._id} hover>
-                          <TableCell sx={{ color: G[800] }}>{qr.sessionName}</TableCell>
-                          <TableCell sx={{ color: G[600] }}>{new Date(qr.createdAt).toLocaleString()}</TableCell>
-                          <TableCell sx={{ color: G[600] }}>{new Date(qr.expiresAt).toLocaleString()}</TableCell>
-                          <TableCell sx={{ color: G[600] }}>{qr.usedBy?.length || 0} students</TableCell>
-                          <TableCell>
-                            <Chip 
-                              label={statusConfig.label}
-                              size="small"
-                              sx={{ bgcolor: statusConfig.bg, color: statusConfig.color, fontWeight: 600 }}
-                            />
-                          </TableCell>
-                          <TableCell align="right">
-                            <Tooltip title="View Details">
-                              <IconButton size="small" sx={{ color: G[600] }}>
-                                <VisibilityIcon fontSize="small" />
-                              </IconButton>
-                            </Tooltip>
-                          </TableCell>
-                        </TableRow>
-                      );
-                    })}
-                    {qrHistory.length === 0 && (
-                      <TableRow>
-                        <TableCell colSpan={6} align="center" sx={{ py: 6 }}>
-                          <QrCodeIcon sx={{ fontSize: 48, color: G[400], mb: 1 }} />
-                          <Typography sx={{ color: G[600] }}>No QR codes generated yet</Typography>
-                          <Button
-                            variant="text"
-                            startIcon={<QrCodeIcon />}
-                            onClick={() => {
-                              window.scrollTo({ top: 0, behavior: 'smooth' });
-                            }}
-                            sx={{ mt: 1, color: G[600] }}
-                          >
-                            Generate your first QR code
-                          </Button>
-                        </TableCell>
-                      </TableRow>
-                    )}
-                  </TableBody>
-                </Table>
-              </TableContainer>
-            </Paper>
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+            </Box>
+          )}
+        </DialogContent>
+        <DialogActions sx={{ p: 3 }}>
+          <Button onClick={() => setOpenQRDialog(false)} sx={{ color: G[600] }}>
+            Close
+          </Button>
+          {selectedQR?.qrCode && (
+            <Button 
+              variant="contained" 
+              startIcon={<DownloadIcon />}
+              onClick={() => {
+                const link = document.createElement('a');
+                link.href = selectedQR.qrCode;
+                link.download = `qr_${selectedQR.sessionName.replace(/[^a-z0-9]/gi, '_')}.png`;
+                link.click();
+                toast.success('QR Code downloaded');
+              }}
+              sx={{ bgcolor: G[700], '&:hover': { bgcolor: G[800] } }}
+            >
+              Download QR
+            </Button>
+          )}
+        </DialogActions>
+      </Dialog>
+    </WardenLayout>
   );
 };
 

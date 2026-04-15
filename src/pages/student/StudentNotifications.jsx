@@ -377,17 +377,26 @@ const StudentNotifications = () => {
     }
   };
 
-  const handleMarkAllAsRead = async () => {
-    try {
-      await studentService.markAllNotificationsAsRead();
-      
-      setNotifications(notifications.map(notif => ({ ...notif, read: true, isRead: true })));
-      showSnackbar('All notifications marked as read', 'success');
-    } catch (err) {
-      console.error('Error marking all as read:', err);
-      showSnackbar('Failed to mark all as read', 'error');
+  // pages/student/StudentNotifications.jsx - Update handleMarkAllAsRead
+
+const handleMarkAllAsRead = async () => {
+  try {
+    console.log("Marking all notifications as read...");
+    const response = await studentService.markAllNotificationsAsRead();
+    console.log("Mark all response:", response);
+    
+    if (response.success) {
+      setNotifications(prev => prev.map(n => ({ ...n, isRead: true, read: true })));
+      setUnreadCount(0);
+      showSnackbar(response.message || 'All notifications marked as read', 'success');
+    } else {
+      showSnackbar(response.message || 'Failed to mark all as read', 'error');
     }
-  };
+  } catch (err) {
+    console.error("Error marking all as read:", err);
+    showSnackbar(err.response?.data?.message || 'Failed to mark all as read', 'error');
+  }
+};
 
   const handleDeleteNotification = async (id) => {
     try {

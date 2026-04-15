@@ -73,6 +73,19 @@ const ParentMessMenu = () => {
   const [currentWeekStart, setCurrentWeekStart] = useState(startOfWeek(new Date(), { weekStartsOn: 1 }));
   const [hasMenuData, setHasMenuData] = useState(true);
 
+  const getEmptyMenu = () => {
+    const empty = {};
+    DAYS.forEach(day => {
+      empty[day.toLowerCase()] = {
+        breakfast: 'Not available',
+        lunch: 'Not available',
+        snacks: 'Not available',
+        dinner: 'Not available'
+      };
+    });
+    return empty;
+  };
+
   const fetchMessMenu = useCallback(async (showLoading = true) => {
     if (showLoading) {
       setLoading(true);
@@ -85,32 +98,42 @@ const ParentMessMenu = () => {
       console.log('Menu response:', response);
       
       if (response.success) {
-        // Check if we have actual menu data
         const menuData = response.data;
-        const hasData = menuData && Object.keys(menuData).length > 0;
-        setHasMenuData(hasData);
+        console.log('Menu data type:', Array.isArray(menuData) ? 'ARRAY' : 'OBJECT');
         
-        if (hasData) {
-          setMenu(menuData);
-        } else {
-          // Set default empty menu structure
-          const emptyMenu = {};
-          DAYS.forEach(day => {
-            emptyMenu[day.toLowerCase()] = {
-              breakfast: 'Not set',
-              lunch: 'Not set',
-              snacks: 'Not set',
-              dinner: 'Not set'
-            };
+        let formattedMenu = {};
+        
+        // ✅ FIX: Convert array to object if needed
+        if (Array.isArray(menuData) && menuData.length > 0) {
+          menuData.forEach(item => {
+            const dayKey = item.day?.toLowerCase();
+            if (dayKey && item.meals) {
+              formattedMenu[dayKey] = {
+                breakfast: item.meals.breakfast || 'Not set',
+                lunch: item.meals.lunch || 'Not set',
+                snacks: item.meals.snacks || 'Not set',
+                dinner: item.meals.dinner || 'Not set'
+              };
+            }
           });
-          setMenu(emptyMenu);
+          console.log('✅ Converted array to object:', formattedMenu);
+          setHasMenuData(Object.keys(formattedMenu).length > 0);
+          setMenu(formattedMenu);
+        } 
+        else if (menuData && typeof menuData === 'object' && !Array.isArray(menuData)) {
+          const hasData = Object.keys(menuData).length > 0;
+          setHasMenuData(hasData);
+          setMenu(hasData ? menuData : getEmptyMenu());
+        }
+        else {
+          setHasMenuData(false);
+          setMenu(getEmptyMenu());
         }
         
         if (response.timings) {
           setTimings(response.timings);
         }
         
-        // Set default selected day
         if (!selectedDay) {
           const todayIndex = new Date().getDay();
           const dayIndex = todayIndex === 0 ? 6 : todayIndex - 1;
@@ -123,6 +146,7 @@ const ParentMessMenu = () => {
       console.error('Error fetching mess menu:', error);
       toast.error(error.message || 'Failed to load mess menu');
       setHasMenuData(false);
+      setMenu(getEmptyMenu());
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -184,7 +208,6 @@ const ParentMessMenu = () => {
     <ParentLayout>
       <Box sx={{ minHeight: '100vh', bgcolor: greenTheme.bg }}>
         <Container maxWidth="xl" sx={{ py: 4 }}>
-          {/* Header */}
           <Zoom in timeout={500}>
             <Paper sx={{ p: 3, mb: 4, borderRadius: '24px', background: `linear-gradient(135deg, ${greenTheme.primaryDark} 0%, ${greenTheme.primary} 100%)`, color: 'white' }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
@@ -206,7 +229,6 @@ const ParentMessMenu = () => {
             </Paper>
           </Zoom>
 
-          {/* Warning if no menu data */}
           {!hasMenuData && (
             <Alert severity="warning" icon={<WarningIcon />} sx={{ mb: 3, borderRadius: '16px' }}>
               <Typography variant="body1" fontWeight={600}>No menu available</Typography>
@@ -214,7 +236,6 @@ const ParentMessMenu = () => {
             </Alert>
           )}
 
-          {/* Week Navigation */}
           <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
             <Button startIcon={<PrevIcon />} onClick={goToPreviousWeek} sx={{ color: greenTheme.primary }}>Previous Week</Button>
             <Typography variant="subtitle1" sx={{ color: greenTheme.textSecondary, fontWeight: 500 }}>
@@ -224,7 +245,6 @@ const ParentMessMenu = () => {
             <Button endIcon={<NextIcon />} onClick={goToNextWeek} disabled={!isCurrentWeek()} sx={{ color: greenTheme.primary }}>Next Week</Button>
           </Box>
 
-          {/* Day Selector */}
           <Paper sx={{ p: 2, mb: 4, borderRadius: '16px', bgcolor: greenTheme.bgLight, border: `1px solid ${greenTheme.border}` }}>
             <Grid container spacing={1}>
               {DAYS.map((day) => (
@@ -237,7 +257,6 @@ const ParentMessMenu = () => {
             </Grid>
           </Paper>
 
-          {/* Current Day Menu Display */}
           <Grid container spacing={3}>
             <Grid item xs={12} md={8}>
               <Paper sx={{ p: 3, borderRadius: '20px', bgcolor: greenTheme.bgLight, border: `1px solid ${greenTheme.border}` }}>
@@ -286,7 +305,6 @@ const ParentMessMenu = () => {
             </Grid>
           </Grid>
 
-          {/* Info Note */}
           <Paper sx={{ mt: 3, p: 2, bgcolor: greenTheme.primarySoft, borderRadius: '16px' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
               <InfoIcon sx={{ color: greenTheme.primary }} />

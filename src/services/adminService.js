@@ -235,71 +235,51 @@ const adminService = {
   },
 
   // ==================== FEE MANAGEMENT ====================
-  getAllFees: async (filters = {}) => {
-    try {
-      const params = new URLSearchParams();
-      if (filters.status && filters.status !== 'all') params.append('status', filters.status);
-      if (filters.month) params.append('month', filters.month);
-      if (filters.year) params.append('year', filters.year);
-      if (filters.search) params.append('search', filters.search);
-      
-      const response = await api.get(`/admin/fees?${params.toString()}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching fees:', error);
-      throw error;
-    }
-  },
+getAllFees: async () => {
+  try {
+    const response = await api.get('/fees/admin/all-fees');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
 
-  generateFee: async (data) => {
-    try {
-      const response = await api.post('/admin/generate-fee', data);
-      return response.data;
-    } catch (error) {
-      console.error('Error generating fee:', error);
-      throw error;
-    }
-  },
+generateFee: async (data) => {
+  try {
+    const response = await api.post('/fees/admin/generate-fee', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
 
-  generateAllFees: async (data) => {
-    try {
-      const response = await api.post('/admin/generate-all-fees', data);
-      return response.data;
-    } catch (error) {
-      console.error('Error generating all fees:', error);
-      throw error;
-    }
-  },
+generateAllFees: async (data) => {
+  try {
+    const response = await api.post('/fees/admin/generate-all-fees', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
 
-  updateFee: async (feeId, data) => {
-    try {
-      const response = await api.put(`/admin/fees/${feeId}`, data);
-      return response.data;
-    } catch (error) {
-      console.error('Error updating fee:', error);
-      throw error;
-    }
-  },
+deleteFee: async (feeId) => {
+  try {
+    const response = await api.delete(`/fees/admin/fees/${feeId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
 
-  deleteFee: async (feeId) => {
-    try {
-      const response = await api.delete(`/admin/fees/${feeId}`);
-      return response.data;
-    } catch (error) {
-      console.error('Error deleting fee:', error);
-      throw error;
-    }
-  },
-
-  getAnalytics: async (params = {}) => {
-    try {
-      const response = await api.get('/admin/analytics', { params });
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
-      throw error;
-    }
-  },
+getFeeAnalytics: async (year) => {
+  try {
+    const response = await api.get(`/fees/admin/analytics?year=${year || new Date().getFullYear()}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
+ 
 
   // ==================== ATTENDANCE MANAGEMENT ====================
   getWeeklyAttendance: async () => {

@@ -511,25 +511,43 @@ const wardenService = {
   },
 
   // Fee Management
-  getFees: async () => {
-    try {
-      const response = await api.get('/warden/fees');
-      return response.data;
-    } catch (error) {
-      console.error('Error fetching fees:', error);
-      throw error;
-    }
-  },
+  // services/wardenService.js - Add these methods
+// ==================== FEE MANAGEMENT ====================
+getHostelFees: async () => {
+  try {
+    const response = await api.get('/fees/warden/hostel-fees');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
 
-  manualPayment: async (paymentData) => {
-    try {
-      const response = await api.post('/warden/fees/manual-payment', paymentData);
-      return response.data;
-    } catch (error) {
-      console.error('Error processing manual payment:', error);
-      throw error;
-    }
-  },
+manualPayment: async (data) => {
+  try {
+    const response = await api.post('/fees/warden/manual-payment', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
+
+addFine: async (data) => {
+  try {
+    const response = await api.post('/fees/warden/add-fine', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
+
+sendFeeReminder: async (feeId) => {
+  try {
+    const response = await api.post(`/fees/warden/send-reminder/${feeId}`);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
 
   // Reports
   generateReport: async (type, format) => {
@@ -545,5 +563,7 @@ const wardenService = {
     }
   }
 };
+
+
 
 export default wardenService;

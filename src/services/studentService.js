@@ -167,17 +167,20 @@ createComplaint: async (complaintData) => {
     }
   },
 
-  markAllNotificationsAsRead: async () => {
-    try {
-      console.log('Marking all notifications as read...');
-      const response = await api.put('/student/notifications/read-all');
-      console.log('Mark all read response:', response.data);
-      return response.data;
-    } catch (error) {
-      console.error('Error in markAllNotificationsAsRead:', error.response?.data || error.message);
-      throw error;
-    }
-  },
+ // services/studentService.js - Update this method
+
+markAllNotificationsAsRead: async () => {
+  try {
+    console.log('Marking all notifications as read...');
+    const response = await api.put('/student/notifications/read-all');
+    console.log('Mark all read response:', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error in markAllNotificationsAsRead:', error.response?.data || error.message);
+    // Don't throw error, just return success false
+    return { success: false, message: error.response?.data?.message || 'Failed to mark all as read' };
+  }
+},
 
   deleteNotification: async (id) => {
     try {
@@ -379,28 +382,63 @@ cancelVisit: async (id) => {
   },
 
 
-// Add these methods to your existing studentService.js
-
 // ==================== FEES & PAYMENT ====================
+// In studentService.js - Update getMyFees
+// In studentService.js - Update getMyFees
 getMyFees: async () => {
   try {
-    const response = await api.get('/fees/my-fees');
-    return response.data;
+    console.log('📡 Calling getMyFees API...');
+    const response = await api.get('/fees/student/my-fees');
+    console.log('📡 getMyFees response status:', response.status);
+    console.log('📡 getMyFees response data:', response.data);
+    
+    // Always return a valid structure
+    if (response.data && response.data.success) {
+      return {
+        success: true,
+        data: response.data.data || { fees: [], summary: {} }
+      };
+    }
+    
+    // Fallback for any response
+    return {
+      success: false,
+      data: { fees: [], summary: {} }
+    };
   } catch (error) {
-    console.error('Error in getMyFees:', error);
-    throw error.response?.data || { success: false, message: error.message };
+    console.error('❌ Error in getMyFees:', error);
+    console.error('❌ Error response:', error.response?.data);
+    return {
+      success: false,
+      data: { fees: [], summary: {} }
+    };
   }
 },
 
 processPayment: async (paymentData) => {
   try {
-    console.log('Processing payment...', paymentData);
-    const response = await api.post('/fees/process-payment', paymentData);
-    console.log('Payment response:', response.data);
+    const response = await api.post('/fees/student/pay', paymentData);
     return response.data;
   } catch (error) {
-    console.error('Error in processPayment:', error);
-    throw error.response?.data || { success: false, message: error.message };
+    throw error.response?.data || error.message;
+  }
+},
+
+createPayPalOrder: async (data) => {
+  try {
+    const response = await api.post('/fees/student/create-paypal-order', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
+
+capturePayPalPayment: async (data) => {
+  try {
+    const response = await api.post('/fees/student/capture-paypal-payment', data);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
   }
 },
 

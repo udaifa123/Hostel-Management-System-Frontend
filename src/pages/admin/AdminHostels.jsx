@@ -44,8 +44,9 @@ import {
   LocationOn as LocationIcon,
   CheckCircle as CheckCircleIcon
 } from '@mui/icons-material';
-import { useNavigate } from 'react-router-dom';
+// import { useNavigate } from 'react-router-dom';
 import adminService from '../../services/adminService';
+import AdminLayout from '../../components/Layout/AdminLayout';
 import toast from 'react-hot-toast';
 
 // ─── Green Design Tokens ───────────────────────────────────────────────────────
@@ -65,45 +66,48 @@ const G = {
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
 // ─── Stat Card ─────────────────────────────────────────────────────────────────
-const StatCard = ({ label, value, icon: Icon, dark = false }) => (
-  <Card elevation={0} sx={{
-    borderRadius: 3,
-    bgcolor: dark ? G[800] : '#ffffff',
-    border: `1px solid ${dark ? G[700] : G[200]}`,
-    boxShadow: dark ? '0 4px 16px rgba(13,51,24,0.25)' : CARD_SHADOW,
-    height: '100%',
-    transition: 'transform 0.15s, box-shadow 0.15s',
-    '&:hover': { transform: 'translateY(-2px)' }
-  }}>
-    <CardContent sx={{ p: 3 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        <Box>
-          <Typography variant="caption" sx={{
-            color: dark ? G[300] : G[600],
-            fontWeight: 600, fontSize: '0.70rem',
-            letterSpacing: '0.08em', textTransform: 'uppercase',
-            display: 'block', mb: 1
+const StatCard = ({ label, value, icon: Icon, dark = false }) => {
+  const IconComponent = Icon;
+  return (
+    <Card elevation={0} sx={{
+      borderRadius: 3,
+      bgcolor: dark ? G[800] : '#ffffff',
+      border: `1px solid ${dark ? G[700] : G[200]}`,
+      boxShadow: dark ? '0 4px 16px rgba(13,51,24,0.25)' : CARD_SHADOW,
+      height: '100%',
+      transition: 'transform 0.15s, box-shadow 0.15s',
+      '&:hover': { transform: 'translateY(-2px)' }
+    }}>
+      <CardContent sx={{ p: 3 }}>
+        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+          <Box>
+            <Typography variant="caption" sx={{
+              color: dark ? G[300] : G[600],
+              fontWeight: 600, fontSize: '0.70rem',
+              letterSpacing: '0.08em', textTransform: 'uppercase',
+              display: 'block', mb: 1
+            }}>
+              {label}
+            </Typography>
+            <Typography variant="h3" sx={{
+              fontWeight: 700,
+              color: dark ? '#ffffff' : G[800],
+              fontSize: '2.2rem', lineHeight: 1,
+            }}>
+              {value}
+            </Typography>
+          </Box>
+          <Avatar sx={{
+            bgcolor: dark ? G[700] : G[100],
+            width: 48, height: 48, borderRadius: 2,
           }}>
-            {label}
-          </Typography>
-          <Typography variant="h3" sx={{
-            fontWeight: 700,
-            color: dark ? '#ffffff' : G[800],
-            fontSize: '2.2rem', lineHeight: 1,
-          }}>
-            {value}
-          </Typography>
+            <IconComponent sx={{ color: dark ? G[200] : G[600], fontSize: 24 }} />
+          </Avatar>
         </Box>
-        <Avatar sx={{
-          bgcolor: dark ? G[700] : G[100],
-          width: 48, height: 48, borderRadius: 2,
-        }}>
-          <Icon sx={{ color: dark ? G[200] : G[600], fontSize: 24 }} />
-        </Avatar>
-      </Box>
-    </CardContent>
-  </Card>
-);
+      </CardContent>
+    </Card>
+  );
+};
 
 // ─── Dialog TextField style helper ────────────────────────────────────────────
 const dialogField = {
@@ -121,7 +125,7 @@ const dialogField = {
 
 // ─── Main Component ────────────────────────────────────────────────────────────
 const AdminHostels = () => {
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [hostels, setHostels] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -225,7 +229,7 @@ const AdminHostels = () => {
 
   // Convert type to lowercase for backend
   const getTypeForBackend = (typeValue) => {
-    return typeValue.toLowerCase(); // "Girls" → "girls"
+    return typeValue.toLowerCase();
   };
 
   const handleSubmit = async () => {
@@ -264,7 +268,7 @@ const AdminHostels = () => {
         if (response.success) {
           toast.success('Hostel updated successfully');
           handleCloseDialog();
-          await fetchHostels(); // Wait for refresh
+          await fetchHostels();
         } else {
           toast.error(response.message || 'Failed to update hostel');
         }
@@ -273,7 +277,7 @@ const AdminHostels = () => {
         if (response.success) {
           toast.success('Hostel created successfully');
           handleCloseDialog();
-          await fetchHostels(); // Wait for refresh
+          await fetchHostels();
         } else {
           toast.error(response.message || 'Failed to create hostel');
         }
@@ -291,7 +295,7 @@ const AdminHostels = () => {
       const response = await adminService.deleteHostel(id);
       if (response.success) {
         toast.success('Hostel deleted successfully');
-        await fetchHostels(); // Wait for refresh
+        await fetchHostels();
       } else {
         toast.error(response.message || 'Failed to delete hostel');
       }
@@ -446,6 +450,16 @@ const AdminHostels = () => {
               {filteredHostels.length > 0 ? (
                 filteredHostels.map((hostel) => {
                   const occ = Math.round(((hostel.stats?.occupiedRooms || 0) / (hostel.stats?.totalRooms || 1)) * 100);
+                  
+                  // ✅ FIXED: Line 128 - Safe type display with proper case handling
+                  const typeMap = {
+                    girls: 'Girls',
+                    boys: 'Boys',
+                    'co-ed': 'Co-ed'
+                  };
+                  const hostelType = (hostel.type || '').toLowerCase();
+                  const displayType = typeMap[hostelType] || 'Boys';
+                  
                   return (
                     <TableRow key={hostel._id || hostel.id} hover sx={{
                       '&:hover': { bgcolor: G[50] },
@@ -460,7 +474,7 @@ const AdminHostels = () => {
                             <Typography sx={{ color: G[800], fontWeight: 600, fontSize: '0.875rem' }}>
                               {hostel.name}
                             </Typography>
-                            <Chip label={hostel.type} size="small" sx={{
+                            <Chip label={displayType} size="small" sx={{
                               height: 18, fontSize: '0.65rem', fontWeight: 600,
                               bgcolor: G[100], color: G[700], border: `1px solid ${G[200]}`,
                               mt: 0.25

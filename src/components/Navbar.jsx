@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, X, User, LogOut, Bell, ChevronDown, Building2 } from "lucide-react";
-import logo from "../assets/Elegant ILHAM logo design.png";
+import logo from "../assets/ilhamlogo.png";
 import { useAuth } from "../context/AuthContext";
 
 const Navbar = () => {
@@ -32,7 +32,7 @@ const Navbar = () => {
             />
           </Link>
 
-          {/* Desktop Menu - Updated with Hostels */}
+          {/* Desktop Menu */}
           <div className="nav-links">
             <Link to="/" className="nav-link">
               Home
@@ -50,11 +50,8 @@ const Navbar = () => {
           <div className="nav-actions">
             {!isAuthenticated ? (
               <div className="auth-buttons">
-                <Link to="/login" className="btn btn-outline">
-                  Login In
-                </Link>
-                <Link to="/register" className="btn btn-primary">
-                  Get Started
+                <Link to="/login" className="btn btn-primary">
+                  Login
                 </Link>
               </div>
             ) : (
@@ -103,7 +100,7 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu - Updated with Hostels */}
+        {/* Mobile Menu */}
         <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
           <Link to="/" onClick={() => setMenuOpen(false)}>
             Home
@@ -119,14 +116,9 @@ const Navbar = () => {
           <div className="mobile-divider"></div>
 
           {!isAuthenticated ? (
-            <>
-              <Link to="/login" className="mobile-btn" onClick={() => setMenuOpen(false)}>
-                Login In
-              </Link>
-              <Link to="/register" className="mobile-btn mobile-btn-primary" onClick={() => setMenuOpen(false)}>
-                Get Started
-              </Link>
-            </>
+            <Link to="/login" className="mobile-btn mobile-btn-primary" onClick={() => setMenuOpen(false)}>
+              Login
+            </Link>
           ) : (
             <>
               <Link to="/dashboard" className="mobile-btn" onClick={() => setMenuOpen(false)}>
@@ -143,10 +135,10 @@ const Navbar = () => {
       {/* CSS */}
       <style>{`
         :root {
-          --primary: #3b82f6;
-          --primary-dark: #2563eb;
-          --primary-light: #60a5fa;
-          --secondary: #8b5cf6;
+          --primary: #119d09ff;
+          --primary-dark: #0e841fff;
+          --primary-light: #089c34ff;
+          --secondary: #04965bff;
           --success: #10b981;
           --danger: #ef4444;
           --warning: #f59e0b;
@@ -191,7 +183,7 @@ const Navbar = () => {
           justify-content: space-between;
           align-items: center;
           padding: 0.875rem 2rem;
-          height:100px
+          height: 100px;
         }
 
         /* Logo with Image */
@@ -207,9 +199,9 @@ const Navbar = () => {
         }
 
         .logo-image {
-          height: 120px;
+          height: 180px;
           width: auto;
-          max-width: 200px;
+          max-width: 250px;
           object-fit: contain;
         }
 
@@ -296,15 +288,18 @@ const Navbar = () => {
           transform: translateY(-1px);
         }
 
+        /* Green button - Primary */
         .btn-primary {
           background: linear-gradient(135deg, var(--primary), var(--secondary));
           color: white;
-          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+          border: none;
+          box-shadow: 0 4px 12px rgba(17, 157, 9, 0.3);
         }
 
         .btn-primary:hover {
           transform: translateY(-2px);
-          box-shadow: 0 8px 20px rgba(59, 130, 246, 0.4);
+          background: linear-gradient(135deg, var(--primary-dark), var(--primary));
+          box-shadow: 0 8px 20px rgba(17, 157, 9, 0.4);
         }
 
         /* User Menu */
@@ -514,6 +509,7 @@ const Navbar = () => {
           justify-content: center !important;
         }
 
+        /* Green button for mobile */
         .mobile-btn-primary {
           background: linear-gradient(135deg, var(--primary), var(--secondary)) !important;
           color: white !important;

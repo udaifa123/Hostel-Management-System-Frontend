@@ -5,8 +5,6 @@ import {
   Paper,
   Typography,
   Grid,
-  Card,
-  CardContent,
   Accordion,
   AccordionSummary,
   AccordionDetails,
@@ -16,7 +14,6 @@ import {
   ListItem,
   ListItemIcon,
   ListItemText,
-  Chip,
   Alert,
   Snackbar,
   Divider,
@@ -44,12 +41,12 @@ import {
   QuestionAnswer as QuestionAnswerIcon
 } from '@mui/icons-material';
 import { useNavigate } from 'react-router-dom';
-import { useAuth } from '../../context/AuthContext';
+// import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 
 const StudentHelp = () => {
   const navigate = useNavigate();
-  const { user } = useAuth();
+  // const { user } = useAuth();
   const [expanded, setExpanded] = useState(false);
   const [supportMessage, setSupportMessage] = useState('');
   const [supportSubject, setSupportSubject] = useState('');

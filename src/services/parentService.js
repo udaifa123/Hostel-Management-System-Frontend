@@ -87,24 +87,25 @@ const parentService = {
     }
   },
 
-  getChildrenFees: async () => {
-    try {
-      const response = await api.get('/parent/fees');
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
+ // services/parentService.js - Add these methods
+// ==================== FEES ====================
+getChildrenFees: async () => {
+  try {
+    const response = await api.get('/fees/parent/children-fees');
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
 
-  payChildFee: async (paymentData) => {
-    try {
-      const response = await api.post('/parent/pay-fee', paymentData);
-      return response.data;
-    } catch (error) {
-      throw error.response?.data || error.message;
-    }
-  },
-
+payChildFee: async (paymentData) => {
+  try {
+    const response = await api.post('/fees/parent/pay-child-fee', paymentData);
+    return response.data;
+  } catch (error) {
+    throw error.response?.data || error.message;
+  }
+},
   // ==================== NOTIFICATIONS ====================
   getNotifications: async () => {
     try {

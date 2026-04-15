@@ -249,7 +249,7 @@ import Home from "./pages/Home";
 import Hostels from "./pages/Hostels";
 import Login from "./pages/Login";
 import AdminLogin from "./pages/AdminLogin";
-import Register from "./pages/Register";
+// import Register from "./pages/Register";
 import Contact from "./pages/Contact";
 
 // Student Dashboard Pages
@@ -449,13 +449,13 @@ const AppContent = () => {
         </PublicRoute>
       } />
       
-      <Route path="/register" element={
+      {/* <Route path="/register" element={
         <PublicRoute>
           <NavbarOnlyLayout>
             <Register />
           </NavbarOnlyLayout>
         </PublicRoute>
-      } />
+      } /> */}
 
       {/* Student Routes */}
       <Route path="/student/dashboard" element={

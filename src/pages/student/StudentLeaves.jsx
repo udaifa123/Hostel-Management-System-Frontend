@@ -28,7 +28,7 @@ import {
   Divider,
   InputAdornment,
   alpha,
-  useTheme,
+  // useTheme,
   Fade,
   Zoom,
   Tooltip,
@@ -279,7 +279,7 @@ const StyledSelect = styled(Select)({
 });
 
 const StudentLeaves = () => {
-  const muiTheme = useTheme();
+  // const muiTheme = useTheme();
   const [leaves, setLeaves] = useState([]);
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);

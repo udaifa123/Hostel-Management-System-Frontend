@@ -255,9 +255,9 @@ const Login = () => {
                 )}
               </button>
 
-              <div className="register-prompt">
+              {/* <div className="register-prompt">
                 <p>Don't have an account? <Link to="/register">Create Account</Link></p>
-              </div>
+              </div> */}
 
               <div className="admin-redirect">
                 <Link to="/admin/login" className="admin-link">
@@ -268,7 +268,7 @@ const Login = () => {
             </form>
 
             {/* Demo Credentials - UPDATED with actual working credentials */}
-            <div className="demo-credentials">
+            {/* <div className="demo-credentials">
               <p className="demo-title">Demo Credentials:</p>
               <div className="demo-grid">
                 <div className="demo-item">
@@ -284,7 +284,7 @@ const Login = () => {
                   <code>fathima@gmail.com / fathima123</code>
                 </div>
               </div>
-            </div>
+            </div> */}
           </div>
         </div>
       </div>

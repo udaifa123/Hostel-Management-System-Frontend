@@ -67,32 +67,35 @@ const ParentSidebar = () => {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
-          background: 'linear-gradient(180deg, #065f46 0%, #047857 60%, #059669 100%)',
-          color: 'white',
-          borderRight: 'none',
-          boxShadow: '4px 0 24px rgba(6,95,70,0.18)'
+          backgroundColor: '#ffffff',
+          color: '#16a34a',
+          borderRight: '1px solid #e5e7eb',
+          boxShadow: '4px 0 24px rgba(22,163,74,0.08)'
         }
       }}
     >
       <Box sx={{ p: 3, textAlign: 'center' }}>
         <Avatar sx={{
-          width: 60, height: 60, mx: 'auto', mb: 2,
-          background: 'linear-gradient(135deg, #fff, #e8f5e9)',
-          color: '#047857',
+          width: 60,
+          height: 60,
+          mx: 'auto',
+          mb: 2,
+          backgroundColor: '#dcfce7',
+          color: '#16a34a',
           fontWeight: 700,
           fontSize: '1.5rem'
         }}>
           {user?.name?.charAt(0) || 'P'}
         </Avatar>
-        <Typography variant="h6" sx={{ fontWeight: 800, color: '#fff' }}>
+        <Typography variant="h6" sx={{ fontWeight: 800, color: '#15803d' }}>
           {user?.name || 'Parent'}
         </Typography>
-        <Typography variant="caption" sx={{ opacity: 0.85, color: '#6ee7b7' }}>
+        <Typography variant="caption" sx={{ color: '#16a34a', opacity: 0.75 }}>
           {user?.email || 'parent@example.com'}
         </Typography>
       </Box>
 
-      <Divider sx={{ bgcolor: 'rgba(255,255,255,0.12)' }} />
+      <Divider sx={{ bgcolor: '#bbf7d0' }} />
 
       <List sx={{ mt: 2, px: 1 }}>
         {menuItems.map((item) => (
@@ -104,15 +107,20 @@ const ParentSidebar = () => {
                 borderRadius: '10px',
                 mb: 0.5,
                 '&.Mui-selected': {
-                  bgcolor: 'rgba(255,255,255,0.18)',
-                  borderLeft: '4px solid #6ee7b7',
+                  backgroundColor: '#dcfce7',
+                  borderLeft: '4px solid #16a34a',
                   pl: '12px',
-                  '&:hover': { bgcolor: 'rgba(255,255,255,0.22)' }
+                  '&:hover': { backgroundColor: '#bbf7d0' }
                 },
-                '&:hover': { bgcolor: 'rgba(255,255,255,0.10)' }
+                '&:hover': { backgroundColor: '#f0fdf4' }
               }}
             >
-              <ListItemIcon sx={{ color: location.pathname === item.path ? '#6ee7b7' : 'rgba(255,255,255,0.85)', minWidth: 40 }}>
+              <ListItemIcon
+                sx={{
+                  color: location.pathname === item.path ? '#15803d' : '#16a34a',
+                  minWidth: 40
+                }}
+              >
                 {item.icon}
               </ListItemIcon>
               <ListItemText
@@ -120,7 +128,7 @@ const ParentSidebar = () => {
                 primaryTypographyProps={{
                   fontSize: '0.88rem',
                   fontWeight: location.pathname === item.path ? 700 : 500,
-                  color: location.pathname === item.path ? '#fff' : 'rgba(255,255,255,0.85)'
+                  color: location.pathname === item.path ? '#15803d' : '#16a34a'
                 }}
               />
             </ListItemButton>
@@ -132,16 +140,16 @@ const ParentSidebar = () => {
             onClick={handleLogout}
             sx={{
               borderRadius: '10px',
-              bgcolor: 'rgba(239,68,68,0.15)',
-              '&:hover': { bgcolor: 'rgba(239,68,68,0.25)' }
+              backgroundColor: '#fff1f2',
+              '&:hover': { backgroundColor: '#ffe4e6' }
             }}
           >
-            <ListItemIcon sx={{ color: '#fca5a5', minWidth: 40 }}>
+            <ListItemIcon sx={{ color: '#ef4444', minWidth: 40 }}>
               <LogoutIcon />
             </ListItemIcon>
             <ListItemText
               primary="Logout"
-              primaryTypographyProps={{ fontSize: '0.88rem', fontWeight: 600, color: '#fca5a5' }}
+              primaryTypographyProps={{ fontSize: '0.88rem', fontWeight: 600, color: '#ef4444' }}
             />
           </ListItemButton>
         </ListItem>

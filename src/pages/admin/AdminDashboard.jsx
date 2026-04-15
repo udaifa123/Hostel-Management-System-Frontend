@@ -1,27 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import {
-  Container,
+  Box,
   Paper,
   Typography,
   Card,
   CardContent,
-  Box,
   CircularProgress,
   IconButton,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableRow,
   Alert,
   Divider,
   LinearProgress,
   Avatar,
   Chip,
   Tooltip,
-  Button
+  Button,
+  Grid
 } from '@mui/material';
-import Grid from '@mui/material/Grid';
 import {
   Refresh as RefreshIcon,
   School as SchoolIcon,
@@ -51,15 +45,13 @@ import {
   CartesianGrid,
   Tooltip as RechartsTooltip,
   Legend,
-  ResponsiveContainer,
-  Area,
-  AreaChart
+  ResponsiveContainer
 } from 'recharts';
 import adminService from '../../services/adminService';
 import AdminLayout from '../../components/Layout/AdminLayout';
 import toast from 'react-hot-toast';
 
-// Green Design Tokens
+// ─── Green Design Tokens (Same as AdminHostels) ───────────────────────────────
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -73,9 +65,8 @@ const G = {
   50: '#F4FBF5',
 };
 
-const CARD_SHADOW = '0 4px 20px rgba(0, 0, 0, 0.02), 0 1px 2px rgba(0, 0, 0, 0.05)';
+const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ✅ ADD THIS - Monthly Trend Data
 const monthlyTrendData = [
   { month: 'Jan', students: 245, fees: 325000, complaints: 12, leaves: 8 },
   { month: 'Feb', students: 258, fees: 342000, complaints: 10, leaves: 12 },
@@ -91,33 +82,29 @@ const monthlyTrendData = [
   { month: 'Dec', students: 392, fees: 528000, complaints: 10, leaves: 17 },
 ];
 
-// Stat Card Component
-const StatCard = ({ label, value, icon: Icon, trend, trendValue, dark = false, subtext }) => {
+// ─── Stat Card (Same style as AdminHostels) ────────────────────────────────────
+const StatCard = ({ label, value, icon: Icon, dark = false, trend, trendValue, subtext }) => {
   const isDark = dark;
   const isPositive = trend === 'up';
+  const IconComponent = Icon;
   
   return (
     <Card elevation={0} sx={{
       borderRadius: 3,
       bgcolor: isDark ? G[800] : '#ffffff',
       border: `1px solid ${isDark ? G[700] : G[200]}`,
-      boxShadow: isDark ? '0 8px 24px rgba(13,51,24,0.2)' : CARD_SHADOW,
+      boxShadow: isDark ? '0 4px 16px rgba(13,51,24,0.25)' : CARD_SHADOW,
       height: '100%',
-      transition: 'all 0.3s cubic-bezier(0.4, 0, 0.2, 1)',
-      '&:hover': {
-        transform: 'translateY(-4px)',
-        boxShadow: isDark ? '0 12px 32px rgba(13,51,24,0.3)' : '0 12px 32px rgba(30,122,53,0.12)',
-      },
-      position: 'relative',
-      overflow: 'hidden'
+      transition: 'transform 0.15s',
+      '&:hover': { transform: 'translateY(-2px)' }
     }}>
       <CardContent sx={{ p: 3 }}>
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
-          <Box sx={{ flex: 1 }}>
+          <Box>
             <Typography variant="caption" sx={{
               color: isDark ? G[300] : G[600],
               fontWeight: 600,
-              fontSize: '0.7rem',
+              fontSize: '0.70rem',
               letterSpacing: '0.08em',
               textTransform: 'uppercase',
               display: 'block',
@@ -126,10 +113,10 @@ const StatCard = ({ label, value, icon: Icon, trend, trendValue, dark = false, s
               {label}
             </Typography>
             <Typography sx={{
-              fontWeight: 800,
+              fontWeight: 700,
               color: isDark ? '#ffffff' : G[800],
-              fontSize: '2rem',
-              lineHeight: 1.2,
+              fontSize: '2.2rem',
+              lineHeight: 1,
               mb: 0.5
             }}>
               {value}
@@ -162,69 +149,63 @@ const StatCard = ({ label, value, icon: Icon, trend, trendValue, dark = false, s
             height: 48,
             borderRadius: 2,
           }}>
-            <Icon sx={{ color: isDark ? G[200] : G[600], fontSize: 24 }} />
+            <IconComponent sx={{ color: isDark ? G[200] : G[600], fontSize: 24 }} />
           </Avatar>
-        </Box>
-        <Box sx={{
-          position: 'absolute',
-          bottom: 0,
-          right: 0,
-          width: 80,
-          height: 80,
-          opacity: 0.05,
-          transform: 'rotate(15deg)'
-        }}>
-          <Icon sx={{ fontSize: 80 }} />
         </Box>
       </CardContent>
     </Card>
   );
 };
 
-// Mini Metric Card
-const MiniMetricCard = ({ label, value, icon: Icon, color, trend }) => (
-  <Card elevation={0} sx={{
-    borderRadius: 2.5,
-    bgcolor: '#ffffff',
-    border: `1px solid ${G[200]}`,
-    transition: 'all 0.2s ease',
-    '&:hover': { borderColor: G[300], boxShadow: CARD_SHADOW }
-  }}>
-    <CardContent sx={{ p: 2.5 }}>
-      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
-        <Typography variant="caption" sx={{
-          color: G[600],
-          fontWeight: 600,
-          fontSize: '0.68rem',
-          letterSpacing: '0.07em',
-          textTransform: 'uppercase',
-        }}>
-          {label}
-        </Typography>
-        <Avatar sx={{ bgcolor: `${color}10`, width: 28, height: 28, borderRadius: 1.5 }}>
-          <Icon sx={{ color: color, fontSize: 14 }} />
-        </Avatar>
-      </Box>
-      <Typography variant="h4" sx={{ fontWeight: 800, color: G[800], mb: 0.5 }}>
-        {value}
-      </Typography>
-      {trend && (
-        <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
-          {trend > 0 ? (
-            <TrendingUpIcon sx={{ fontSize: 12, color: G[600] }} />
-          ) : (
-            <TrendingDownIcon sx={{ fontSize: 12, color: '#EF4444' }} />
-          )}
-          <Typography variant="caption" sx={{ color: G[500] }}>
-            {trend > 0 ? '+' : ''}{trend}% from last month
+// ─── Mini Metric Card ──────────────────────────────────────────────────────────
+const MiniMetricCard = ({ label, value, icon: Icon, color, trend }) => {
+  const IconComponent = Icon;
+  
+  return (
+    <Card elevation={0} sx={{
+      borderRadius: 2.5,
+      bgcolor: '#ffffff',
+      border: `1px solid ${G[200]}`,
+      boxShadow: CARD_SHADOW,
+      transition: 'transform 0.15s',
+      '&:hover': { transform: 'translateY(-2px)' }
+    }}>
+      <CardContent sx={{ p: 2.5 }}>
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 1 }}>
+          <Typography variant="caption" sx={{
+            color: G[600],
+            fontWeight: 600,
+            fontSize: '0.68rem',
+            letterSpacing: '0.07em',
+            textTransform: 'uppercase',
+          }}>
+            {label}
           </Typography>
+          <Avatar sx={{ bgcolor: `${color}10`, width: 28, height: 28, borderRadius: 1.5 }}>
+            <IconComponent sx={{ color: color, fontSize: 14 }} />
+          </Avatar>
         </Box>
-      )}
-    </CardContent>
-  </Card>
-);
+        <Typography variant="h4" sx={{ fontWeight: 700, color: G[800], mb: 0.5 }}>
+          {value}
+        </Typography>
+        {trend && (
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+            {trend > 0 ? (
+              <TrendingUpIcon sx={{ fontSize: 12, color: G[600] }} />
+            ) : (
+              <TrendingDownIcon sx={{ fontSize: 12, color: '#EF4444' }} />
+            )}
+            <Typography variant="caption" sx={{ color: G[500] }}>
+              {trend > 0 ? '+' : ''}{trend}% from last month
+            </Typography>
+          </Box>
+        )}
+      </CardContent>
+    </Card>
+  );
+};
 
-// Activity Item
+// ─── Activity Item ────────────────────────────────────────────────────────────
 const ActivityItem = ({ activity }) => {
   const getIcon = () => {
     switch(activity.type) {
@@ -235,18 +216,6 @@ const ActivityItem = ({ activity }) => {
       case 'visit': return <VisitIcon sx={{ fontSize: 16 }} />;
       case 'attendance': return <CalendarIcon sx={{ fontSize: 16 }} />;
       default: return <SchoolIcon sx={{ fontSize: 16 }} />;
-    }
-  };
-
-  const getColor = () => {
-    switch(activity.type) {
-      case 'student': return G[600];
-      case 'fee': return '#10B981';
-      case 'complaint': return '#F59E0B';
-      case 'leave': return '#8B5CF6';
-      case 'visit': return '#3B82F6';
-      case 'attendance': return '#EC489A';
-      default: return G[600];
     }
   };
 
@@ -298,7 +267,7 @@ const ActivityItem = ({ activity }) => {
   );
 };
 
-// Main Dashboard Component
+// ─── Main Component ────────────────────────────────────────────────────────────
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
@@ -318,7 +287,6 @@ const AdminDashboard = () => {
       setLoading(true);
       setError(null);
       
-      // Fetch all data in parallel
       const [dashboardRes, weeklyAttendanceRes, weeklyVisitorsRes, attendanceStatsRes, visitorStatsRes] = await Promise.all([
         adminService.getDashboardStats().catch(() => null),
         adminService.getWeeklyAttendance().catch(() => null),
@@ -327,11 +295,9 @@ const AdminDashboard = () => {
         adminService.getVisitorStats().catch(() => null)
       ]);
       
-      // Set dashboard stats
       let dashboardData = dashboardRes?.data || dashboardRes;
       setStats(dashboardData);
       
-      // Set attendance data
       if (weeklyAttendanceRes && weeklyAttendanceRes.data) {
         const attendance = weeklyAttendanceRes.data.data || weeklyAttendanceRes.data;
         setAttendanceData(attendance);
@@ -339,7 +305,6 @@ const AdminDashboard = () => {
         generateMockAttendanceData();
       }
       
-      // Set visitor data
       if (weeklyVisitorsRes && weeklyVisitorsRes.data) {
         const visitors = weeklyVisitorsRes.data.data || weeklyVisitorsRes.data;
         setVisitorData(visitors);
@@ -347,7 +312,6 @@ const AdminDashboard = () => {
         generateMockVisitorData();
       }
       
-      // Set attendance stats
       if (attendanceStatsRes && attendanceStatsRes.data) {
         setAttendanceStats(attendanceStatsRes.data.data || attendanceStatsRes.data);
       } else {
@@ -358,7 +322,6 @@ const AdminDashboard = () => {
         });
       }
       
-      // Set visitor stats
       if (visitorStatsRes && visitorStatsRes.data) {
         setVisitorStats(visitorStatsRes.data.data || visitorStatsRes.data);
       } else {
@@ -376,7 +339,6 @@ const AdminDashboard = () => {
       setError('Failed to load dashboard data');
       toast.error('Failed to load dashboard');
       
-      // Set mock data for fallback
       setStats({
         overview: {
           totalStudents: 392,
@@ -472,107 +434,101 @@ const AdminDashboard = () => {
   const todayVisitors = visitorStats?.today?.total || 18;
 
   if (loading) return (
-    <AdminLayout>
-      <Box sx={{ 
-        display: 'flex', 
-        flexDirection: 'column', 
-        justifyContent: 'center', 
-        alignItems: 'center', 
-        minHeight: '80vh', 
-        gap: 3 
-      }}>
-        <CircularProgress sx={{ color: G[600] }} size={48} thickness={4} />
-        <Typography variant="body1" sx={{ color: G[500], fontWeight: 500 }}>
-          Loading dashboard...
-        </Typography>
-      </Box>
-    </AdminLayout>
+    <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
+      <LinearProgress sx={{ borderRadius: 5, bgcolor: G[100], '& .MuiLinearProgress-bar': { bgcolor: G[600] } }} />
+      <Typography sx={{ textAlign: 'center', mt: 2, color: G[600] }}>Loading dashboard...</Typography>
+    </Box>
   );
 
   if (error) return (
-    <AdminLayout>
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-        <Alert severity="error" sx={{ borderRadius: 3 }}>
-          {error}
-        </Alert>
-      </Container>
-    </AdminLayout>
+    <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
+      <Alert severity="error" sx={{ borderRadius: 3 }}>{error}</Alert>
+    </Box>
   );
 
   return (
-    <AdminLayout>
+    <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
+      {/* Top accent bar - Same as AdminHostels */}
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
-      <Container maxWidth="xl" sx={{ py: 4 }}>
-
-        {/* Header Section */}
-        <Box sx={{ mb: 4 }}>
-          <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
+      <Box sx={{ p: 3 }}>
+        {/* ── Header Section (Same style as AdminHostels) ── */}
+        <Paper elevation={0} sx={{
+          p: 3, mb: 4, borderRadius: 3,
+          bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
+          boxShadow: '0 2px 8px rgba(13,51,24,0.10)',
+          display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 2
+        }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <Avatar sx={{ bgcolor: G[800], width: 46, height: 46, borderRadius: 2 }}>
+              <SchoolIcon sx={{ color: G[200], fontSize: 22 }} />
+            </Avatar>
             <Box>
-              <Typography variant="h4" sx={{ fontWeight: 800, color: G[800], letterSpacing: '-0.02em', mb: 1 }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: G[800], letterSpacing: '-0.01em' }}>
                 Dashboard Overview
               </Typography>
-              <Typography variant="body2" sx={{ color: G[500] }}>
+              <Typography variant="body2" sx={{ color: G[500], mt: 0.25 }}>
                 Welcome back! Here's what's happening with your hostel management system.
               </Typography>
             </Box>
-            <Box sx={{ display: 'flex', gap: 1.5 }}>
-              <Tooltip title="Export Report">
-                <IconButton 
-                  onClick={() => toast.success('Report download started')}
-                  sx={{ bgcolor: '#ffffff', border: `1px solid ${G[200]}`, '&:hover': { bgcolor: G[100], borderColor: G[400] } }}
-                >
-                  <DownloadIcon sx={{ color: G[600] }} />
-                </IconButton>
-              </Tooltip>
-              <Tooltip title="Refresh Data">
-                <IconButton 
-                  onClick={fetchAllData}
-                  sx={{ bgcolor: '#ffffff', border: `1px solid ${G[200]}`, '&:hover': { bgcolor: G[100], borderColor: G[400] } }}
-                >
-                  <RefreshIcon sx={{ color: G[600] }} />
-                </IconButton>
-              </Tooltip>
-            </Box>
           </Box>
-          
-          <Chip
-            icon={<CheckCircleIcon sx={{ fontSize: '14px' }} />}
-            label="System Online"
-            size="small"
-            sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.7rem', border: `1px solid ${G[200]}` }}
-          />
-        </Box>
+          <Box sx={{ display: 'flex', gap: 1.5, alignItems: 'center' }}>
+            <Chip
+              icon={<CheckCircleIcon sx={{ fontSize: '14px !important', color: `${G[600]} !important` }} />}
+              label="System Online"
+              size="small"
+              sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.72rem', border: `1px solid ${G[200]}` }}
+            />
+            <Tooltip title="Export Report">
+              <IconButton 
+                onClick={() => toast.success('Report download started')}
+                sx={{ bgcolor: '#ffffff', border: `1px solid ${G[200]}`, '&:hover': { bgcolor: G[100], borderColor: G[400] } }}
+              >
+                <DownloadIcon sx={{ color: G[600] }} />
+              </IconButton>
+            </Tooltip>
+            <Tooltip title="Refresh Data">
+              <IconButton 
+                onClick={fetchAllData}
+                sx={{ bgcolor: '#ffffff', border: `1px solid ${G[200]}`, '&:hover': { bgcolor: G[100], borderColor: G[400] } }}
+              >
+                <RefreshIcon sx={{ color: G[600] }} />
+              </IconButton>
+            </Tooltip>
+          </Box>
+        </Paper>
 
-        {/* Primary Stat Cards */}
-        <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        {/* ── Primary Stat Cards (Same grid as AdminHostels) ── */}
+        <Grid container spacing={2.5} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Students" value={totalStudents.toLocaleString()} icon={SchoolIcon} dark trend="up" trendValue="12" subtext="Active enrollment" />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Hostels" value={totalHostels} icon={HomeIcon} trend="up" trendValue="5" />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Rooms" value={totalRooms} icon={RoomIcon} />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Active Wardens" value={totalWardens} icon={PersonIcon} />
           </Grid>
         </Grid>
 
-        {/* Occupancy & Quick Metrics */}
+        {/* ── Occupancy & Quick Metrics ── */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
               p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW, height: '100%'
             }}>
               <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2.5 }}>
                 <Typography sx={{ fontWeight: 700, color: G[800], fontSize: '1rem' }}>Overall Occupancy Rate</Typography>
-                <Typography sx={{ fontWeight: 800, color: G[600], fontSize: '1.8rem' }}>{occupancy}%</Typography>
+                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '1.8rem' }}>{occupancy}%</Typography>
               </Box>
               <LinearProgress variant="determinate" value={occupancy} sx={{
                 height: 12, borderRadius: 6, bgcolor: G[200], mb: 2,
-                '& .MuiLinearProgress-bar': { bgcolor: G[600], borderRadius: 6, background: `linear-gradient(90deg, ${G[500]}, ${G[600]})` }
+                '& .MuiLinearProgress-bar': { bgcolor: G[600], borderRadius: 6 }
               }} />
               <Box sx={{ display: 'flex', justifyContent: 'space-between' }}>
                 <Typography variant="caption" sx={{ color: G[500] }}>{getValue(stats, 'overview.occupiedRooms')} occupied rooms</Typography>
@@ -601,22 +557,22 @@ const AdminDashboard = () => {
             </Paper>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
-            <Grid container spacing={3} sx={{ height: '100%' }}>
-              <Grid size={{ xs: 12, sm: 4 }}>
+          <Grid item xs={12} md={6}>
+            <Grid container spacing={3}>
+              <Grid item xs={12} sm={4}>
                 <MiniMetricCard label="Pending Leaves" value={pendingLeaves} icon={DescriptionIcon} color="#F59E0B" trend={-5} />
               </Grid>
-              <Grid size={{ xs: 12, sm: 4 }}>
+              <Grid item xs={12} sm={4}>
                 <MiniMetricCard label="Pending Complaints" value={pendingComplaints} icon={ComplaintIcon} color="#EF4444" trend={12} />
               </Grid>
-              <Grid size={{ xs: 12, sm: 4 }}>
+              <Grid item xs={12} sm={4}>
                 <MiniMetricCard label="Monthly Revenue" value={`₹${(feesCollected / 1000).toFixed(0)}k`} icon={MoneyIcon} color={G[600]} trend={8} />
               </Grid>
               
               {/* Today's Attendance Card */}
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <Paper elevation={0} sx={{
-                  p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW, mt: 1
+                  p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
                 }}>
                   <Typography sx={{ fontWeight: 700, color: G[800], mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                     <CalendarIcon sx={{ color: G[600], fontSize: 20 }} />
@@ -633,10 +589,10 @@ const AdminDashboard = () => {
                     </Box>
                     <Box sx={{ textAlign: 'center', flex: 1 }}>
                       <Typography variant="caption" sx={{ color: G[500] }}>Rate</Typography>
-                      <Typography variant="h5" sx={{ fontWeight: 700, color: G[600] }}>{((todayAttendance / totalStudents) * 100).toFixed(1)}%</Typography>
+                      <Typography variant="h5" sx={{ fontWeight: 700, color: G[600] }}>{totalStudents > 0 ? ((todayAttendance / totalStudents) * 100).toFixed(1) : 0}%</Typography>
                     </Box>
                   </Box>
-                  <LinearProgress variant="determinate" value={(todayAttendance / totalStudents) * 100} sx={{
+                  <LinearProgress variant="determinate" value={totalStudents > 0 ? (todayAttendance / totalStudents) * 100 : 0} sx={{
                     height: 8, borderRadius: 4, bgcolor: G[200],
                     '& .MuiLinearProgress-bar': { bgcolor: G[600], borderRadius: 4 }
                   }} />
@@ -644,9 +600,9 @@ const AdminDashboard = () => {
               </Grid>
 
               {/* Today's Visitors Card */}
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <Paper elevation={0} sx={{
-                  p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW, mt: 1
+                  p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
                 }}>
                   <Typography sx={{ fontWeight: 700, color: G[800], mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
                     <VisitIcon sx={{ color: G[600], fontSize: 20 }} />
@@ -655,18 +611,18 @@ const AdminDashboard = () => {
                   <Box sx={{ display: 'flex', justifyContent: 'space-around', mb: 2 }}>
                     <Box sx={{ textAlign: 'center' }}>
                       <Typography variant="caption" sx={{ color: G[500] }}>Students</Typography>
-                      <Typography variant="h5" sx={{ fontWeight: 700, color: G[600] }}>{visitorData[visitorData.length - 1]?.students || 12}</Typography>
+                      <Typography variant="h5" sx={{ fontWeight: 700, color: G[600] }}>{visitorData.length > 0 ? visitorData[visitorData.length - 1]?.students || 12 : 12}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'center' }}>
                       <Typography variant="caption" sx={{ color: G[500] }}>Parents</Typography>
-                      <Typography variant="h5" sx={{ fontWeight: 700, color: '#3B82F6' }}>{visitorData[visitorData.length - 1]?.parents || 6}</Typography>
+                      <Typography variant="h5" sx={{ fontWeight: 700, color: '#3B82F6' }}>{visitorData.length > 0 ? visitorData[visitorData.length - 1]?.parents || 6 : 6}</Typography>
                     </Box>
                     <Box sx={{ textAlign: 'center' }}>
                       <Typography variant="caption" sx={{ color: G[500] }}>Total</Typography>
                       <Typography variant="h5" sx={{ fontWeight: 700, color: G[600] }}>{todayVisitors}</Typography>
                     </Box>
                   </Box>
-                  <Button fullWidth variant="outlined" size="small" onClick={() => toast.info('View visitor details')} sx={{ borderColor: G[300], color: G[600] }}>
+                  <Button fullWidth variant="outlined" size="small" onClick={() => toast.info('View visitor details')} sx={{ borderColor: G[300], color: G[600], textTransform: 'none' }}>
                     View Visitor Log
                   </Button>
                 </Paper>
@@ -675,9 +631,9 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* Attendance & Visitors Charts */}
+        {/* ── Attendance & Visitors Charts ── */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
               p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
             }}>
@@ -697,7 +653,7 @@ const AdminDashboard = () => {
             </Paper>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
               p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
             }}>
@@ -718,11 +674,11 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* Recent Activities & Monthly Summary */}
+        {/* ── Recent Activities & Monthly Summary ── */}
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
-              p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+              p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
             }}>
               <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
                 <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -740,9 +696,9 @@ const AdminDashboard = () => {
             </Paper>
           </Grid>
 
-          <Grid size={{ xs: 12, md: 6 }}>
+          <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
-              p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+              p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
             }}>
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
                 <WarningIcon sx={{ color: G[600], fontSize: 20 }} />
@@ -750,48 +706,48 @@ const AdminDashboard = () => {
               </Box>
               <Divider sx={{ borderColor: G[100], mb: 3 }} />
               <Grid container spacing={2}>
-                <Grid size={{ xs: 6 }}>
+                <Grid item xs={6}>
                   <Box sx={{ p: 2.5, borderRadius: 2.5, bgcolor: G[50], border: `1px solid ${G[200]}`, textAlign: 'center' }}>
                     <Typography variant="caption" sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', letterSpacing: '0.07em', textTransform: 'uppercase', display: 'block', mb: 1 }}>
                       New Students
                     </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: G[800] }}>{monthlyNewStudents}</Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: G[800] }}>{monthlyNewStudents}</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mt: 1 }}>
                       <ArrowUpIcon sx={{ fontSize: 12, color: G[600] }} />
                       <Typography variant="caption" sx={{ color: G[600] }}>+8%</Typography>
                     </Box>
                   </Box>
                 </Grid>
-                <Grid size={{ xs: 6 }}>
+                <Grid item xs={6}>
                   <Box sx={{ p: 2.5, borderRadius: 2.5, bgcolor: G[50], border: `1px solid ${G[200]}`, textAlign: 'center' }}>
                     <Typography variant="caption" sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', letterSpacing: '0.07em', textTransform: 'uppercase', display: 'block', mb: 1 }}>
                       Fees Collected
                     </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: G[800] }}>₹{(monthlyFeesCollected / 1000).toFixed(0)}k</Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: G[800] }}>₹{(monthlyFeesCollected / 1000).toFixed(0)}k</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mt: 1 }}>
                       <ArrowUpIcon sx={{ fontSize: 12, color: G[600] }} />
                       <Typography variant="caption" sx={{ color: G[600] }}>+12%</Typography>
                     </Box>
                   </Box>
                 </Grid>
-                <Grid size={{ xs: 6 }}>
+                <Grid item xs={6}>
                   <Box sx={{ p: 2.5, borderRadius: 2.5, bgcolor: G[50], border: `1px solid ${G[200]}`, textAlign: 'center' }}>
                     <Typography variant="caption" sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', letterSpacing: '0.07em', textTransform: 'uppercase', display: 'block', mb: 1 }}>
                       Complaints Resolved
                     </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: G[800] }}>{monthlyComplaintsResolved}</Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: G[800] }}>{monthlyComplaintsResolved}</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mt: 1 }}>
                       <ArrowUpIcon sx={{ fontSize: 12, color: G[600] }} />
                       <Typography variant="caption" sx={{ color: G[600] }}>+5%</Typography>
                     </Box>
                   </Box>
                 </Grid>
-                <Grid size={{ xs: 6 }}>
+                <Grid item xs={6}>
                   <Box sx={{ p: 2.5, borderRadius: 2.5, bgcolor: G[50], border: `1px solid ${G[200]}`, textAlign: 'center' }}>
                     <Typography variant="caption" sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', letterSpacing: '0.07em', textTransform: 'uppercase', display: 'block', mb: 1 }}>
                       Leaves Approved
                     </Typography>
-                    <Typography variant="h4" sx={{ fontWeight: 800, color: G[800] }}>{monthlyLeavesApproved}</Typography>
+                    <Typography variant="h4" sx={{ fontWeight: 700, color: G[800] }}>{monthlyLeavesApproved}</Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 0.5, mt: 1 }}>
                       <ArrowDownIcon sx={{ fontSize: 12, color: '#EF4444' }} />
                       <Typography variant="caption" sx={{ color: '#EF4444' }}>-3%</Typography>
@@ -803,7 +759,7 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* Monthly Trend Chart */}
+        {/* ── Monthly Trend Chart ── */}
         <Paper elevation={0} sx={{
           mt: 4, p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
         }}>
@@ -825,9 +781,8 @@ const AdminDashboard = () => {
             </LineChart>
           </ResponsiveContainer>
         </Paper>
-
-      </Container>
-    </AdminLayout>
+      </Box>
+    </Box>
   );
 };
 
