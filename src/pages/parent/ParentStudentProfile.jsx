@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Box,
-  Container,
   Paper,
   Typography,
   Grid,
@@ -40,10 +39,8 @@ import {
   TrendingUp as TrendingUpIcon
 } from '@mui/icons-material';
 import parentService from '../../services/parentService';
-import ParentLayout from '../../components/Layout/ParentLayout';
 import toast from 'react-hot-toast';
 
-// ─── Color Tokens (Same as ParentAttendance) ───────────────────────────────
 const G = {
   900: '#064e3b',
   800: '#065f46',
@@ -57,7 +54,6 @@ const G = {
   50: '#ecfdf5',
 };
 
-// ─── Info Card (Same style as ParentAttendance summary cards) ──────────────
 const InfoCard = ({ icon, label, value, color = G[800] }) => (
   <Card
     elevation={0}
@@ -67,7 +63,8 @@ const InfoCard = ({ icon, label, value, color = G[800] }) => (
       bgcolor: '#fff',
       boxShadow: '0 4px 16px rgba(6,95,70,0.07)',
       transition: 'transform 0.2s',
-      '&:hover': { transform: 'translateY(-3px)' }
+      '&:hover': { transform: 'translateY(-3px)' },
+      height: '100%'
     }}
   >
     <CardContent sx={{ textAlign: 'center', py: 2.5, '&:last-child': { pb: 2.5 } }}>
@@ -94,7 +91,6 @@ const InfoCard = ({ icon, label, value, color = G[800] }) => (
   </Card>
 );
 
-// ─── Styled TextField ────────────────────────────────────────────
 const GreenField = (props) => (
   <TextField
     {...props}
@@ -113,7 +109,6 @@ const GreenField = (props) => (
   />
 );
 
-// ─── Component ──────────────────────────────────────────────────
 const ParentStudentProfile = () => {
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
@@ -204,216 +199,203 @@ const ParentStudentProfile = () => {
     }
   };
 
-  // ── Loading ──
   if (loading) {
     return (
-      <ParentLayout>
-        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-          <CircularProgress sx={{ color: G[600] }} thickness={5} />
-        </Box>
-      </ParentLayout>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f0fdf4' }}>
+        <CircularProgress sx={{ color: G[600] }} thickness={5} />
+      </Box>
     );
   }
 
-  // ── No Student ──
   if (!student) {
     return (
-      <ParentLayout>
-        <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4', py: 4 }}>
-          <Container maxWidth="xl">
-            <Alert severity="info" sx={{ borderRadius: '16px' }}>
-              No student linked to your account. Please contact the admin.
-            </Alert>
-          </Container>
-        </Box>
-      </ParentLayout>
+      <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4', p: 3 }}>
+        <Alert severity="info" sx={{ borderRadius: '16px' }}>
+          No student linked to your account. Please contact the admin.
+        </Alert>
+      </Box>
     );
   }
 
-  // ── Render ──
   return (
-    <ParentLayout>
-      <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-        {/* Header - Same as ParentAttendance */}
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
+      {/* Header */}
+      <Paper
+        elevation={0}
+        sx={{
+          borderRadius: 0,
+          background: 'linear-gradient(135deg, #065f46 0%, #059669 100%)',
+          color: 'white',
+          py: 2,
+          px: 3,
+          boxShadow: '0 4px 20px rgba(6,95,70,0.2)'
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+          <IconButton
+            color="inherit"
+            onClick={() => navigate('/parent/dashboard')}
+            sx={{ bgcolor: 'rgba(255,255,255,0.15)', '&:hover': { bgcolor: 'rgba(255,255,255,0.25)' } }}
+          >
+            <ArrowBackIcon />
+          </IconButton>
+          <Typography variant="h5" sx={{ fontWeight: 700 }}>
+            Student Profile
+          </Typography>
+        </Box>
+      </Paper>
+
+      {/* Main Content */}
+      <Box sx={{ p: 3 }}>
+        {error && (
+          <Alert severity="info" sx={{ mb: 3, borderRadius: '16px', fontSize: '0.82rem' }}>{error}</Alert>
+        )}
+
+        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
-            borderRadius: 0,
-            background: 'linear-gradient(135deg, #065f46 0%, #059669 100%)',
-            color: 'white',
-            py: 2,
-            boxShadow: '0 4px 20px rgba(6,95,70,0.2)'
+            p: 3,
+            mb: 4,
+            borderRadius: '16px',
+            border: '1.5px solid #d1fae5',
+            bgcolor: '#fff',
+            boxShadow: '0 4px 16px rgba(6,95,70,0.07)'
           }}
         >
-          <Container maxWidth="xl">
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-              <IconButton
-                color="inherit"
-                onClick={() => navigate('/parent/dashboard')}
-                sx={{ bgcolor: 'rgba(255,255,255,0.15)', '&:hover': { bgcolor: 'rgba(255,255,255,0.25)' } }}
-              >
-                <ArrowBackIcon />
-              </IconButton>
-              <Typography variant="h5" sx={{ fontWeight: 700 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
+            <Avatar
+              sx={{
+                width: 64,
+                height: 64,
+                bgcolor: G[100],
+                color: G[600],
+                fontSize: '1.6rem',
+                fontWeight: 700,
+                border: `2px solid ${G[300]}`
+              }}
+            >
+              {student.name?.charAt(0)?.toUpperCase() || 'S'}
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="overline" sx={{ color: G[600], letterSpacing: '0.12em', fontSize: '0.7rem', fontWeight: 600 }}>
                 Student Profile
               </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: G[800], lineHeight: 1.2, mb: 0.5 }}>
+                {student.name}
+              </Typography>
+              <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', mt: 1 }}>
+                <Chip
+                  icon={<SchoolIcon sx={{ fontSize: '14px !important' }} />}
+                  label={student.course || 'Course N/A'}
+                  size="small"
+                  sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.72rem' }}
+                />
+                <Chip
+                  icon={<BadgeIcon sx={{ fontSize: '14px !important' }} />}
+                  label={`Semester ${student.semester || 'N/A'}`}
+                  size="small"
+                  sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.72rem' }}
+                />
+                <Chip
+                  icon={<HomeIcon sx={{ fontSize: '14px !important' }} />}
+                  label={student.hostelName || 'Hostel N/A'}
+                  size="small"
+                  sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.72rem' }}
+                />
+              </Box>
             </Box>
-          </Container>
+            <Button
+              variant="contained"
+              startIcon={<EditIcon sx={{ fontSize: 16 }} />}
+              onClick={() => setEditDialogOpen(true)}
+              sx={{
+                bgcolor: G[600],
+                fontWeight: 700,
+                fontSize: '0.82rem',
+                textTransform: 'none',
+                borderRadius: '10px',
+                px: 3,
+                py: 1,
+                boxShadow: '0 2px 8px rgba(6,95,70,0.3)',
+                '&:hover': { bgcolor: G[700] },
+              }}
+            >
+              Edit Profile
+            </Button>
+          </Box>
         </Paper>
 
-        <Container maxWidth="xl" sx={{ py: 4 }}>
+        {/* Personal Information */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <TrendingUpIcon sx={{ color: G[600], fontSize: 20 }} />
+          <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            Personal Information
+          </Typography>
+        </Box>
 
-          {error && (
-            <Alert severity="info" sx={{ mb: 3, borderRadius: '16px', fontSize: '0.82rem' }}>{error}</Alert>
-          )}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {[
+            { icon: <PersonIcon />, label: 'Full Name', value: student.name },
+            { icon: <EmailIcon />, label: 'Email Address', value: student.email },
+            { icon: <PhoneIcon />, label: 'Phone Number', value: student.phoneNumber },
+            { icon: <PhoneIcon />, label: 'Emergency Contact', value: student.emergencyContact },
+            { icon: <LocationIcon />, label: 'Address', value: student.address },
+          ].map((item, idx) => (
+            <Grid item xs={12} sm={6} md={3} key={idx}>
+              <InfoCard icon={item.icon} label={item.label} value={item.value} />
+            </Grid>
+          ))}
+        </Grid>
 
-          {/* ── Welcome Card (Same style as ParentAttendance filter card) ── */}
-          <Paper
-            elevation={0}
-            sx={{
-              p: 3,
-              mb: 4,
-              borderRadius: '16px',
-              border: '1.5px solid #d1fae5',
-              bgcolor: '#fff',
-              boxShadow: '0 4px 16px rgba(6,95,70,0.07)'
-            }}
-          >
-            <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
-              <Avatar
-                sx={{
-                  width: 64,
-                  height: 64,
-                  bgcolor: G[100],
-                  color: G[600],
-                  fontSize: '1.6rem',
-                  fontWeight: 700,
-                  border: `2px solid ${G[300]}`
-                }}
-              >
-                {student.name?.charAt(0)?.toUpperCase() || 'S'}
-              </Avatar>
-              <Box sx={{ flex: 1 }}>
-                <Typography variant="overline" sx={{ color: G[600], letterSpacing: '0.12em', fontSize: '0.7rem', fontWeight: 600 }}>
-                  Student Profile
-                </Typography>
-                <Typography variant="h5" sx={{ fontWeight: 800, color: G[800], lineHeight: 1.2, mb: 0.5 }}>
-                  {student.name}
-                </Typography>
-                <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, flexWrap: 'wrap', mt: 1 }}>
-                  <Chip
-                    icon={<SchoolIcon sx={{ fontSize: '14px !important' }} />}
-                    label={student.course || 'Course N/A'}
-                    size="small"
-                    sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.72rem' }}
-                  />
-                  <Chip
-                    icon={<BadgeIcon sx={{ fontSize: '14px !important' }} />}
-                    label={`Semester ${student.semester || 'N/A'}`}
-                    size="small"
-                    sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.72rem' }}
-                  />
-                  <Chip
-                    icon={<HomeIcon sx={{ fontSize: '14px !important' }} />}
-                    label={student.hostelName || 'Hostel N/A'}
-                    size="small"
-                    sx={{ bgcolor: G[100], color: G[700], fontWeight: 600, fontSize: '0.72rem' }}
-                  />
-                </Box>
-              </Box>
-              <Button
-                variant="contained"
-                startIcon={<EditIcon sx={{ fontSize: 16 }} />}
-                onClick={() => setEditDialogOpen(true)}
-                sx={{
-                  bgcolor: G[600],
-                  fontWeight: 700,
-                  fontSize: '0.82rem',
-                  textTransform: 'none',
-                  borderRadius: '10px',
-                  px: 3,
-                  py: 1,
-                  boxShadow: '0 2px 8px rgba(6,95,70,0.3)',
-                  '&:hover': { bgcolor: G[700] },
-                }}
-              >
-                Edit Profile
-              </Button>
-            </Box>
-          </Paper>
+        <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-          {/* ── Personal Information Section (Same style as ParentAttendance summary cards) ── */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-            <TrendingUpIcon sx={{ color: G[600], fontSize: 20 }} />
-            <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Personal Information
-            </Typography>
-          </Box>
+        {/* Academic Information */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <SchoolIcon sx={{ color: G[600], fontSize: 20 }} />
+          <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            Academic Information
+          </Typography>
+        </Box>
 
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            {[
-              { icon: <PersonIcon />, label: 'Full Name', value: student.name },
-              { icon: <EmailIcon />, label: 'Email Address', value: student.email },
-              { icon: <PhoneIcon />, label: 'Phone Number', value: student.phoneNumber },
-              { icon: <PhoneIcon />, label: 'Emergency Contact', value: student.emergencyContact },
-              { icon: <LocationIcon />, label: 'Address', value: student.address },
-            ].map((item, idx) => (
-              <Grid item xs={12} sm={6} md={4} key={idx}>
-                <InfoCard icon={item.icon} label={item.label} value={item.value} />
-              </Grid>
-            ))}
-          </Grid>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          {[
+            { icon: <SchoolIcon />, label: 'Course', value: student.course },
+            { icon: <SchoolIcon />, label: 'Semester', value: student.semester },
+            { icon: <BadgeIcon />, label: 'Enrollment Number', value: student.enrollmentNumber },
+            { icon: <BadgeIcon />, label: 'Registration No.', value: student.registrationNumber },
+          ].map((item, idx) => (
+            <Grid item xs={12} sm={6} md={3} key={idx}>
+              <InfoCard icon={item.icon} label={item.label} value={item.value} />
+            </Grid>
+          ))}
+        </Grid>
 
-          <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
+        <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-          {/* ── Academic Information Section ── */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-            <SchoolIcon sx={{ color: G[600], fontSize: 20 }} />
-            <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Academic Information
-            </Typography>
-          </Box>
+        {/* Hostel Information */}
+        <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
+          <HomeIcon sx={{ color: G[600], fontSize: 20 }} />
+          <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+            Hostel Information
+          </Typography>
+        </Box>
 
-          <Grid container spacing={3} sx={{ mb: 4 }}>
-            {[
-              { icon: <SchoolIcon />, label: 'Course', value: student.course },
-              { icon: <SchoolIcon />, label: 'Semester', value: student.semester },
-              { icon: <BadgeIcon />, label: 'Enrollment Number', value: student.enrollmentNumber },
-              { icon: <BadgeIcon />, label: 'Registration No.', value: student.registrationNumber },
-            ].map((item, idx) => (
-              <Grid item xs={12} sm={6} md={3} key={idx}>
-                <InfoCard icon={item.icon} label={item.label} value={item.value} />
-              </Grid>
-            ))}
-          </Grid>
-
-          <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
-
-          {/* ── Hostel Information Section ── */}
-          <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
-            <HomeIcon sx={{ color: G[600], fontSize: 20 }} />
-            <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
-              Hostel Information
-            </Typography>
-          </Box>
-
-          <Grid container spacing={3}>
-            {[
-              { icon: <HomeIcon />, label: 'Hostel Name', value: student.hostelName },
-              { icon: <RoomIcon />, label: 'Room Number', value: student.roomNumber },
-              { icon: <FloorIcon />, label: 'Floor', value: student.floor },
-              { icon: <HomeIcon />, label: 'Room Type', value: student.roomType },
-            ].map((item, idx) => (
-              <Grid item xs={12} sm={6} md={3} key={idx}>
-                <InfoCard icon={item.icon} label={item.label} value={item.value} />
-              </Grid>
-            ))}
-          </Grid>
-
-        </Container>
+        <Grid container spacing={3}>
+          {[
+            { icon: <HomeIcon />, label: 'Hostel Name', value: student.hostelName },
+            { icon: <RoomIcon />, label: 'Room Number', value: student.roomNumber },
+            { icon: <FloorIcon />, label: 'Floor', value: student.floor },
+            { icon: <HomeIcon />, label: 'Room Type', value: student.roomType },
+          ].map((item, idx) => (
+            <Grid item xs={12} sm={6} md={3} key={idx}>
+              <InfoCard icon={item.icon} label={item.label} value={item.value} />
+            </Grid>
+          ))}
+        </Grid>
       </Box>
 
-      {/* ── Edit Dialog ── */}
+      {/* Edit Dialog */}
       <Dialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}
@@ -487,7 +469,6 @@ const ParentStudentProfile = () => {
         </DialogActions>
       </Dialog>
 
-      {/* ── Snackbar ── */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -502,7 +483,7 @@ const ParentStudentProfile = () => {
           {snackbar.message}
         </Alert>
       </Snackbar>
-    </ParentLayout>
+    </Box>
   );
 };
 

@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Typography,
@@ -27,22 +28,23 @@ import {
   Warning as WarningIcon,
   Info as InfoIcon,
   Close as CloseIcon,
-  Refresh as RefreshIcon
+  Refresh as RefreshIcon,
+  ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
 import parentService from '../../services/parentService';
 
-// ==================== Green Design Tokens ====================
+// ==================== Green Design Tokens (Same as ParentStudentProfile) ====================
 const G = {
-  900: '#0D3318',
-  800: '#1A5C2A',
-  700: '#1E7A35',
-  600: '#2E9142',
-  500: '#3AAF51',
-  400: '#5DC470',
-  300: '#8FD9A0',
-  200: '#C1EDCA',
-  100: '#E4F7E8',
-  50: '#F4FBF5',
+  900: '#064e3b',
+  800: '#065f46',
+  700: '#047857',
+  600: '#059669',
+  500: '#10b981',
+  400: '#34d399',
+  300: '#6ee7b7',
+  200: '#bbf7d0',
+  100: '#d1fae5',
+  50: '#ecfdf5',
 };
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
@@ -57,6 +59,7 @@ const categoryConfig = {
 };
 
 const ParentNotices = () => {
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [notices, setNotices] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -114,111 +117,160 @@ const ParentNotices = () => {
 
   if (loading) {
     return (
-      <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-        <LinearProgress sx={{ borderRadius: 5, bgcolor: G[100], '& .MuiLinearProgress-bar': { bgcolor: G[600] } }} />
-        <Typography sx={{ textAlign: 'center', mt: 2, color: G[600] }}>Loading notices...</Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f0fdf4' }}>
+        <LinearProgress sx={{ width: '50%', borderRadius: 5, bgcolor: G[100], '& .MuiLinearProgress-bar': { bgcolor: G[600] } }} />
       </Box>
     );
   }
 
   return (
-    <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
-      <Box sx={{ height: 4, bgcolor: G[600] }} />
-
-      <Box sx={{ p: 3 }}>
-        {/* Header */}
-        <Paper elevation={0} sx={{
-          p: 3,
-          mb: 4,
-          borderRadius: 3,
-          bgcolor: '#ffffff',
-          border: `1px solid ${G[200]}`,
-          boxShadow: '0 2px 8px rgba(13,51,24,0.10)',
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'center',
-          flexWrap: 'wrap',
-          gap: 2
-        }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
+      {/* Header */}
+      <Paper
+        elevation={0}
+        sx={{
+          borderRadius: 0,
+          background: 'linear-gradient(135deg, #065f46 0%, #059669 100%)',
+          color: 'white',
+          py: 2,
+          px: 3,
+          boxShadow: '0 4px 20px rgba(6,95,70,0.2)'
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar sx={{ bgcolor: G[800], width: 46, height: 46, borderRadius: 2 }}>
-              <AnnouncementIcon sx={{ color: G[200], fontSize: 22 }} />
-            </Avatar>
-            <Box>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: G[800], letterSpacing: '-0.01em' }}>
-                Notice Board
-              </Typography>
-              <Typography variant="body2" sx={{ color: G[500], mt: 0.25 }}>
-                Important announcements and updates from the hostel
-              </Typography>
-            </Box>
+            <IconButton
+              color="inherit"
+              onClick={() => navigate('/parent/dashboard')}
+              sx={{ bgcolor: 'rgba(255,255,255,0.15)', '&:hover': { bgcolor: 'rgba(255,255,255,0.25)' } }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h5" sx={{ fontWeight: 700 }}>
+              Notice Board
+            </Typography>
           </Box>
           <Button
             variant="outlined"
             startIcon={<RefreshIcon />}
             onClick={fetchNotices}
             sx={{
-              borderColor: G[200],
-              color: G[600],
-              '&:hover': { borderColor: G[400], bgcolor: G[50] }
+              borderColor: 'rgba(255,255,255,0.5)',
+              color: '#fff',
+              textTransform: 'none',
+              '&:hover': { borderColor: '#fff', bgcolor: 'rgba(255,255,255,0.1)' }
             }}
           >
             Refresh
           </Button>
+        </Box>
+      </Paper>
+
+      {/* Main Content */}
+      <Box sx={{ p: 3 }}>
+        {/* Welcome Card */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 4,
+            borderRadius: '16px',
+            border: '1.5px solid #d1fae5',
+            bgcolor: '#fff',
+            boxShadow: '0 4px 16px rgba(6,95,70,0.07)'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
+            <Avatar
+              sx={{
+                width: 64,
+                height: 64,
+                bgcolor: G[100],
+                color: G[600],
+                fontSize: '1.6rem',
+                fontWeight: 700,
+                border: `2px solid ${G[300]}`
+              }}
+            >
+              <AnnouncementIcon sx={{ fontSize: 32 }} />
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="overline" sx={{ color: G[600], letterSpacing: '0.12em', fontSize: '0.7rem', fontWeight: 600 }}>
+                Information Hub
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: G[800], lineHeight: 1.2, mb: 0.5 }}>
+                Notice Board
+              </Typography>
+              <Typography sx={{ color: G[500], fontSize: '0.85rem', mt: 0.3 }}>
+                Important announcements and updates from the hostel
+              </Typography>
+            </Box>
+          </Box>
         </Paper>
 
         {/* Stats Cards */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card elevation={0} sx={{
-              borderRadius: 3,
-              bgcolor: G[800],
-              border: `1px solid ${G[700]}`,
-              boxShadow: '0 4px 16px rgba(13,51,24,0.25)',
-              height: '100%',
-            }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: G[800],
+                border: `1px solid ${G[700]}`,
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[300], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Total Notices
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '1.8rem' }}>
                   {notices.length}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card elevation={0} sx={{
-              borderRadius: 3,
-              bgcolor: '#ffffff',
-              border: `1px solid ${G[200]}`,
-              boxShadow: CARD_SHADOW,
-              height: '100%',
-            }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: '#fff',
+                border: '1.5px solid #d1fae5',
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Pinned
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '1.8rem' }}>
                   {notices.filter(n => n.pinned).length}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card elevation={0} sx={{
-              borderRadius: 3,
-              bgcolor: '#ffffff',
-              border: `1px solid ${G[200]}`,
-              boxShadow: CARD_SHADOW,
-              height: '100%',
-            }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: '#fff',
+                border: '1.5px solid #d1fae5',
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   This Week
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '1.8rem' }}>
                   {notices.filter(n => {
                     const weekAgo = new Date();
                     weekAgo.setDate(weekAgo.getDate() - 7);
@@ -229,18 +281,22 @@ const ParentNotices = () => {
             </Card>
           </Grid>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
-            <Card elevation={0} sx={{
-              borderRadius: 3,
-              bgcolor: '#ffffff',
-              border: `1px solid ${G[200]}`,
-              boxShadow: CARD_SHADOW,
-              height: '100%',
-            }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: '#fff',
+                border: '1.5px solid #d1fae5',
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Categories
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '1.8rem' }}>
                   {Object.keys(categoryConfig).length}
                 </Typography>
               </CardContent>
@@ -249,7 +305,17 @@ const ParentNotices = () => {
         </Grid>
 
         {/* Search and Filter */}
-        <Paper sx={{ p: 2, mb: 3, borderRadius: 2, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
+        <Paper
+          elevation={0}
+          sx={{
+            p: 2,
+            mb: 3,
+            borderRadius: '16px',
+            bgcolor: '#fff',
+            border: '1.5px solid #d1fae5',
+            boxShadow: '0 4px 16px rgba(6,95,70,0.07)'
+          }}
+        >
           <Grid container spacing={2} alignItems="center">
             <Grid size={{ xs: 12, md: 8 }}>
               <TextField
@@ -274,6 +340,7 @@ const ParentNotices = () => {
                 }}
                 sx={{
                   '& .MuiOutlinedInput-root': {
+                    borderRadius: '10px',
                     '& fieldset': { borderColor: G[200] },
                     '&:hover fieldset': { borderColor: G[400] },
                     '&.Mui-focused fieldset': { borderColor: G[600] },
@@ -290,6 +357,8 @@ const ParentNotices = () => {
                 sx={{
                   borderColor: G[200],
                   color: G[600],
+                  textTransform: 'none',
+                  borderRadius: '10px',
                   '&:hover': { borderColor: G[400], bgcolor: G[50] }
                 }}
               >
@@ -308,17 +377,17 @@ const ParentNotices = () => {
             sx: {
               bgcolor: '#ffffff',
               border: `1px solid ${G[200]}`,
-              borderRadius: 2,
+              borderRadius: '12px',
               boxShadow: CARD_SHADOW,
               minWidth: 180
             }
           }}
         >
-          <MenuItem onClick={() => { setFilterCategory('all'); setFilterAnchorEl(null); }}>
+          <MenuItem onClick={() => { setFilterCategory('all'); setFilterAnchorEl(null); }} sx={{ borderRadius: '8px' }}>
             <Typography sx={{ color: G[700] }}>All Categories</Typography>
           </MenuItem>
           {Object.entries(categoryConfig).map(([key, config]) => (
-            <MenuItem key={key} onClick={() => { setFilterCategory(key); setFilterAnchorEl(null); }}>
+            <MenuItem key={key} onClick={() => { setFilterCategory(key); setFilterAnchorEl(null); }} sx={{ borderRadius: '8px' }}>
               <Box display="flex" alignItems="center" gap={1}>
                 {config.icon}
                 <Typography sx={{ color: G[700] }}>{config.label}</Typography>
@@ -329,9 +398,21 @@ const ParentNotices = () => {
 
         {/* Notices Grid */}
         {sortedNotices.length === 0 ? (
-          <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 3, border: `1px solid ${G[200]}` }}>
-            <AnnouncementIcon sx={{ fontSize: 80, color: G[400], mb: 2 }} />
-            <Typography variant="h6" sx={{ color: G[600], mb: 1 }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 8,
+              textAlign: 'center',
+              borderRadius: '16px',
+              border: '1.5px solid #d1fae5',
+              bgcolor: '#fff',
+              boxShadow: '0 4px 16px rgba(6,95,70,0.07)'
+            }}
+          >
+            <Avatar sx={{ width: 80, height: 80, bgcolor: G[100], color: G[400], mx: 'auto', mb: 2 }}>
+              <AnnouncementIcon sx={{ fontSize: 40 }} />
+            </Avatar>
+            <Typography variant="h6" sx={{ color: G[800], mb: 1 }}>
               No Notices Available
             </Typography>
             <Typography variant="body2" sx={{ color: G[500] }}>
@@ -348,16 +429,16 @@ const ParentNotices = () => {
                   <Card
                     elevation={0}
                     sx={{
-                      borderRadius: 3,
-                      bgcolor: '#ffffff',
-                      border: `1px solid ${notice.pinned ? G[400] : G[200]}`,
+                      borderRadius: '16px',
+                      bgcolor: '#fff',
+                      border: `1.5px solid ${notice.pinned ? G[400] : G[200]}`,
                       boxShadow: notice.pinned ? `0 4px 12px ${alpha(G[600], 0.15)}` : CARD_SHADOW,
                       transition: 'all 0.2s ease',
                       height: '100%',
                       display: 'flex',
                       flexDirection: 'column',
                       '&:hover': {
-                        transform: 'translateY(-2px)',
+                        transform: 'translateY(-3px)',
                         boxShadow: `0 8px 24px ${alpha(G[600], 0.12)}`,
                         borderColor: G[300]
                       },
@@ -369,7 +450,7 @@ const ParentNotices = () => {
                       <Box
                         sx={{
                           position: 'absolute',
-                          top: -8,
+                          top: -10,
                           right: 16,
                           bgcolor: G[600],
                           color: '#ffffff',
@@ -390,11 +471,11 @@ const ParentNotices = () => {
                     )}
                     <CardContent sx={{ p: 3, flex: 1 }}>
                       <Box display="flex" alignItems="center" gap={1.5} mb={2}>
-                        <Avatar sx={{ bgcolor: category.bg, color: category.color, width: 48, height: 48 }}>
+                        <Avatar sx={{ bgcolor: category.bg, color: category.color, width: 48, height: 48, borderRadius: '12px' }}>
                           {category.icon}
                         </Avatar>
                         <Box>
-                          <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], lineHeight: 1.2 }}>
+                          <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], lineHeight: 1.2, fontSize: '1rem' }}>
                             {notice.title}
                           </Typography>
                           <Box display="flex" alignItems="center" gap={1} mt={0.5}>
@@ -406,7 +487,8 @@ const ParentNotices = () => {
                                 color: category.color,
                                 fontWeight: 600,
                                 fontSize: '0.7rem',
-                                height: 22
+                                height: 22,
+                                borderRadius: '6px'
                               }}
                             />
                             <Box display="flex" alignItems="center" gap={0.5}>

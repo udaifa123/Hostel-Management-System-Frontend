@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import {
   Box,
   Paper,
@@ -16,6 +17,7 @@ import {
   IconButton,
   Tooltip,
   LinearProgress,
+  CircularProgress,  // ← ADD THIS IMPORT
   FormControl,
   InputLabel,
   Select,
@@ -36,25 +38,25 @@ import {
   Cancel as CancelIcon,
   Phone as PhoneIcon,
   CalendarToday as CalendarIcon,
-  Person as PersonIcon
+  Person as PersonIcon,
+  ArrowBack as ArrowBackIcon
 } from '@mui/icons-material';
-import { useAuth } from '../../context/AuthContext';
 import parentService from '../../services/parentService';
-import ParentLayout from '../../components/Layout/ParentLayout';
 import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
 
+// ─── Color Tokens (Same as ParentStudentProfile) ───────────────────────────────
 const G = {
-  900: '#0D3318',
-  800: '#1A5C2A',
-  700: '#1E7A35',
-  600: '#2E9142',
-  500: '#3AAF51',
-  400: '#5DC470',
-  300: '#8FD9A0',
-  200: '#C1EDCA',
-  100: '#E4F7E8',
-  50: '#F4FBF5',
+  900: '#064e3b',
+  800: '#065f46',
+  700: '#047857',
+  600: '#059669',
+  500: '#10b981',
+  400: '#34d399',
+  300: '#6ee7b7',
+  200: '#bbf7d0',
+  100: '#d1fae5',
+  50: '#ecfdf5',
 };
 
 const getStatusConfig = (status) => {
@@ -69,7 +71,7 @@ const getStatusConfig = (status) => {
 };
 
 const ParentVisits = () => {
-  const { user } = useAuth();
+  const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [visits, setVisits] = useState([]);
   const [openDialog, setOpenDialog] = useState(false);
@@ -209,26 +211,37 @@ const ParentVisits = () => {
 
   if (loading) {
     return (
-      <ParentLayout>
-        <Box sx={{ p: 3 }}>
-          <LinearProgress sx={{ borderRadius: 5, bgcolor: G[100], '& .MuiLinearProgress-bar': { bgcolor: G[600] } }} />
-          <Typography sx={{ textAlign: 'center', mt: 2, color: G[600] }}>Loading visits...</Typography>
-        </Box>
-      </ParentLayout>
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f0fdf4' }}>
+        <CircularProgress sx={{ color: G[600] }} thickness={5} />
+      </Box>
     );
   }
 
   return (
-    <ParentLayout>
-      <Box sx={{ p: 3 }}>
-        {/* Header */}
-        <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
-          <Box>
-            <Typography variant="h4" sx={{ fontWeight: 700, color: G[800] }}>
+    <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
+      {/* Header */}
+      <Paper
+        elevation={0}
+        sx={{
+          borderRadius: 0,
+          background: 'linear-gradient(135deg, #065f46 0%, #059669 100%)',
+          color: 'white',
+          py: 2,
+          px: 3,
+          boxShadow: '0 4px 20px rgba(6,95,70,0.2)'
+        }}
+      >
+        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: 2 }}>
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+            <IconButton
+              color="inherit"
+              onClick={() => navigate('/parent/dashboard')}
+              sx={{ bgcolor: 'rgba(255,255,255,0.15)', '&:hover': { bgcolor: 'rgba(255,255,255,0.25)' } }}
+            >
+              <ArrowBackIcon />
+            </IconButton>
+            <Typography variant="h5" sx={{ fontWeight: 700 }}>
               Visit Requests
-            </Typography>
-            <Typography variant="body2" sx={{ color: G[500], mt: 0.5 }}>
-              Request and track visits to your child
             </Typography>
           </Box>
           <Box display="flex" gap={2}>
@@ -236,7 +249,12 @@ const ParentVisits = () => {
               variant="outlined"
               startIcon={<RefreshIcon />}
               onClick={fetchVisits}
-              sx={{ borderColor: G[200], color: G[600] }}
+              sx={{ 
+                borderColor: 'rgba(255,255,255,0.5)', 
+                color: '#fff',
+                textTransform: 'none',
+                '&:hover': { borderColor: '#fff', bgcolor: 'rgba(255,255,255,0.1)' }
+              }}
             >
               Refresh
             </Button>
@@ -244,70 +262,166 @@ const ParentVisits = () => {
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() => setOpenDialog(true)}
-              sx={{ bgcolor: G[700], '&:hover': { bgcolor: G[800] } }}
+              sx={{ 
+                bgcolor: '#fff', 
+                color: G[600], 
+                textTransform: 'none',
+                '&:hover': { bgcolor: G[50] }
+              }}
             >
               Request Visit
             </Button>
           </Box>
         </Box>
+      </Paper>
+
+      {/* Main Content */}
+      <Box sx={{ p: 3 }}>
+        {/* Welcome Card */}
+        <Paper
+          elevation={0}
+          sx={{
+            p: 3,
+            mb: 4,
+            borderRadius: '16px',
+            border: '1.5px solid #d1fae5',
+            bgcolor: '#fff',
+            boxShadow: '0 4px 16px rgba(6,95,70,0.07)'
+          }}
+        >
+          <Box sx={{ display: 'flex', alignItems: 'center', gap: 2.5, flexWrap: 'wrap' }}>
+            <Avatar
+              sx={{
+                width: 64,
+                height: 64,
+                bgcolor: G[100],
+                color: G[600],
+                fontSize: '1.6rem',
+                fontWeight: 700,
+                border: `2px solid ${G[300]}`
+              }}
+            >
+              <PersonIcon sx={{ fontSize: 32 }} />
+            </Avatar>
+            <Box sx={{ flex: 1 }}>
+              <Typography variant="overline" sx={{ color: G[600], letterSpacing: '0.12em', fontSize: '0.7rem', fontWeight: 600 }}>
+                Parent Portal
+              </Typography>
+              <Typography variant="h5" sx={{ fontWeight: 800, color: G[800], lineHeight: 1.2, mb: 0.5 }}>
+                Visit Requests
+              </Typography>
+              <Typography sx={{ color: G[500], fontSize: '0.85rem', mt: 0.3 }}>
+                Request and track visits to your child
+              </Typography>
+            </Box>
+          </Box>
+        </Paper>
 
         {/* Stats Cards */}
-        <Grid container spacing={2.5} sx={{ mb: 4 }}>
+        <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={2.4}>
-            <Card sx={{ borderRadius: 3, bgcolor: G[800] }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: G[800],
+                border: `1px solid ${G[700]}`,
+                height: '100%'
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[300], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Total Requests
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '1.8rem' }}>
                   {stats.total}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: '#fff',
+                border: '1.5px solid #d1fae5',
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Pending
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: '#F59E0B', fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#F59E0B', fontSize: '1.8rem' }}>
                   {stats.pending}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: '#fff',
+                border: '1.5px solid #d1fae5',
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Approved
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: '#10B981', fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#10B981', fontSize: '1.8rem' }}>
                   {stats.approved}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: '#fff',
+                border: '1.5px solid #d1fae5',
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Rejected
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: '#EF4444', fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#EF4444', fontSize: '1.8rem' }}>
                   {stats.rejected}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
           <Grid item xs={12} sm={6} md={2.4}>
-            <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-              <CardContent sx={{ p: 3 }}>
+            <Card
+              elevation={0}
+              sx={{
+                borderRadius: '16px',
+                bgcolor: '#fff',
+                border: '1.5px solid #d1fae5',
+                height: '100%',
+                transition: 'transform 0.2s',
+                '&:hover': { transform: 'translateY(-3px)' }
+              }}
+            >
+              <CardContent sx={{ p: 2.5 }}>
                 <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
                   Cancelled
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: '#6B7280', fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#6B7280', fontSize: '1.8rem' }}>
                   {stats.cancelled}
                 </Typography>
               </CardContent>
@@ -317,19 +431,31 @@ const ParentVisits = () => {
 
         {/* Visits List */}
         {visits.length === 0 ? (
-          <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 3, border: `1px solid ${G[200]}` }}>
-            <AddIcon sx={{ fontSize: 80, color: G[400], mb: 2 }} />
-            <Typography variant="h6" sx={{ color: G[600], mb: 1 }}>
+          <Paper
+            elevation={0}
+            sx={{
+              p: 8,
+              textAlign: 'center',
+              borderRadius: '16px',
+              border: '1.5px solid #d1fae5',
+              bgcolor: '#fff',
+              boxShadow: '0 4px 16px rgba(6,95,70,0.07)'
+            }}
+          >
+            <Avatar sx={{ width: 80, height: 80, bgcolor: G[100], color: G[400], mx: 'auto', mb: 2 }}>
+              <AddIcon sx={{ fontSize: 40 }} />
+            </Avatar>
+            <Typography variant="h6" sx={{ color: G[800], mb: 1 }}>
               No Visit Requests Yet
             </Typography>
-            <Typography variant="body2" sx={{ color: G[500], mb: 2 }}>
+            <Typography variant="body2" sx={{ color: G[500], mb: 3 }}>
               Click the button above to request a visit to your child
             </Typography>
             <Button
               variant="contained"
               startIcon={<AddIcon />}
               onClick={() => setOpenDialog(true)}
-              sx={{ bgcolor: G[700] }}
+              sx={{ bgcolor: G[600], textTransform: 'none', '&:hover': { bgcolor: G[700] } }}
             >
               Request a Visit
             </Button>
@@ -344,12 +470,15 @@ const ParentVisits = () => {
               return (
                 <Grid item xs={12} md={6} key={visit._id || visit.id}>
                   <Card 
+                    elevation={0}
                     sx={{ 
-                      borderRadius: 3, 
-                      border: `1px solid ${G[200]}`,
+                      borderRadius: '16px', 
+                      border: '1.5px solid #d1fae5',
+                      bgcolor: '#fff',
                       transition: 'all 0.2s ease',
-                      '&:hover': { transform: 'translateY(-2px)', boxShadow: 3 },
-                      opacity: visit.status === 'cancelled' ? 0.7 : 1
+                      '&:hover': { transform: 'translateY(-3px)', borderColor: G[400] },
+                      opacity: visit.status === 'cancelled' ? 0.7 : 1,
+                      height: '100%'
                     }}
                   >
                     <CardContent sx={{ p: 3 }}>
@@ -407,21 +536,21 @@ const ParentVisits = () => {
                       </Grid>
 
                       {visit.wardenRemark && (
-                        <Box sx={{ mt: 2, p: 1.5, bgcolor: G[50], borderRadius: 2 }}>
+                        <Box sx={{ mt: 2, p: 1.5, bgcolor: G[50], borderRadius: '12px' }}>
                           <Typography variant="caption" sx={{ color: G[500] }}>📝 Warden Remark</Typography>
                           <Typography variant="body2" sx={{ color: G[600] }}>{visit.wardenRemark}</Typography>
                         </Box>
                       )}
 
                       {visit.rejectionReason && (
-                        <Box sx={{ mt: 2, p: 1.5, bgcolor: alpha('#EF4444', 0.1), borderRadius: 2 }}>
+                        <Box sx={{ mt: 2, p: 1.5, bgcolor: alpha('#EF4444', 0.1), borderRadius: '12px' }}>
                           <Typography variant="caption" sx={{ color: '#EF4444', fontWeight: 600 }}>❌ Rejection Reason</Typography>
                           <Typography variant="body2" sx={{ color: '#EF4444' }}>{visit.rejectionReason}</Typography>
                         </Box>
                       )}
 
                       {visit.status === 'approved' && (
-                        <Box sx={{ mt: 2, p: 2, bgcolor: alpha('#10B981', 0.1), borderRadius: 2 }}>
+                        <Box sx={{ mt: 2, p: 2, bgcolor: alpha('#10B981', 0.1), borderRadius: '12px' }}>
                           <Typography variant="caption" sx={{ color: '#10B981', fontWeight: 600, display: 'flex', alignItems: 'center', gap: 0.5 }}>
                             <CheckCircleIcon sx={{ fontSize: 14 }} />
                             Visit Approved
@@ -483,14 +612,15 @@ const ParentVisits = () => {
           fullWidth
           PaperProps={{
             sx: {
-              borderRadius: 3,
+              borderRadius: '16px',
               bgcolor: '#ffffff',
               border: `1px solid ${G[200]}`,
+              overflow: 'hidden'
             }
           }}
         >
-          <Box sx={{ height: 4, bgcolor: G[600], borderRadius: '12px 12px 0 0' }} />
-          <DialogTitle sx={{ pt: 2.5, pb: 1.5 }}>
+          <Box sx={{ height: 4, bgcolor: G[600] }} />
+          <DialogTitle sx={{ pt: 2.5, pb: 1.5, px: 3 }}>
             <Box display="flex" alignItems="center" gap={1.5}>
               <Avatar sx={{ bgcolor: G[800], width: 38, height: 38, borderRadius: 1.5 }}>
                 <AddIcon sx={{ color: G[200] }} />
@@ -501,7 +631,7 @@ const ParentVisits = () => {
             </Box>
           </DialogTitle>
           <Divider sx={{ borderColor: G[100] }} />
-          <DialogContent sx={{ pt: 3 }}>
+          <DialogContent sx={{ pt: 3, px: 3 }}>
             <Grid container spacing={2.5}>
               <Grid item xs={12}>
                 <TextField
@@ -525,11 +655,12 @@ const ParentVisits = () => {
               </Grid>
               <Grid item xs={12} sm={6}>
                 <FormControl fullWidth error={!!errors.relation}>
-                  <InputLabel>Relation *</InputLabel>
+                  <InputLabel sx={{ color: G[600] }}>Relation *</InputLabel>
                   <Select
                     value={formData.relation}
                     onChange={(e) => setFormData({ ...formData, relation: e.target.value })}
                     label="Relation *"
+                    sx={{ borderRadius: 2, bgcolor: G[50] }}
                   >
                     <MenuItem value="Father">Father</MenuItem>
                     <MenuItem value="Mother">Mother</MenuItem>
@@ -641,7 +772,7 @@ const ParentVisits = () => {
                 />
               </Grid>
             </Grid>
-            <Alert severity="info" sx={{ mt: 3, borderRadius: 2 }}>
+            <Alert severity="info" sx={{ mt: 3, borderRadius: '12px', bgcolor: G[50] }}>
               <Typography variant="body2">
                 <strong>Note:</strong> Your request will be reviewed by the warden. Approval may take up to 24 hours.
                 Please carry a valid ID proof during your visit.
@@ -649,15 +780,24 @@ const ParentVisits = () => {
             </Alert>
           </DialogContent>
           <Divider sx={{ borderColor: G[100] }} />
-          <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
-            <Button onClick={() => setOpenDialog(false)} sx={{ color: G[600], border: `1px solid ${G[200]}` }}>
+          <DialogActions sx={{ px: 3, py: 2.5, gap: 1 }}>
+            <Button 
+              onClick={() => setOpenDialog(false)} 
+              sx={{ 
+                borderColor: G[300], 
+                color: G[700],
+                borderRadius: '10px',
+                textTransform: 'none',
+                '&:hover': { borderColor: G[500], bgcolor: G[50] }
+              }}
+            >
               Cancel
             </Button>
             <Button 
               variant="contained" 
               onClick={handleSubmit}
               disabled={submitting}
-              sx={{ bgcolor: G[700], '&:hover': { bgcolor: G[800] } }}
+              sx={{ bgcolor: G[600], textTransform: 'none', borderRadius: '10px', '&:hover': { bgcolor: G[700] } }}
             >
               {submitting ? 'Submitting...' : 'Submit Request'}
             </Button>
@@ -665,8 +805,14 @@ const ParentVisits = () => {
         </Dialog>
 
         {/* View Details Dialog */}
-        <Dialog open={!!selectedVisit} onClose={() => setSelectedVisit(null)} maxWidth="sm" fullWidth>
-          <DialogTitle sx={{ bgcolor: G[800], color: 'white' }}>
+        <Dialog 
+          open={!!selectedVisit} 
+          onClose={() => setSelectedVisit(null)} 
+          maxWidth="sm" 
+          fullWidth
+          PaperProps={{ sx: { borderRadius: '16px', overflow: 'hidden' } }}
+        >
+          <DialogTitle sx={{ background: 'linear-gradient(135deg, #065f46 0%, #059669 100%)', color: 'white', py: 2.5, px: 3 }}>
             Visit Details
             <IconButton
               onClick={() => setSelectedVisit(null)}
@@ -675,7 +821,7 @@ const ParentVisits = () => {
               <CloseIcon />
             </IconButton>
           </DialogTitle>
-          <DialogContent sx={{ pt: 3 }}>
+          <DialogContent dividers sx={{ bgcolor: '#f0fdf4', borderColor: '#d1fae5', p: 3 }}>
             {selectedVisit && (
               <Box>
                 <Grid container spacing={2}>
@@ -722,25 +868,30 @@ const ParentVisits = () => {
                   {selectedVisit.wardenRemark && (
                     <Grid item xs={12}>
                       <Typography variant="subtitle2" color="textSecondary">Warden Remark</Typography>
-                      <Paper sx={{ p: 2, bgcolor: G[50], mt: 0.5 }}>{selectedVisit.wardenRemark}</Paper>
+                      <Paper sx={{ p: 2, bgcolor: G[50], mt: 0.5, borderRadius: '12px' }}>{selectedVisit.wardenRemark}</Paper>
                     </Grid>
                   )}
                   {selectedVisit.rejectionReason && (
                     <Grid item xs={12}>
                       <Typography variant="subtitle2" color="textSecondary">Rejection Reason</Typography>
-                      <Paper sx={{ p: 2, bgcolor: alpha('#EF4444', 0.1), mt: 0.5 }}>{selectedVisit.rejectionReason}</Paper>
+                      <Paper sx={{ p: 2, bgcolor: alpha('#EF4444', 0.1), mt: 0.5, borderRadius: '12px' }}>{selectedVisit.rejectionReason}</Paper>
                     </Grid>
                   )}
                 </Grid>
               </Box>
             )}
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setSelectedVisit(null)}>Close</Button>
+          <DialogActions sx={{ bgcolor: '#f0fdf4', borderTop: '1px solid #d1fae5', px: 3, py: 2 }}>
+            <Button 
+              onClick={() => setSelectedVisit(null)} 
+              sx={{ bgcolor: G[600], color: '#fff', borderRadius: '10px', textTransform: 'none', '&:hover': { bgcolor: G[700] } }}
+            >
+              Close
+            </Button>
           </DialogActions>
         </Dialog>
       </Box>
-    </ParentLayout>
+    </Box>
   );
 };
 
