@@ -114,13 +114,13 @@ const ParentDashboard = () => {
       bg: dashboardData?.pendingLeaves > 0 ? '#fef9c3' : '#d1fae5',
       icon: <DescriptionIcon sx={{ fontSize: 20, color: dashboardData?.pendingLeaves > 0 ? '#f59e0b' : G[600] }} />,
     },
-    {
-      label: 'Active Complaints',
-      value: dashboardData?.activeComplaints || 0,
-      color: dashboardData?.activeComplaints > 0 ? '#ef4444' : G[600],
-      bg: dashboardData?.activeComplaints > 0 ? '#fee2e2' : '#d1fae5',
-      icon: <ComplaintIcon sx={{ fontSize: 20, color: dashboardData?.activeComplaints > 0 ? '#ef4444' : G[600] }} />,
-    },
+    // {
+    //   label: 'Active Complaints',
+    //   value: dashboardData?.activeComplaints || 0,
+    //   color: dashboardData?.activeComplaints > 0 ? '#ef4444' : G[600],
+    //   bg: dashboardData?.activeComplaints > 0 ? '#fee2e2' : '#d1fae5',
+    //   icon: <ComplaintIcon sx={{ fontSize: 20, color: dashboardData?.activeComplaints > 0 ? '#ef4444' : G[600] }} />,
+    // },
     {
       label: 'Notifications',
       value: unreadCount,

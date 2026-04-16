@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import {
   Drawer,
   List,
@@ -13,7 +13,6 @@ import {
   Divider,
   Badge,
   CircularProgress,
-  // alpha,
   Button
 } from '@mui/material';
 import {
@@ -33,29 +32,55 @@ import {
   ExitToApp as ExitToAppIcon
 } from '@mui/icons-material';
 import { useNavigate, useLocation } from 'react-router-dom';
-import studentService from '../services/studentService';
 import { useAuth } from '../context/AuthContext';
 import toast from 'react-hot-toast';
 
+const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 const drawerWidth = 300;
 
 const StudentSidebar = () => {
   const navigate = useNavigate();
   const location = useLocation();
-  const { logout, user } = useAuth();
+  const { logout, user, token } = useAuth();
   const [profile, setProfile] = useState(null);
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    fetchProfile();
-    fetchUnreadCount();
-  }, []);
+  // Fetch unread notifications count
+  const fetchUnreadCount = useCallback(async () => {
+    if (!token) return;
+    
+    try {
+      const response = await fetch(`${API_URL}/student/notifications`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      
+      let notificationsList = [];
+      if (Array.isArray(data)) {
+        notificationsList = data;
+      } else if (data?.data && Array.isArray(data.data)) {
+        notificationsList = data.data;
+      } else if (data?.notifications && Array.isArray(data.notifications)) {
+        notificationsList = data.notifications;
+      }
+      
+      const unread = notificationsList.filter(n => !n.isRead && !n.read).length;
+      setUnreadCount(unread);
+    } catch (error) {
+      console.error('Failed to fetch notifications:', error);
+    }
+  }, [token]);
 
   const fetchProfile = async () => {
+    if (!token) return;
+    
     try {
-      const data = await studentService.getProfile();
-      setProfile(data);
+      const response = await fetch(`${API_URL}/student/profile`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const data = await response.json();
+      setProfile(data?.data || data);
     } catch (error) {
       console.error('Failed to fetch profile:', error);
     } finally {
@@ -63,15 +88,45 @@ const StudentSidebar = () => {
     }
   };
 
-  const fetchUnreadCount = async () => {
-    try {
-      const notifications = await studentService.getNotifications();
-      const unread = notifications.filter(n => !n.read).length;
-      setUnreadCount(unread);
-    } catch (error) {
-      console.error('Failed to fetch notifications:', error);
+  useEffect(() => {
+    if (token) {
+      fetchProfile();
+      fetchUnreadCount();
+    } else {
+      setLoading(false);
     }
-  };
+  }, [token, fetchUnreadCount]);
+
+  // Listen for storage events to update badge when notifications are read
+  useEffect(() => {
+    const handleStorageChange = () => {
+      fetchUnreadCount();
+    };
+    
+    const handleNotificationRead = () => {
+      fetchUnreadCount();
+    };
+    
+    window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('notificationRead', handleNotificationRead);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('notificationRead', handleNotificationRead);
+    };
+  }, [fetchUnreadCount]);
+
+  // Refresh unread count when coming back to dashboard
+  useEffect(() => {
+    if (location.pathname === '/student/notifications') {
+      // Small delay to allow notification page to mark as read
+      setTimeout(() => {
+        fetchUnreadCount();
+      }, 500);
+    } else {
+      fetchUnreadCount();
+    }
+  }, [location.pathname, fetchUnreadCount]);
 
   const menuItems = [
     { text: 'Dashboard', icon: <DashboardIcon />, path: '/student/dashboard' },
@@ -81,13 +136,26 @@ const StudentSidebar = () => {
     { text: 'Fees', icon: <FeesIcon />, path: '/student/fees' },
     { 
       text: 'Notifications', 
-      icon: (
+      icon: unreadCount > 0 ? (
         <Badge 
           badgeContent={unreadCount} 
           color="error"
+          sx={{
+            '& .MuiBadge-badge': {
+              backgroundColor: '#ef4444',
+              color: 'white',
+              fontWeight: 'bold',
+              fontSize: '0.7rem',
+              minWidth: '18px',
+              height: '18px',
+              borderRadius: '9px'
+            }
+          }}
         >
           <NotificationIcon />
         </Badge>
+      ) : (
+        <NotificationIcon />
       ), 
       path: '/student/notifications' 
     },
@@ -112,6 +180,29 @@ const StudentSidebar = () => {
     return name.split(' ').map(word => word[0]).join('').toUpperCase().slice(0, 2);
   };
 
+  if (loading) {
+    return (
+      <Drawer
+        variant="permanent"
+        sx={{
+          width: drawerWidth,
+          flexShrink: 0,
+          '& .MuiDrawer-paper': {
+            width: drawerWidth,
+            boxSizing: 'border-box',
+            background: '#FFFFFF',
+            borderRight: '1px solid #E2E8F0',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          },
+        }}
+      >
+        <CircularProgress sx={{ color: '#10B981' }} />
+      </Drawer>
+    );
+  }
+
   return (
     <Drawer
       variant="permanent"
@@ -121,7 +212,6 @@ const StudentSidebar = () => {
         '& .MuiDrawer-paper': {
           width: drawerWidth,
           boxSizing: 'border-box',
-          // Theme Change: Clean White Background
           background: '#FFFFFF',
           borderRight: '1px solid #E2E8F0',
           display: 'flex',
@@ -171,22 +261,18 @@ const StudentSidebar = () => {
           }}
         >
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            {loading ? (
-              <CircularProgress size={40} sx={{ color: '#10B981', mr: 2 }} />
-            ) : (
-              <Avatar 
-                src={profile?.profilePicture} 
-                sx={{ 
-                  background: '#10B981',
-                  width: 50, 
-                  height: 50,
-                  mr: 2,
-                  fontWeight: 'bold',
-                }}
-              >
-                {getInitials(profile?.name || user?.name)}
-              </Avatar>
-            )}
+            <Avatar 
+              src={profile?.profileImage || profile?.profilePicture} 
+              sx={{ 
+                background: '#10B981',
+                width: 50, 
+                height: 50,
+                mr: 2,
+                fontWeight: 'bold',
+              }}
+            >
+              {getInitials(profile?.name || user?.name)}
+            </Avatar>
             <Box sx={{ flex: 1 }}>
               <Typography variant="subtitle2" sx={{ color: '#1E293B', fontWeight: 700 }}>
                 {profile?.name || user?.name || 'User'}
@@ -194,7 +280,7 @@ const StudentSidebar = () => {
               <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                 <HomeIcon sx={{ fontSize: 12, color: '#10B981' }} />
                 <Typography variant="caption" sx={{ color: '#64748B', fontWeight: 600 }}>
-                  Room: {profile?.roomNumber || 'N/A'}
+                  Room: {profile?.roomNumber || profile?.roomNo || 'N/A'}
                 </Typography>
               </Box>
             </Box>

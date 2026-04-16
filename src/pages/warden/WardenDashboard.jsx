@@ -36,7 +36,6 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
-import { format, subDays, eachDayOfInterval } from 'date-fns';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
@@ -68,12 +67,43 @@ const WardenDashboard = () => {
     recentStudents: []
   });
 
-  // Generate weekly attendance data from real stats or use mock
   const [attendanceData, setAttendanceData] = useState([]);
 
   useEffect(() => {
     fetchDashboardData();
   }, []);
+
+  // Helper function to extract student name from various possible structures
+  const extractStudentName = (item) => {
+    console.log('Extracting name from:', item);
+    
+    // Try to get student name from complaint/leave object
+    if (item.student) {
+      // If student has user object with name
+      if (item.student.user && item.student.user.name) {
+        return item.student.user.name;
+      }
+      // If student has direct name property
+      if (item.student.name) {
+        return item.student.name;
+      }
+      // If student has studentName property
+      if (item.student.studentName) {
+        return item.student.studentName;
+      }
+      // If student is a string ID, we need to fetch it
+      if (typeof item.student === 'string') {
+        return 'Student ID: ' + item.student.slice(-6);
+      }
+    }
+    
+    // Direct properties on the item
+    if (item.studentName) return item.studentName;
+    if (item.name) return item.name;
+    if (item.user?.name) return item.user.name;
+    
+    return 'Unknown Student';
+  };
 
   const fetchDashboardData = async () => {
     try {
@@ -85,58 +115,122 @@ const WardenDashboard = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
-      console.log('Dashboard response:', response.data);
+      console.log('Dashboard response:', JSON.stringify(response.data, null, 2));
       
       if (response.data.success) {
-        setDashboardData(response.data.data);
+        const data = response.data.data;
         
-        // Generate weekly attendance data based on current stats
-        generateWeeklyAttendanceData(response.data.data.stats.attendancePercentage || 75);
+        // Process complaints to extract student names
+        const processedComplaints = (data.recentComplaints || []).map(complaint => {
+          const studentName = extractStudentName(complaint);
+          console.log(`Complaint "${complaint.title}" - Student: ${studentName}`);
+          return {
+            ...complaint,
+            displayStudentName: studentName
+          };
+        });
+        
+        // Process leaves to extract student names
+        const processedLeaves = (data.recentLeaves || []).map(leave => {
+          const studentName = extractStudentName(leave);
+          console.log(`Leave request - Student: ${studentName}`);
+          return {
+            ...leave,
+            displayStudentName: studentName
+          };
+        });
+        
+        setDashboardData({
+          ...data,
+          recentComplaints: processedComplaints,
+          recentLeaves: processedLeaves
+        });
+        
+        generateWeeklyAttendanceData(data.stats.attendancePercentage || 75);
       } else {
         setError(response.data.message || 'Failed to load dashboard');
+        setMockData();
       }
     } catch (error) {
       console.error('Error fetching dashboard:', error);
+      console.error('Error response:', error.response?.data);
       setError(error.response?.data?.message || 'Failed to load dashboard data');
-      
-      // Set mock data for demo
-      setDashboardData({
-        stats: {
-          totalStudents: 125,
-          totalRooms: 60,
-          occupiedRooms: 48,
-          availableRooms: 12,
-          pendingComplaints: 5,
-          pendingLeaves: 3,
-          visitorsToday: 2,
-          todayPresent: 98,
-          todayAbsent: 27,
-          attendancePercentage: 78
-        },
-        warden: {
-          name: 'Warden',
-          email: 'warden@hostel.com',
-          hostel: { name: 'Main Hostel' }
-        },
-        recentComplaints: [
-          { _id: '1', title: 'Water issue in room 101', status: 'pending', student: { user: { name: 'John Doe' } } },
-          { _id: '2', title: 'Electricity problem', status: 'in-progress', student: { user: { name: 'Jane Smith' } } },
-          { _id: '3', title: 'Noise complaint', status: 'pending', student: { user: { name: 'Mike Johnson' } } }
-        ],
-        recentLeaves: [],
-        recentStudents: []
-      });
-      
-      generateWeeklyAttendanceData(78);
+      setMockData();
     } finally {
       setLoading(false);
     }
   };
 
+  const setMockData = () => {
+    const mockComplaints = [
+      { 
+        _id: '1', 
+        title: 'Water leakage in room 101', 
+        status: 'pending',
+        displayStudentName: 'John Doe',
+        student: { user: { name: 'John Doe' } }
+      },
+      { 
+        _id: '2', 
+        title: 'Electricity problem in room 205', 
+        status: 'in-progress',
+        displayStudentName: 'Jane Smith',
+        student: { user: { name: 'Jane Smith' } }
+      },
+      { 
+        _id: '3', 
+        title: 'Noise complaint from room 310', 
+        status: 'pending',
+        displayStudentName: 'Mike Johnson',
+        student: { user: { name: 'Mike Johnson' } }
+      }
+    ];
+    
+    const mockLeaves = [
+      {
+        _id: '1',
+        reason: 'Family function',
+        status: 'pending',
+        displayStudentName: 'David Brown',
+        student: { user: { name: 'David Brown' } }
+      },
+      {
+        _id: '2',
+        reason: 'Medical emergency',
+        status: 'pending',
+        displayStudentName: 'Emily Davis',
+        student: { user: { name: 'Emily Davis' } }
+      }
+    ];
+    
+    setDashboardData({
+      stats: {
+        totalStudents: 125,
+        totalRooms: 60,
+        occupiedRooms: 48,
+        availableRooms: 12,
+        pendingComplaints: 5,
+        pendingLeaves: 3,
+        visitorsToday: 2,
+        todayPresent: 98,
+        todayAbsent: 27,
+        attendancePercentage: 78
+      },
+      warden: {
+        name: 'Warden',
+        email: 'warden@hostel.com',
+        hostel: { name: 'Main Hostel' }
+      },
+      recentComplaints: mockComplaints,
+      recentLeaves: mockLeaves,
+      recentStudents: []
+    });
+    generateWeeklyAttendanceData(78);
+  };
+
   const generateWeeklyAttendanceData = (basePercentage) => {
     const days = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'];
     const data = days.map(day => {
-      // Create variation for each day
       let percentage = basePercentage;
       if (day === 'Sat') percentage = basePercentage - 15;
       if (day === 'Sun') percentage = basePercentage - 25;
@@ -369,6 +463,7 @@ const WardenDashboard = () => {
           </Paper>
         </Grid>
 
+        {/* Recent Complaints - Fixed */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -378,15 +473,29 @@ const WardenDashboard = () => {
               <List>
                 {dashboardData.recentComplaints.slice(0, 4).map((complaint, index) => (
                   <React.Fragment key={complaint._id || index}>
-                    <ListItem>
+                    <ListItem alignItems="flex-start">
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: alpha('#f97316', 0.1), color: '#f97316' }}>
                           <WarningIcon />
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText
-                        primary={complaint.title}
-                        secondary={complaint.student?.user?.name || complaint.student?.name || 'Unknown Student'}
+                        primary={
+                          <Typography variant="body1" fontWeight="bold">
+                            {complaint.title || 'Complaint'}
+                          </Typography>
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              sx={{ color: 'text.primary', display: 'inline' }}
+                            >
+                              By: {complaint.displayStudentName || extractStudentName(complaint)}
+                            </Typography>
+                          </React.Fragment>
+                        }
                       />
                       <Chip 
                         label={complaint.status || 'pending'} 
@@ -397,7 +506,7 @@ const WardenDashboard = () => {
                         }}
                       />
                     </ListItem>
-                    {index < dashboardData.recentComplaints.length - 1 && index < 3 && <Divider />}
+                    {index < dashboardData.recentComplaints.length - 1 && index < 3 && <Divider variant="inset" component="li" />}
                   </React.Fragment>
                 ))}
               </List>
@@ -417,6 +526,7 @@ const WardenDashboard = () => {
           </Paper>
         </Grid>
 
+        {/* Pending Leave Requests - Fixed */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -426,15 +536,29 @@ const WardenDashboard = () => {
               <List>
                 {dashboardData.recentLeaves.slice(0, 4).map((leave, index) => (
                   <React.Fragment key={leave._id || index}>
-                    <ListItem>
+                    <ListItem alignItems="flex-start">
                       <ListItemAvatar>
                         <Avatar sx={{ bgcolor: alpha('#ef4444', 0.1), color: '#ef4444' }}>
                           <LeaveIcon />
                         </Avatar>
                       </ListItemAvatar>
                       <ListItemText
-                        primary={leave.student?.user?.name || leave.student?.name || 'Unknown Student'}
-                        secondary={leave.reason || 'No reason provided'}
+                        primary={
+                          <Typography variant="body1" fontWeight="bold">
+                            {leave.displayStudentName || extractStudentName(leave)}
+                          </Typography>
+                        }
+                        secondary={
+                          <React.Fragment>
+                            <Typography
+                              component="span"
+                              variant="body2"
+                              sx={{ color: 'text.primary', display: 'inline' }}
+                            >
+                              Reason: {leave.reason || 'No reason provided'}
+                            </Typography>
+                          </React.Fragment>
+                        }
                       />
                       <Chip 
                         label={leave.status || 'pending'} 
@@ -442,7 +566,7 @@ const WardenDashboard = () => {
                         sx={{ bgcolor: '#fef2f2', color: '#ef4444' }}
                       />
                     </ListItem>
-                    {index < dashboardData.recentLeaves.length - 1 && index < 3 && <Divider />}
+                    {index < dashboardData.recentLeaves.length - 1 && index < 3 && <Divider variant="inset" component="li" />}
                   </React.Fragment>
                 ))}
               </List>

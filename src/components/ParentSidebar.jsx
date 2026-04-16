@@ -43,7 +43,7 @@ const ParentSidebar = () => {
     // { text: 'Complaints',    icon: <ComplaintIcon />,     path: '/parent/complaints' },
     { text: 'Notice Board',     icon: <AnnouncementIcon />,  path: '/parent/notices' },
     { text: 'Fees',             icon: <MoneyIcon />,         path: '/parent/fees' },
-    // { text: 'Notifications',    icon: <NotificationsIcon />, path: '/parent/notifications' },
+    { text: 'Notifications',    icon: <NotificationsIcon />, path: '/parent/notifications' },
     { text: 'Mess Menu',        icon: <RestaurantIcon />,    path: '/parent/mess' },
     { text: 'Visit Request',    icon: <VisitIcon />,         path: '/parent/visits' },
     { text: 'Chat with Warden', icon: <ChatIcon />,          path: '/parent/chat' },
