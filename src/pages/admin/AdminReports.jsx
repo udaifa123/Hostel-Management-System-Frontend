@@ -472,7 +472,7 @@ const AdminReports = () => {
             </Paper>
 
             <Grid container spacing={3}>
-              <Grid item xs={12} md={6}>
+              {/* <Grid item xs={12} md={6}>
                 <Paper elevation={0} sx={{
                   p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, height: '100%'
                 }}>
@@ -495,7 +495,7 @@ const AdminReports = () => {
                     </Box>
                   )}
                 </Paper>
-              </Grid>
+              </Grid> */}
               <Grid item xs={12} md={6}>
                 <Paper elevation={0} sx={{
                   p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, height: '100%'

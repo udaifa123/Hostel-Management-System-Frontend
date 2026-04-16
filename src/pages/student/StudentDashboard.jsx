@@ -433,7 +433,7 @@ const StudentDashboard = () => {
       </Grid>
 
       {/* Fee Overview */}
-      <GlassCard className="fade-up fade-up-3" sx={{ p: { xs: 3, md: 4 }, mb: 4 }}>
+      {/* <GlassCard className="fade-up fade-up-3" sx={{ p: { xs: 3, md: 4 }, mb: 4 }}>
         <SectionLabel>Financial Overview</SectionLabel>
         <Heading3 sx={{ mb: 3 }}>Fee Status</Heading3>
         <Grid container spacing={4} sx={{ mb: 3 }}>
@@ -457,7 +457,7 @@ const StudentDashboard = () => {
         <Box sx={{ height: 6, borderRadius: 3, bgcolor: T.border, overflow: 'hidden' }}>
           <Box sx={{ height: '100%', borderRadius: 3, width: `${stats.feePaymentPercentage || 0}%`, background: T.barGrad, transition: 'width 1s ease' }} />
         </Box>
-      </GlassCard>
+      </GlassCard> */}
 
       {/* Activity Grid */}
       <Grid container spacing={3} sx={{ mb: 4 }}>
