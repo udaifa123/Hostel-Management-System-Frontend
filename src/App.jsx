@@ -295,6 +295,9 @@ import AdminComplaints from "./pages/admin/AdminComplaints";
 import AdminFees from "./pages/admin/AdminFees";
 import AdminReports from "./pages/admin/AdminReports";
 import AdminSettings from "./pages/admin/AdminSettings";
+import Assets from "./pages/admin/Assets";
+import WardenAssets from './pages/warden/WardenAssets';
+
 
 // Parent Dashboard Pages
 import ParentLogin from "./pages/parent/ParentLogin";
@@ -597,6 +600,18 @@ const AppContent = () => {
         </ProtectedRoute>
       } />
       
+
+
+      <Route path="/warden/assets" element={
+        <ProtectedRoute allowedRoles={["warden"]}>
+          <HostelProvider>
+            <WardenLayout>
+              <WardenAssets />
+            </WardenLayout>
+          </HostelProvider>
+        </ProtectedRoute>
+      } />
+
       <Route path="/warden/leaves" element={
         <ProtectedRoute allowedRoles={["warden"]}>
           <HostelProvider>
@@ -790,6 +805,16 @@ const AppContent = () => {
           </AdminLayout>
         </ProtectedRoute>
       } />
+
+
+      <Route path="/admin/assets" element={
+        <ProtectedRoute allowedRoles={["admin"]}>
+          <AdminLayout>
+            <Assets />
+          </AdminLayout>
+        </ProtectedRoute>
+      } />
+
 
       {/* Parent Routes */}
       <Route path="/parent/login" element={

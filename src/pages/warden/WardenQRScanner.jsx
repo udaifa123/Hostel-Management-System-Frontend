@@ -521,7 +521,7 @@ const WardenQRScanner = () => {
 
       <Grid container spacing={3}>
         {/* Generate QR Section */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid item xs={12} md={6}>
           <Zoom in timeout={300}>
             <Paper elevation={0} sx={{
               p: 3,
@@ -537,7 +537,7 @@ const WardenQRScanner = () => {
               </Typography>
 
               <Grid container spacing={2.5}>
-                <Grid size={{ xs: 12 }}>
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     label="Session Name"
@@ -554,7 +554,7 @@ const WardenQRScanner = () => {
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 12 }}>
+                <Grid item xs={12}>
                   <TextField
                     fullWidth
                     type="number"
@@ -572,7 +572,7 @@ const WardenQRScanner = () => {
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 12 }}>
+                <Grid item xs={12}>
                   <Button
                     fullWidth
                     variant="contained"
@@ -635,7 +635,7 @@ const WardenQRScanner = () => {
         </Grid>
 
         {/* Scan QR Section */}
-        <Grid size={{ xs: 12, md: 6 }}>
+        <Grid item xs={12} md={6}>
           <Zoom in timeout={300}>
             <Paper elevation={0} sx={{
               p: 3,
@@ -820,7 +820,7 @@ const WardenQRScanner = () => {
         </Grid>
 
         {/* QR History Section */}
-        <Grid size={{ xs: 12 }}>
+        <Grid item xs={12}>
           <Fade in timeout={500}>
             <Paper elevation={0} sx={{
               p: 3,
@@ -848,12 +848,12 @@ const WardenQRScanner = () => {
                 <Table>
                   <TableHead sx={{ bgcolor: G[50] }}>
                     <TableRow>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Session Name</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Generated</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Expires</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Used By</TableCell>
-                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Status</TableCell>
-                      <TableCell align="right" sx={{ color: G[700], fontWeight: 700, fontSize: '0.7rem' }}>Actions</TableCell>
+                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.75rem' }}>Session Name</TableCell>
+                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.75rem' }}>Generated</TableCell>
+                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.75rem' }}>Expires</TableCell>
+                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.75rem' }}>Used By</TableCell>
+                      <TableCell sx={{ color: G[700], fontWeight: 700, fontSize: '0.75rem' }}>Status</TableCell>
+                      <TableCell align="right" sx={{ color: G[700], fontWeight: 700, fontSize: '0.75rem' }}>Actions</TableCell>
                     </TableRow>
                   </TableHead>
                   <TableBody>

@@ -150,7 +150,6 @@ const AdminComplaints = () => {
       const response = await adminService.updateComplaintStatus(complaint._id || complaint.id, { status: newStatus });
       
       if (response && response.success) {
-        // Refresh the list
         await fetchComplaints();
         setSnackbarMessage(`Complaint status updated to ${newStatus}`);
         setSnackbarSeverity('success');
@@ -276,18 +275,18 @@ const AdminComplaints = () => {
           </Button>
         </Paper>
 
-        {/* ── Stat Cards ── */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        {/* ── Stat Cards - FIXED GAP ── */}
+        <Grid container spacing={2.5} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Complaints" value={stats.total} icon={ComplaintIcon} dark />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Pending" value={stats.pending} icon={PendingIcon} valueColor="#B45309" />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="In Progress" value={stats.inProgress} icon={InProgressIcon} valueColor="#0284C7" />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Resolved" value={stats.resolved} icon={ResolvedIcon} valueColor={G[600]} />
           </Grid>
         </Grid>

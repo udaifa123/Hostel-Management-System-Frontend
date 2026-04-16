@@ -177,7 +177,7 @@ const InfoRow = styled(Box)({
 });
 
 const WardenSettings = () => {
-  const { token, user } = useAuth();
+  const { token, user, setUser } = useAuth();
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -257,8 +257,13 @@ const WardenSettings = () => {
       const response = await axios.get(`${API_URL}/warden/profile`, {
         headers: { Authorization: `Bearer ${token}` }
       });
+      console.log('Profile response:', response.data);
       if (response.data && response.data.success) {
         setProfile(response.data.data);
+        // Update auth context if needed
+        if (setUser && response.data.data) {
+          setUser(prev => ({ ...prev, ...response.data.data }));
+        }
       }
     } catch (error) {
       console.error('Error fetching profile:', error);
@@ -335,12 +340,28 @@ const WardenSettings = () => {
         headers: { Authorization: `Bearer ${token}` }
       });
       
+      console.log('Update response:', response.data);
+      
       if (response.data && response.data.success) {
-        setProfile(prev => ({ ...prev, ...editForm }));
+        // Update local profile state
+        const updatedProfile = { ...profile, ...editForm };
+        setProfile(updatedProfile);
+        
+        // Update auth context
+        if (setUser) {
+          setUser(prev => ({ ...prev, ...updatedProfile }));
+        }
+        
         showNotification('Profile updated successfully!', 'success');
         setEditMode(false);
+        
+        // Refetch to ensure consistency
+        await fetchProfile();
+      } else {
+        throw new Error(response.data?.message || 'Failed to update profile');
       }
     } catch (error) {
+      console.error('Update error:', error);
       showNotification(error.response?.data?.message || 'Failed to update profile', 'error');
     } finally {
       setSaving(false);
@@ -416,6 +437,12 @@ const WardenSettings = () => {
       if (response.data && response.data.success) {
         const imageUrl = response.data.data?.imageUrl || imagePreview;
         setProfile(prev => ({ ...prev, profileImage: imageUrl }));
+        
+        // Update auth context
+        if (setUser) {
+          setUser(prev => ({ ...prev, profileImage: imageUrl }));
+        }
+        
         showNotification('Profile photo updated successfully!', 'success');
         setImageUploadOpen(false);
         setSelectedImage(null);
@@ -669,7 +696,7 @@ const WardenSettings = () => {
         </Tabs>
       </GlassPaper>
 
-      {/* Profile Tab Content */}
+      {/* Profile Tab Content - Fixed Grid */}
       {activeTab === 0 && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>

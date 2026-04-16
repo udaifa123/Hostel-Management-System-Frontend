@@ -147,7 +147,7 @@ const WardenNotices = () => {
         showSnackbar('Notice published successfully', 'success');
         setOpenDialog(false);
         setNewNotice({ title: '', content: '', category: 'general' });
-        await fetchNotices(); // Refresh list
+        await fetchNotices();
       } else {
         showSnackbar(response.message || 'Failed to create notice', 'error');
       }
@@ -180,7 +180,7 @@ const WardenNotices = () => {
         setOpenDialog(false);
         setEditingNotice(null);
         setNewNotice({ title: '', content: '', category: 'general' });
-        await fetchNotices(); // Refresh list
+        await fetchNotices();
       } else {
         showSnackbar(response.message || 'Failed to update notice', 'error');
       }
@@ -203,7 +203,7 @@ const WardenNotices = () => {
       const response = await wardenService.pinNotice(noticeId, !currentPinned);
       if (response.success) {
         showSnackbar(currentPinned ? 'Notice unpinned' : 'Notice pinned', 'success');
-        await fetchNotices(); // Refresh list
+        await fetchNotices();
       } else {
         showSnackbar(response.message || 'Failed to update notice', 'error');
       }
@@ -227,7 +227,7 @@ const WardenNotices = () => {
       const response = await wardenService.deleteNotice(noticeId);
       if (response.success) {
         showSnackbar('Notice deleted successfully', 'success');
-        await fetchNotices(); // Refresh list
+        await fetchNotices();
       } else {
         showSnackbar(response.message || 'Failed to delete notice', 'error');
       }
@@ -340,57 +340,56 @@ const WardenNotices = () => {
           </Button>
         </Paper>
 
-        {/* Stats Cards */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        {/* Stats Cards - Fixed Grid Gap */}
+        <Grid container spacing={3} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={3}>
             <Card elevation={0} sx={{
               borderRadius: 3,
               bgcolor: G[800],
               border: `1px solid ${G[700]}`,
               boxShadow: '0 4px 16px rgba(13,51,24,0.25)',
-              height: '100%',
             }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography sx={{ color: G[300], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+                <Typography sx={{ color: G[300], fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                   Total Notices
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '2.5rem' }}>
                   {notices.length}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          
+          <Grid item xs={12} sm={6} md={3}>
             <Card elevation={0} sx={{
               borderRadius: 3,
               bgcolor: '#ffffff',
               border: `1px solid ${G[200]}`,
               boxShadow: CARD_SHADOW,
-              height: '100%',
             }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+                <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                   Pinned
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2.5rem' }}>
                   {notices.filter(n => n.pinned).length}
                 </Typography>
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          
+          <Grid item xs={12} sm={6} md={3}>
             <Card elevation={0} sx={{
               borderRadius: 3,
               bgcolor: '#ffffff',
               border: `1px solid ${G[200]}`,
               boxShadow: CARD_SHADOW,
-              height: '100%',
             }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+                <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                   This Week
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2.5rem' }}>
                   {notices.filter(n => {
                     const weekAgo = new Date();
                     weekAgo.setDate(weekAgo.getDate() - 7);
@@ -400,19 +399,19 @@ const WardenNotices = () => {
               </CardContent>
             </Card>
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+          
+          <Grid item xs={12} sm={6} md={3}>
             <Card elevation={0} sx={{
               borderRadius: 3,
               bgcolor: '#ffffff',
               border: `1px solid ${G[200]}`,
               boxShadow: CARD_SHADOW,
-              height: '100%',
             }}>
               <CardContent sx={{ p: 3 }}>
-                <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+                <Typography sx={{ color: G[600], fontWeight: 600, fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                   Categories
                 </Typography>
-                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2.5rem' }}>
                   {Object.keys(categoryConfig).length}
                 </Typography>
               </CardContent>
@@ -423,7 +422,7 @@ const WardenNotices = () => {
         {/* Search and Filter */}
         <Paper sx={{ p: 2, mb: 3, borderRadius: 2, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
           <Grid container spacing={2} alignItems="center">
-            <Grid size={{ xs: 12, md: 6 }}>
+            <Grid item xs={12} md={6}>
               <TextField
                 fullWidth
                 size="small"
@@ -453,7 +452,7 @@ const WardenNotices = () => {
                 }}
               />
             </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid item xs={12} md={3}>
               <Button
                 fullWidth
                 variant="outlined"
@@ -468,7 +467,7 @@ const WardenNotices = () => {
                 {filterCategory === 'all' ? 'All Categories' : categoryConfig[filterCategory]?.label}
               </Button>
             </Grid>
-            <Grid size={{ xs: 12, md: 3 }}>
+            <Grid item xs={12} md={3}>
               <Button
                 fullWidth
                 variant="outlined"
@@ -531,7 +530,7 @@ const WardenNotices = () => {
               const category = getCategoryConfig(notice.category);
               const noticeId = notice._id || notice.id;
               return (
-                <Grid size={{ xs: 12, md: 6, lg: 4 }} key={noticeId}>
+                <Grid item xs={12} md={6} lg={4} key={noticeId}>
                   <Card
                     elevation={0}
                     sx={{
@@ -740,7 +739,7 @@ const WardenNotices = () => {
           <Divider sx={{ borderColor: G[100] }} />
           <DialogContent sx={{ pt: 3 }}>
             <Grid container spacing={2.5}>
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Title"
@@ -762,7 +761,7 @@ const WardenNotices = () => {
                   }}
                 />
               </Grid>
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Content"
@@ -786,7 +785,7 @@ const WardenNotices = () => {
                   }}
                 />
               </Grid>
-              <Grid size={{ xs: 12 }}>
+              <Grid item xs={12}>
                 <TextField
                   fullWidth
                   label="Category"

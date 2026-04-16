@@ -392,21 +392,21 @@ const AdminRooms = () => {
           </Button>
         </Paper>
 
-        {/* ── Stat Cards ── */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
-          <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+        {/* ── Stat Cards - FIXED GAP ── */}
+        <Grid container spacing={2.5} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={2.4}>
             <StatCard label="Total Rooms" value={stats.total} icon={RoomIcon} dark />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+          <Grid item xs={12} sm={6} md={2.4}>
             <StatCard label="Total Beds" value={stats.totalBeds} icon={BedIcon} />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+          <Grid item xs={12} sm={6} md={2.4}>
             <StatCard label="Occupied Beds" value={stats.occupiedBeds} icon={PeopleIcon} valueColor={G[600]} />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+          <Grid item xs={12} sm={6} md={2.4}>
             <StatCard label="Available Rooms" value={stats.available} icon={CheckCircleIcon} valueColor={G[600]} />
           </Grid>
-          <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
+          <Grid item xs={12} sm={6} md={2.4}>
             <StatCard label="Vacant Rooms" value={stats.vacant} icon={CancelIcon} valueColor="#0284C7" />
           </Grid>
         </Grid>

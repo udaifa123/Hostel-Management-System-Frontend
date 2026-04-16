@@ -62,7 +62,8 @@ const G = {
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
 // ─── Stat Card ─────────────────────────────────────────────────────────────────
-const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
+// FIXED: Changed prop name from 'icon: Icon' to 'icon' and using it correctly
+const StatCard = ({ label, value, icon: IconComponent, dark = false, valueColor }) => (
   <Card elevation={0} sx={{
     borderRadius: 3,
     bgcolor: dark ? G[800] : '#ffffff',
@@ -95,7 +96,7 @@ const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
           bgcolor: dark ? G[700] : G[100],
           width: 48, height: 48, borderRadius: 2,
         }}>
-          <Icon sx={{ color: dark ? G[200] : G[600], fontSize: 24 }} />
+          <IconComponent sx={{ color: dark ? G[200] : G[600], fontSize: 24 }} />
         </Avatar>
       </Box>
     </CardContent>
@@ -114,6 +115,7 @@ const AdminWardens = () => {
     name: '',
     email: '',
     phone: '',
+    password: '',  // ✅ ADDED: Password field for new warden
     hostelId: '',
     experience: '',
     joinedDate: '',
@@ -131,7 +133,6 @@ const AdminWardens = () => {
       const response = await adminService.getWardens();
       console.log('Wardens API Response:', response);
       
-      // Handle different response structures
       let wardensData = [];
       if (response.success && response.wardens) {
         wardensData = response.wardens;
@@ -187,6 +188,7 @@ const AdminWardens = () => {
         name: warden.name || '',
         email: warden.email || '',
         phone: warden.phone || '',
+        password: '', // Don't show password when editing
         hostelId: warden.hostel?._id || warden.hostelId || '',
         experience: warden.experience || '',
         joinedDate: warden.joinedDate ? new Date(warden.joinedDate).toISOString().split('T')[0] : '',
@@ -198,6 +200,7 @@ const AdminWardens = () => {
         name: '',
         email: '',
         phone: '',
+        password: '',
         hostelId: '',
         experience: '',
         joinedDate: '',
@@ -218,11 +221,18 @@ const AdminWardens = () => {
         toast.error('Please fill all required fields');
         return;
       }
+      
+      // For new warden, password is required
+      if (!selectedWarden && !formData.password) {
+        toast.error('Password is required for new warden');
+        return;
+      }
 
       const submitData = {
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim(),
+        password: formData.password || undefined,
         hostelId: formData.hostelId || undefined,
         experience: formData.experience,
         joinedDate: formData.joinedDate,
@@ -237,7 +247,6 @@ const AdminWardens = () => {
         const wardenId = selectedWarden._id || selectedWarden.id;
         console.log('Updating warden with ID:', wardenId);
         
-        // Try update, if fails, show message to add backend route
         try {
           response = await adminService.updateWarden(wardenId, submitData);
           if (response && response.success) {
@@ -249,7 +258,6 @@ const AdminWardens = () => {
           }
         } catch (updateError) {
           console.error('Update error:', updateError);
-          // If update fails with 404, suggest creating a new one
           if (updateError.response?.status === 404) {
             toast.error('Update endpoint not available. Please add the PUT route in backend.');
           } else {
@@ -371,14 +379,14 @@ const AdminWardens = () => {
         </Paper>
 
         {/* ── Stat Cards ── */}
-        <Grid container spacing={2.5} sx={{ mb: 3 }}>
-          <Grid size={{ xs: 12, sm: 4 }}>
+        <Grid container spacing={2.5} sx={{ mb: 4 }}>
+          <Grid item xs={12} sm={6} md={4}>
             <StatCard label="Total Wardens" value={stats.total} icon={PersonIcon} dark />
           </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}>
+          <Grid item xs={12} sm={6} md={4}>
             <StatCard label="Active" value={stats.active} icon={CheckCircleIcon} valueColor={G[600]} />
           </Grid>
-          <Grid size={{ xs: 12, sm: 4 }}>
+          <Grid item xs={12} sm={6} md={4}>
             <StatCard label="Inactive" value={stats.inactive} icon={CancelIcon} valueColor="#b45309" />
           </Grid>
         </Grid>
@@ -633,6 +641,26 @@ const AdminWardens = () => {
                   }}
                 />
               </Grid>
+              {/* ✅ ADDED: Password field - only show for new warden */}
+              {!selectedWarden && (
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <TextField
+                    fullWidth
+                    label="Password"
+                    name="password"
+                    type="password"
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    required
+                    sx={{
+                      '& .MuiOutlinedInput-root': {
+                        borderRadius: 2, bgcolor: G[50],
+                        '& fieldset': { borderColor: G[200] },
+                      },
+                    }}
+                  />
+                </Grid>
+              )}
               <Grid size={{ xs: 12, sm: 6 }}>
                 <FormControl fullWidth sx={{
                   '& .MuiOutlinedInput-root': {

@@ -29,7 +29,8 @@ import {
   Build as MaintenanceIcon,
   Restaurant as MessIcon,
   Assessment as ReportsIcon,
-  Visibility as VisitorsIcon
+  Visibility as VisitorsIcon,
+  Inventory as AssetsIcon
 } from '@mui/icons-material';
 
 const drawerWidth = 270;
@@ -50,6 +51,7 @@ const WardenSidebar = () => {
     { text: 'Fees', icon: <FeesIcon />, path: '/warden/fees' },
     { text: 'Notices', icon: <NoticeIcon />, path: '/warden/notices' },
     { text: 'Visitors', icon: <VisitorsIcon />, path: '/warden/visitors' },
+    { text: 'Assets', icon: <AssetsIcon />, path: '/warden/assets' },
     { text: 'Mess', icon: <MessIcon />, path: '/warden/mess' },
     { text: 'Reports', icon: <ReportsIcon />, path: '/warden/reports' },
     { text: 'QR Scanner', icon: <QrCodeIcon />, path: '/warden/qr-scanner' },

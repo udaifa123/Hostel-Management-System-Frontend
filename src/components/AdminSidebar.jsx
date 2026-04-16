@@ -6,7 +6,8 @@ import {
   Dashboard as DashboardIcon, People as PeopleIcon, MeetingRoom as RoomIcon,
   Apartment as HostelIcon, AdminPanelSettings as WardenIcon, AttachMoney as FeesIcon,
   ReportProblem as ComplaintIcon, ExitToApp as LeaveIcon, Notifications as NoticeIcon,
-  Settings as SettingsIcon, Logout as LogoutIcon, Assessment as ReportsIcon
+  Settings as SettingsIcon, Logout as LogoutIcon, Assessment as ReportsIcon,
+  Inventory as AssetsIcon  // ✅ ADD THIS IMPORT
 } from '@mui/icons-material';
 
 const drawerWidth = 270;
@@ -25,7 +26,7 @@ const AdminSidebar = () => {
     { text: 'Fees', icon: <FeesIcon />, path: '/admin/fees' },
     { text: 'Complaints', icon: <ComplaintIcon />, path: '/admin/complaints' },
     // { text: 'Leaves', icon: <LeaveIcon />, path: '/admin/leaves' },
-    // { text: 'Notices', icon: <NoticeIcon />, path: '/admin/notices' },
+    { text: 'Assets', icon: <AssetsIcon />, path: '/admin/assets' },  // ✅ Now AssetsIcon is defined
     { text: 'Reports', icon: <ReportsIcon />, path: '/admin/reports' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/admin/settings' },
   ];

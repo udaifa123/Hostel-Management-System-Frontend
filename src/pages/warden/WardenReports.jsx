@@ -320,63 +320,63 @@ const WardenReports = () => {
             />
           </Paper>
 
-          {/* Quick Stats - Real Data */}
-          <Grid container spacing={2.5} sx={{ mb: 4 }}>
-            <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
-              <Card sx={{ borderRadius: 3, bgcolor: G[800], border: `1px solid ${G[700]}` }}>
-                <CardContent>
-                  <Typography sx={{ color: G[300], fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+          {/* Quick Stats - Fixed Grid Implementation */}
+          <Grid container spacing={3} sx={{ mb: 4 }}>
+            <Grid item xs={12} sm={6} md={2.4}>
+              <Card sx={{ borderRadius: 3, bgcolor: G[800], border: `1px solid ${G[700]}`, height: '100%' }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography sx={{ color: G[300], fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                     Total Students
                   </Typography>
-                  <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '2rem' }}>
+                  <Typography sx={{ fontWeight: 700, color: '#ffffff', fontSize: '2.5rem' }}>
                     {dashboardStats.totalStudents}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
-              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-                <CardContent>
-                  <Typography sx={{ color: G[600], fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+            <Grid item xs={12} sm={6} md={2.4}>
+              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, height: '100%' }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography sx={{ color: G[600], fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                     Total Rooms
                   </Typography>
-                  <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                  <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2.5rem' }}>
                     {dashboardStats.totalRooms}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
-              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-                <CardContent>
-                  <Typography sx={{ color: G[600], fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+            <Grid item xs={12} sm={6} md={2.4}>
+              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, height: '100%' }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography sx={{ color: G[600], fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                     Occupancy Rate
                   </Typography>
-                  <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                  <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2.5rem' }}>
                     {dashboardStats.occupancyRate}%
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
-              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-                <CardContent>
-                  <Typography sx={{ color: G[600], fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+            <Grid item xs={12} sm={6} md={2.4}>
+              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, height: '100%' }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography sx={{ color: G[600], fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                     Pending Complaints
                   </Typography>
-                  <Typography sx={{ fontWeight: 700, color: '#EF4444', fontSize: '2rem' }}>
+                  <Typography sx={{ fontWeight: 700, color: '#EF4444', fontSize: '2.5rem' }}>
                     {dashboardStats.pendingComplaints}
                   </Typography>
                 </CardContent>
               </Card>
             </Grid>
-            <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
-              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
-                <CardContent>
-                  <Typography sx={{ color: G[600], fontSize: '0.7rem', textTransform: 'uppercase', mb: 1 }}>
+            <Grid item xs={12} sm={6} md={2.4}>
+              <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, height: '100%' }}>
+                <CardContent sx={{ p: 3 }}>
+                  <Typography sx={{ color: G[600], fontSize: '0.75rem', textTransform: 'uppercase', mb: 1, letterSpacing: '0.5px' }}>
                     Attendance Rate
                   </Typography>
-                  <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2rem' }}>
+                  <Typography sx={{ fontWeight: 700, color: G[600], fontSize: '2.5rem' }}>
                     {dashboardStats.attendanceRate}%
                   </Typography>
                 </CardContent>
@@ -384,14 +384,14 @@ const WardenReports = () => {
             </Grid>
           </Grid>
 
-          {/* Reports Grid */}
+          {/* Reports Grid - Fixed Implementation */}
           <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], mb: 2 }}>
             Available Reports
           </Typography>
           
           <Grid container spacing={3}>
             {reports.map((report) => (
-              <Grid size={{ xs: 12, sm: 6, md: 4 }} key={report.id}>
+              <Grid item xs={12} sm={6} md={4} key={report.id}>
                 <Card
                   elevation={0}
                   sx={{
@@ -524,7 +524,7 @@ const WardenReports = () => {
               </Typography>
               
               <Grid container spacing={2.5}>
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid item xs={12} sm={6}>
                   <DatePicker
                     label="Start Date"
                     value={dateRange.startDate}
@@ -544,7 +544,7 @@ const WardenReports = () => {
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 12, sm: 6 }}>
+                <Grid item xs={12} sm={6}>
                   <DatePicker
                     label="End Date"
                     value={dateRange.endDate}
@@ -564,7 +564,7 @@ const WardenReports = () => {
                     }}
                   />
                 </Grid>
-                <Grid size={{ xs: 12 }}>
+                <Grid item xs={12}>
                   <FormControl fullWidth size="small">
                     <InputLabel>Format</InputLabel>
                     <Select

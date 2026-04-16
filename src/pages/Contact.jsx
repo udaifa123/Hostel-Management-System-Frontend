@@ -458,7 +458,7 @@ const Contact = () => {
           </div>
           <div className="faq-cta">
             <p>Still have questions? We're here to help!</p>
-            <Link to="/faq" className="faq-link">View all FAQs<ArrowRight size={14} /></Link>
+            {/* <Link to="/faq" className="faq-link">View all FAQs<ArrowRight size={14} /></Link> */}
           </div>
         </div>
       </section>

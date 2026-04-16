@@ -208,9 +208,9 @@ const StudentVisits = () => {
         </Button>
       </Box>
 
-      {/* Stats Cards */}
-      <Grid container spacing={2.5} sx={{ mb: 3 }}>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+      {/* Stats Cards - FIXED GAP */}
+      <Grid container spacing={2.5} sx={{ mb: 4 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ borderRadius: 3, bgcolor: G[800] }}>
             <CardContent>
               <Typography sx={{ color: G[300], fontSize: '0.7rem', textTransform: 'uppercase' }}>Total Requests</Typography>
@@ -218,7 +218,7 @@ const StudentVisits = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
             <CardContent>
               <Typography sx={{ color: G[600], fontSize: '0.7rem', textTransform: 'uppercase' }}>Pending</Typography>
@@ -228,7 +228,7 @@ const StudentVisits = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
             <CardContent>
               <Typography sx={{ color: G[600], fontSize: '0.7rem', textTransform: 'uppercase' }}>Approved</Typography>
@@ -238,7 +238,7 @@ const StudentVisits = () => {
             </CardContent>
           </Card>
         </Grid>
-        <Grid size={{ xs: 12, sm: 6, md: 3 }}>
+        <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
             <CardContent>
               <Typography sx={{ color: G[600], fontSize: '0.7rem', textTransform: 'uppercase' }}>Completed</Typography>
