@@ -84,7 +84,7 @@ const WardenAddStudent = () => {
     relation: '',
     phone: '',
     email: '',
-    password: '', // ✅ ADDED: Password field for parent
+    password: '', 
     occupation: '',
     address: '',
     isPrimary: false,
@@ -110,7 +110,6 @@ const WardenAddStudent = () => {
   };
 
   const addParent = () => {
-    // Validate parent form
     if (!parentForm.name) {
       setSnackbar({ open: true, message: 'Parent name is required', severity: 'error' });
       return;
@@ -127,7 +126,6 @@ const WardenAddStudent = () => {
       setSnackbar({ open: true, message: 'Email is required for parent login', severity: 'error' });
       return;
     }
-    // ✅ ADDED: Password validation
     if (!parentForm.password) {
       setSnackbar({ open: true, message: 'Password is required for parent login', severity: 'error' });
       return;
@@ -155,7 +153,7 @@ const WardenAddStudent = () => {
       relation: '',
       phone: '',
       email: '',
-      password: '', // Reset password field
+      password: '', 
       occupation: '',
       address: '',
       isPrimary: false,
@@ -254,7 +252,7 @@ const WardenAddStudent = () => {
             name: parent.name,
             email: parent.email,
             phone: parent.phone,
-            password: parent.password, // ✅ ADDED: Send password to backend
+            password: parent.password,
             relation: parent.relation,
             occupation: parent.occupation,
             address: parent.address,
@@ -270,7 +268,7 @@ const WardenAddStudent = () => {
         }
       );
       
-      // Build parent login message
+ 
       let parentMessage = '';
       if (response.data.parentLogins && response.data.parentLogins.length > 0) {
         parentMessage = '\n\n━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━\n';
@@ -287,7 +285,7 @@ const WardenAddStudent = () => {
         parentMessage += 'Parents can login using their Email and Password';
       }
       
-      // Show alert with credentials
+     
       alert(`✅ Student Created Successfully!${parentMessage}`);
       
       setSnackbar({
@@ -548,7 +546,6 @@ const WardenAddStudent = () => {
         </Box>
       </Paper>
 
-      {/* Parent/Guardian Dialog */}
       <Dialog open={openParentDialog} onClose={() => setOpenParentDialog(false)} maxWidth="md" fullWidth>
         <DialogTitle>{editingParent !== null ? 'Edit Parent/Guardian' : 'Add Parent/Guardian'}</DialogTitle>
         <DialogContent>
@@ -565,7 +562,7 @@ const WardenAddStudent = () => {
             <Grid item xs={12} md={6}>
               <TextField fullWidth label="Email *" name="email" type="email" value={parentForm.email} onChange={handleParentChange} required />
             </Grid>
-            {/* ✅ ADDED: Password field in dialog */}
+          
             <Grid item xs={12} md={6}>
               <TextField 
                 fullWidth 

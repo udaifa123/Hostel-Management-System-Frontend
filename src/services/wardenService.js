@@ -33,7 +33,6 @@ const wardenService = {
     }
   },
 
-  // ==================== PROFILE & SETTINGS ====================
   getProfile: async () => {
     try {
       const response = await api.get('/warden/profile');
@@ -96,7 +95,6 @@ const wardenService = {
     }
   },
 
-  // Students
   getStudents: async (params) => {
     try {
       const response = await api.get('/warden/students', { params });
@@ -147,7 +145,6 @@ const wardenService = {
     }
   },
 
-  // Attendance
   getTodayAttendance: async () => {
     try {
       const response = await api.get('/warden/attendance/today');
@@ -188,7 +185,6 @@ const wardenService = {
     }
   },
 
-  // Leave Requests
   getLeaveRequests: async () => {
     try {
       const response = await api.get('/warden/leaves/pending');
@@ -219,7 +215,6 @@ const wardenService = {
     }
   },
 
-  // Complaints
   getComplaints: async () => {
     try {
       console.log('Fetching complaints for warden...');
@@ -242,7 +237,6 @@ const wardenService = {
     }
   },
 
-  // ==================== VISIT MANAGEMENT ====================
   getVisitRequests: async () => {
     try {
       console.log('Fetching visit requests for warden...');
@@ -305,7 +299,6 @@ const wardenService = {
     }
   },
 
-  // Rooms
   getRooms: async () => {
     try {
       const response = await api.get('/warden/rooms');
@@ -376,7 +369,6 @@ const wardenService = {
     }
   },
 
-  // Notices
   getNotices: async () => {
     try {
       const response = await api.get('/warden/notices');
@@ -437,7 +429,6 @@ const wardenService = {
     }
   },
 
-  // Visitors (Legacy)
   getVisitors: async () => {
     try {
       const response = await api.get('/warden/visitors');
@@ -468,7 +459,6 @@ const wardenService = {
     }
   },
 
-  // Mess Menu
   getMessMenu: async () => {
     try {
       const response = await api.get('/warden/mess-menu');
@@ -489,7 +479,6 @@ const wardenService = {
     }
   },
 
-  // Chat
   getStudentMessages: async () => {
     try {
       const response = await api.get('/warden/messages/students');
@@ -510,9 +499,7 @@ const wardenService = {
     }
   },
 
-  // Fee Management
-  // services/wardenService.js - Add these methods
-// ==================== FEE MANAGEMENT ====================
+ 
 getHostelFees: async () => {
   try {
     const response = await api.get('/fees/warden/hostel-fees');
@@ -549,7 +536,6 @@ sendFeeReminder: async (feeId) => {
   }
 },
 
-  // Reports
   generateReport: async (type, format) => {
     try {
       const response = await api.get(`/warden/reports/${type}`, {

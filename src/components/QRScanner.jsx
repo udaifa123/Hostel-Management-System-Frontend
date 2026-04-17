@@ -177,7 +177,7 @@ const QRScanner = () => {
       </Typography>
 
       <Grid container spacing={3}>
-        {/* Generate QR Section */}
+        
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: '#047857' }}>
@@ -235,7 +235,6 @@ const QRScanner = () => {
           </Paper>
         </Grid>
 
-        {/* Scan QR Section */}
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" fontWeight="bold" sx={{ mb: 2, color: '#047857' }}>

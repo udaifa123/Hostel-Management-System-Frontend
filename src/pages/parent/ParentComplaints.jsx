@@ -124,7 +124,7 @@ const ParentComplaints = () => {
     <ParentLayout>
       <Container maxWidth="xl">
 
-        {/* Page Title */}
+       
         <Paper
           elevation={0}
           sx={{
@@ -141,7 +141,7 @@ const ParentComplaints = () => {
           </Typography>
         </Paper>
 
-        {/* Summary Cards */}
+       
         <Grid container spacing={3} sx={{ mb: 4 }}>
           {[
             { label: 'Total',       value: counts?.total             || 0, color: '#047857', bg: '#ecfdf5', border: '#a7f3d0' },
@@ -171,7 +171,7 @@ const ParentComplaints = () => {
           ))}
         </Grid>
 
-        {/* Complaint Cards */}
+      
         <Grid container spacing={2}>
           {complaints.map((complaint, idx) => (
             <Grid item xs={12} key={complaint._id}>
@@ -239,7 +239,7 @@ const ParentComplaints = () => {
           )}
         </Grid>
 
-        {/* Detail Dialog */}
+       
         <Dialog
           open={detailsOpen}
           onClose={() => setDetailsOpen(false)}
@@ -260,7 +260,7 @@ const ParentComplaints = () => {
             {selectedComplaint && (
               <Grid container spacing={2} sx={{ pt: 1 }}>
 
-                {/* Info block */}
+               
                 <Grid item xs={12}>
                   <Paper elevation={0} sx={{ p: 2.5, bgcolor: '#fff', borderRadius: '14px', border: '1.5px solid #d1fae5' }}>
                     <Grid container spacing={2}>
@@ -288,7 +288,7 @@ const ParentComplaints = () => {
                   </Paper>
                 </Grid>
 
-                {/* Title & Description */}
+                
                 <Grid item xs={12}>
                   <Typography sx={{ fontWeight: 700, fontSize: '1.05rem', color: '#111827', mb: 1 }}>{selectedComplaint.title}</Typography>
                   <Paper elevation={0} sx={{ p: 2, bgcolor: '#fff', borderRadius: '12px', border: '1.5px solid #d1fae5' }}>
@@ -326,7 +326,7 @@ const ParentComplaints = () => {
                   </Grid>
                 )}
 
-                {/* Timeline */}
+                
                 {selectedComplaint.timeline && selectedComplaint.timeline.length > 0 && (
                   <Grid item xs={12}>
                     <Typography sx={{ fontWeight: 700, fontSize: '0.95rem', color: '#065f46', mb: 1, textTransform: 'uppercase', letterSpacing: '0.06em', fontSize: '0.75rem' }}>
@@ -358,7 +358,7 @@ const ParentComplaints = () => {
                   </Grid>
                 )}
 
-                {/* Dates */}
+               
                 <Grid item xs={6}>
                   <Box sx={{ bgcolor: '#fff', borderRadius: '10px', border: '1px solid #d1fae5', p: 1.5 }}>
                     <Typography sx={{ fontSize: '0.7rem', color: '#6b7280', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.06em', mb: 0.3 }}>Created On</Typography>

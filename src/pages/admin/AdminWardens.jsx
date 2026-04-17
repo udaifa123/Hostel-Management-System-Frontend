@@ -45,7 +45,6 @@ import {
 import adminService from '../../services/adminService';
 import toast from 'react-hot-toast';
 
-// ─── Green Design Tokens ───────────────────────────────────────────────────────
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -61,8 +60,6 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ─── Stat Card ─────────────────────────────────────────────────────────────────
-// FIXED: Changed prop name from 'icon: Icon' to 'icon' and using it correctly
 const StatCard = ({ label, value, icon: IconComponent, dark = false, valueColor }) => (
   <Card elevation={0} sx={{
     borderRadius: 3,
@@ -103,7 +100,6 @@ const StatCard = ({ label, value, icon: IconComponent, dark = false, valueColor 
   </Card>
 );
 
-// ─── Main Component ────────────────────────────────────────────────────────────
 const AdminWardens = () => {
   const [wardens, setWardens] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -115,7 +111,7 @@ const AdminWardens = () => {
     name: '',
     email: '',
     phone: '',
-    password: '',  // ✅ ADDED: Password field for new warden
+    password: '',  
     hostelId: '',
     experience: '',
     joinedDate: '',
@@ -188,7 +184,7 @@ const AdminWardens = () => {
         name: warden.name || '',
         email: warden.email || '',
         phone: warden.phone || '',
-        password: '', // Don't show password when editing
+        password: '', 
         hostelId: warden.hostel?._id || warden.hostelId || '',
         experience: warden.experience || '',
         joinedDate: warden.joinedDate ? new Date(warden.joinedDate).toISOString().split('T')[0] : '',
@@ -222,7 +218,7 @@ const AdminWardens = () => {
         return;
       }
       
-      // For new warden, password is required
+      
       if (!selectedWarden && !formData.password) {
         toast.error('Password is required for new warden');
         return;
@@ -265,7 +261,7 @@ const AdminWardens = () => {
           }
         }
       } else {
-        // CREATE NEW WARDEN
+       
         response = await adminService.createWarden(submitData);
         console.log('Create response:', response);
         
@@ -328,12 +324,12 @@ const AdminWardens = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
+      
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
 
-        {/* ── Header ── */}
+       
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -378,7 +374,6 @@ const AdminWardens = () => {
           </Box>
         </Paper>
 
-        {/* ── Stat Cards ── */}
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={4}>
             <StatCard label="Total Wardens" value={stats.total} icon={PersonIcon} dark />
@@ -391,7 +386,7 @@ const AdminWardens = () => {
           </Grid>
         </Grid>
 
-        {/* ── Search ── */}
+       
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <TextField
             fullWidth
@@ -428,7 +423,7 @@ const AdminWardens = () => {
           </IconButton>
         </Box>
 
-        {/* ── Table ── */}
+       
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 3, bgcolor: '#ffffff',
           border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
@@ -561,7 +556,7 @@ const AdminWardens = () => {
           </Table>
         </TableContainer>
 
-        {/* ── Add/Edit Warden Dialog ── */}
+       
         <Dialog
           open={openDialog}
           onClose={handleCloseDialog}
@@ -641,7 +636,7 @@ const AdminWardens = () => {
                   }}
                 />
               </Grid>
-              {/* ✅ ADDED: Password field - only show for new warden */}
+              
               {!selectedWarden && (
                 <Grid size={{ xs: 12, sm: 6 }}>
                   <TextField

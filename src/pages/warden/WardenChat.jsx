@@ -50,7 +50,6 @@ import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// Reaction options
 const REACTIONS = [
   { emoji: '👍', label: 'Like' },
   { emoji: '❤️', label: 'Love' },
@@ -78,7 +77,7 @@ const WardenChat = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [offlineMode, setOfflineMode] = useState(false);
   
-  // Reaction states
+ 
   const [reactionAnchorEl, setReactionAnchorEl] = useState(null);
   const [selectedMessageForReaction, setSelectedMessageForReaction] = useState(null);
   const [messageMenuAnchorEl, setMessageMenuAnchorEl] = useState(null);
@@ -90,7 +89,7 @@ const WardenChat = () => {
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
 
-  // Load mock data if API fails
+ 
   const loadMockData = () => {
     const mockStudents = [
       {
@@ -254,13 +253,13 @@ const WardenChat = () => {
     };
   }, [socket, selectedChat]);
 
-  // ✅ FIXED LINE 272: Added catch before finally
+
   const fetchConversations = async () => {
     try {
       setLoading(true);
       
       try {
-        // Try to fetch real data first
+       
         const studentsResponse = await axios.get(`${API_URL}/chat/conversations`, {
           headers: { Authorization: `Bearer ${token}` }
         });
@@ -284,7 +283,7 @@ const WardenChat = () => {
           setFilteredParents(parentsData);
           setOfflineMode(false);
         } else {
-          // If no data, load mock data
+         
           loadMockData();
           setOfflineMode(true);
           setSnackbar({
@@ -295,7 +294,7 @@ const WardenChat = () => {
         }
       } catch (error) {
         console.error('Error fetching conversations:', error);
-        // Load mock data when API fails
+        
         loadMockData();
         setOfflineMode(true);
         setSnackbar({
@@ -316,7 +315,7 @@ const WardenChat = () => {
 
     try {
       if (offlineMode) {
-        // Return mock messages for demo
+       
         const mockMessages = getMockMessages(userId);
         setMessages(mockMessages);
         return;
@@ -336,7 +335,6 @@ const WardenChat = () => {
 
       setMessages(response.data.data || []);
       
-      // Mark as read
       try {
         await axios.put(`${API_URL}/chat/read/${userId}`, {}, {
           headers: { Authorization: `Bearer ${token}` }
@@ -347,7 +345,7 @@ const WardenChat = () => {
 
     } catch (error) {
       console.error('Error fetching messages:', error);
-      // Fallback to mock messages
+      
       const mockMessages = getMockMessages(userId);
       setMessages(mockMessages);
     }
@@ -396,7 +394,7 @@ const WardenChat = () => {
 
     try {
       if (offlineMode) {
-        // Handle demo mode
+        
         const newMsg = {
           _id: Date.now().toString(),
           content: messageContent,
@@ -441,7 +439,7 @@ const WardenChat = () => {
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      // Fallback to demo mode
+      
       const newMsg = {
         _id: Date.now().toString(),
         content: messageContent,
@@ -481,7 +479,7 @@ const WardenChat = () => {
     }
   };
 
-  // Reaction Functions
+ 
   const handleReactionClick = (event, message) => {
     setSelectedMessageForReaction(message);
     setReactionAnchorEl(event.currentTarget);
@@ -524,7 +522,7 @@ const WardenChat = () => {
           }
         } catch (error) {
           console.error('API error, using local reaction:', error);
-          // Fallback to local reaction update
+         
           setMessages(prev => prev.map(msg =>
             msg._id === selectedMessageForReaction._id
               ? { ...msg, reaction: reaction.emoji }
@@ -533,7 +531,7 @@ const WardenChat = () => {
           toast.success(`Added ${reaction.label} reaction (Demo mode)`);
         }
       } else {
-        // Demo mode
+        
         setMessages(prev => prev.map(msg =>
           msg._id === selectedMessageForReaction._id
             ? { ...msg, reaction: reaction.emoji }
@@ -586,7 +584,7 @@ const WardenChat = () => {
             toast.success('Reaction removed');
           }
         } catch (error) {
-          // Fallback to local update
+       
           setMessages(prev => prev.map(msg =>
             msg._id === selectedMessageForRemoveReaction._id
               ? { ...msg, reaction: null }
@@ -595,7 +593,7 @@ const WardenChat = () => {
           toast.success('Reaction removed (Demo mode)');
         }
       } else {
-        // Demo mode
+        
         setMessages(prev => prev.map(msg =>
           msg._id === selectedMessageForRemoveReaction._id
             ? { ...msg, reaction: null }
@@ -611,7 +609,7 @@ const WardenChat = () => {
     handleRemoveReactionClose();
   };
 
-  // Message Menu Functions
+  
   const handleMessageMenuOpen = (event, message) => {
     event.preventDefault();
     setSelectedMessageForMenu(message);
@@ -709,7 +707,7 @@ const WardenChat = () => {
 
   return (
     <Box sx={{ display: 'flex', height: 'calc(100vh - 100px)', width: '100%', bgcolor: '#f0fdf4', p: 3 }}>
-      {/* Demo Mode Banner */}
+      
       <Snackbar
         open={snackbar.open}
         autoHideDuration={6000}
@@ -728,7 +726,7 @@ const WardenChat = () => {
         </Alert>
       </Snackbar>
 
-      {/* Connection Status */}
+     
       {!isConnected && !offlineMode && (
         <Alert 
           severity="warning" 
@@ -749,7 +747,7 @@ const WardenChat = () => {
         </Alert>
       )}
 
-      {/* Conversations List */}
+    
       <Paper sx={{ width: 350, mr: 3, display: 'flex', flexDirection: 'column', borderRadius: '16px', border: '1.5px solid #d1fae5', boxShadow: '0 4px 16px rgba(6,95,70,0.07)' }}>
         <Box p={2}>
           <Typography variant="h6" fontWeight="bold" sx={{ color: '#166534' }}>
@@ -772,7 +770,7 @@ const WardenChat = () => {
           />
         </Box>
         
-        {/* Tabs for Students and Parents */}
+      
         <Tabs value={tabValue} onChange={(e, v) => setTabValue(v)} sx={{ px: 2 }}>
           <Tab label={`Students (${students.length})`} />
           <Tab label={`Parents (${parents.length})`} />
@@ -856,10 +854,10 @@ const WardenChat = () => {
         </Box>
       </Paper>
 
-      {/* Chat Area */}
+      
       {selectedChat ? (
         <Paper sx={{ flex: 1, display: 'flex', flexDirection: 'column', borderRadius: '16px', border: '1.5px solid #d1fae5', boxShadow: '0 4px 16px rgba(6,95,70,0.07)', overflow: 'hidden' }}>
-          {/* Chat Header */}
+         
           <AppBar position="static" color="default" elevation={1} sx={{ bgcolor: '#f5f5f5', borderBottom: '1.5px solid #d1fae5' }}>
             <Toolbar>
               <Box display="flex" alignItems="center" gap={2} flex={1}>
@@ -884,7 +882,7 @@ const WardenChat = () => {
                 </Box>
               </Box>
               
-              {/* Call Buttons */}
+              
               <Box display="flex" gap={1}>
                 {renderCallButton('audio', <PhoneIcon />, 'Audio Call')}
                 {renderCallButton('video', <VideoCallIcon />, 'Video Call')}
@@ -892,7 +890,7 @@ const WardenChat = () => {
             </Toolbar>
           </AppBar>
 
-          {/* Messages */}
+          
           <Box sx={{ flex: 1, overflow: 'auto', p: 3, bgcolor: '#f8fafc' }}>
             {messages.length === 0 ? (
               <Box display="flex" justifyContent="center" alignItems="center" height="100%">
@@ -910,7 +908,6 @@ const WardenChat = () => {
                   </Box>
 
                   {msgs.map((msg, idx) => {
-                    // ✅ FIXED LINE 341 & 585: Use optional chaining and compare with user._id
                     const isMyMessage = msg.sender?._id === user?._id;
                     return (
                       <Box
@@ -939,7 +936,7 @@ const WardenChat = () => {
                               {msg.content}
                             </Typography>
                             
-                            {/* Reaction Button */}
+                            
                             <IconButton
                               size="small"
                               onClick={(e) => handleReactionClick(e, msg)}
@@ -957,7 +954,7 @@ const WardenChat = () => {
                               <EmojiIcon sx={{ fontSize: 14, color: '#10b981' }} />
                             </IconButton>
                             
-                            {/* Reaction Display */}
+                           
                             {msg.reaction && (
                               <Box
                                 sx={{
@@ -1007,7 +1004,7 @@ const WardenChat = () => {
               ))
             )}
             
-            {/* Typing Indicator */}
+           
             {isTyping && !offlineMode && (
               <Box display="flex" alignItems="center" gap={1}>
                 <Avatar sx={{ width: 24, height: 24, bgcolor: '#10b981' }}>
@@ -1021,7 +1018,7 @@ const WardenChat = () => {
             <div ref={messagesEndRef} />
           </Box>
 
-          {/* Message Input */}
+         
           <Box sx={{ p: 2, bgcolor: 'white', borderTop: '1.5px solid #d1fae5' }}>
             <TextField
               fullWidth
@@ -1071,7 +1068,7 @@ const WardenChat = () => {
         </Paper>
       )}
 
-      {/* Reaction Popover - Add Reaction */}
+     
       <Popover
         open={Boolean(reactionAnchorEl)}
         anchorEl={reactionAnchorEl}
@@ -1108,7 +1105,7 @@ const WardenChat = () => {
         </Box>
       </Popover>
 
-      {/* Remove Reaction Confirmation Popover */}
+     
       <Popover
         open={Boolean(removeReactionAnchorEl)}
         anchorEl={removeReactionAnchorEl}
@@ -1149,7 +1146,7 @@ const WardenChat = () => {
         </Box>
       </Popover>
 
-      {/* Message Context Menu */}
+ 
       <Menu
         anchorEl={messageMenuAnchorEl}
         open={Boolean(messageMenuAnchorEl)}
@@ -1168,8 +1165,7 @@ const WardenChat = () => {
         </MenuItem>
         {selectedMessageForMenu && (
           <MenuItem onClick={() => {
-            // ✅ FIXED LINE 585: Don't create fake event object
-            // Instead, set the states directly
+            
             setSelectedMessageForReaction(selectedMessageForMenu);
             setReactionAnchorEl(messageMenuAnchorEl);
             handleMessageMenuClose();

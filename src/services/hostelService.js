@@ -7,7 +7,7 @@ const hostelService = {
       return response.data;
     } catch (error) {
       console.error('Error fetching hostel:', error);
-      // Mock data for development
+      
       return {
         id: hostelId,
         name: 'Boys Hostel A',
@@ -25,7 +25,7 @@ const hostelService = {
       return response.data;
     } catch (error) {
       console.error('Error fetching hostel stats:', error);
-      // Mock data
+      
       return {
         totalStudents: 156,
         totalRooms: 80,

@@ -1346,7 +1346,7 @@ const Home = () => {
         }
       `}</style>
 
-      {/* ── NAVBAR ── */}
+     
       <nav className={`nav ${scrollY > 40 ? 'stuck' : ''}`}>
         <div className="nav-logo">CampusFlow</div>
         <ul className="nav-center">
@@ -1365,7 +1365,7 @@ const Home = () => {
         </div>
       </nav>
 
-      {/* Mobile Menu */}
+     
       <div className={`mob-overlay ${mobileMenuOpen ? 'open':''}`} onClick={() => setMobileMenuOpen(false)} />
       <div className={`mob-panel ${mobileMenuOpen ? 'open':''}`}>
         <div className="mob-head">
@@ -1383,7 +1383,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ── HERO ── */}
+      
       <section className="hero" id="home">
         <div className="hero-mesh"/>
         <div className="hero-dots"/>
@@ -1446,7 +1446,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── TICKER ── */}
+      
       <div className="ticker">
         <div className="ticker-label">Trusted by leading institutions worldwide</div>
         <div className="ticker-row">
@@ -1463,13 +1463,11 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ══════════════════════════════════
-          ✦ HOSTELS — LUXURY REDESIGN
-          ══════════════════════════════════ */}
+      
       <section className="hostels-section" id="hostels">
         <div className="hostels-inner">
 
-          {/* Header row */}
+        
           <div className="hostels-head">
             <div className="hostels-head-left">
               <div className="hostels-kicker">
@@ -1485,7 +1483,7 @@ const Home = () => {
               </p>
             </div>
 
-            {/* Filter tabs */}
+          
             <div className="hostels-filters">
               {filterTypes.map(f => (
                 <button
@@ -1499,7 +1497,7 @@ const Home = () => {
             </div>
           </div>
 
-          {/* Cards grid */}
+        
           <div className="hostels-grid">
             {filteredHostels.map((hostel) => {
               const occPct = Math.round((hostel.currentOccupancy / hostel.capacity) * 100);
@@ -1514,31 +1512,31 @@ const Home = () => {
                   onMouseEnter={() => setHoveredHostel(hostel.id)}
                   onMouseLeave={() => setHoveredHostel(null)}
                 >
-                  {/* Image zone */}
+                 
                   <div className="hcard-img-zone">
                     <img src={hostel.image} alt={hostel.name} />
                     <div className="hcard-img-gradient" />
 
-                    {/* Type badge */}
+                   
                     <div className={`hcard-type-badge ${isBoys ? 'boys' : 'girls'}`}>
                       <div className="hcard-type-dot"/>
                       {hostel.type}
                     </div>
 
-                    {/* Rating badge */}
+                   
                     <div className="hcard-rating-badge">
                       <Star size={11} fill="#d97706" color="#d97706"/>
                       {hostel.rating}
                       <span style={{fontSize:'10px', color:'#94a3b8', fontWeight:600}}>({hostel.reviews})</span>
                     </div>
 
-                    {/* Occupancy pill */}
+                    
                     <div className="hcard-occ-pill">
                       {hostel.currentOccupancy}/{hostel.capacity} occupied
                     </div>
                   </div>
 
-                  {/* Body */}
+                
                   <div className="hcard-body">
                     <h3 className="hcard-name">{hostel.name}</h3>
 
@@ -1547,7 +1545,7 @@ const Home = () => {
                       {hostel.location} · {hostel.distance}
                     </div>
 
-                    {/* Amenity chips */}
+                  
                     <div className="hcard-amenities">
                       {topAmenities.map((a, i) => (
                         <div key={i} className="hcard-amenity">
@@ -1562,7 +1560,7 @@ const Home = () => {
                       )}
                     </div>
 
-                    {/* Occupancy bar */}
+                    
                     <div className="hcard-occ-bar">
                       <div className="hcard-occ-header">
                         <span className="hcard-occ-label">Occupancy</span>
@@ -1577,7 +1575,6 @@ const Home = () => {
                     </div>
                   </div>
 
-                  {/* Footer */}
                   <div className="hcard-footer">
                     <div className="hcard-price-wrap">
                       <div className="hcard-price-from">Starting from</div>
@@ -1596,7 +1593,7 @@ const Home = () => {
             })}
           </div>
 
-          {/* Bottom: summary stats + view all */}
+          
           <div className="hostels-bottom">
             <div className="hostel-summary-strip">
               {[
@@ -1628,7 +1625,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── FEATURES ── */}
+   
       <section className="section features-sec" id="features">
         <div className="section-inner">
           <div className="section-head-center">
@@ -1656,7 +1653,7 @@ const Home = () => {
 
       <div className="divider"/>
 
-      {/* ── STATS ── */}
+      
       <div className="stats-band">
         <div className="stats-band-inner">
           <div className="stats-grid">
@@ -1671,7 +1668,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ── HOW IT WORKS ── */}
+     
       <section className="section process-sec" id="how-it-works">
         <div className="section-inner">
           <div className="section-head-center">
@@ -1702,7 +1699,7 @@ const Home = () => {
 
       <div className="divider"/>
 
-      {/* ── PRICING ── */}
+     
       <section className="section pricing-sec" id="pricing">
         <div className="section-inner">
           <div className="section-head-center">
@@ -1738,7 +1735,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── TESTIMONIALS ── */}
+      
       <section className="section testi-sec" id="testimonials">
         <div className="section-inner">
           <div className="section-head-center">
@@ -1775,7 +1772,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── FAQ ── */}
+     
       <section className="section faq-sec" id="faq">
         <div className="section-inner">
           <div className="section-head-center">
@@ -1797,7 +1794,7 @@ const Home = () => {
         </div>
       </section>
 
-      {/* ── CTA ── */}
+      
       <div className="cta-band">
         <div className="cta-glow"/>
         <div className="cta-ring"/><div className="cta-ring-2"/>
@@ -1816,7 +1813,7 @@ const Home = () => {
         </div>
       </div>
 
-      {/* ── CONTACT ── */}
+     
       <section className="section contact-sec" id="contact">
         <div className="section-inner">
           <div className="section-head-center">

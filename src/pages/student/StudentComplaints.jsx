@@ -60,65 +60,55 @@ import {
 import { styled } from '@mui/material/styles';
 import studentService from "../../services/studentService";
 
-/* ─────────────────────────────────────────────
-   White & Green Theme System (Light Mode)
-───────────────────────────────────────────── */
+
 const theme = {
-  // Background Colors
-  bg: '#f8fafc',           // Main background: light gray
-  bgLight: '#ffffff',       // White
-  bgHover: '#f1f5f9',      // Hover state
+  bg: '#f8fafc',          
+  bgLight: '#ffffff',       
+  bgHover: '#f1f5f9',      
   
-  // Card Colors
-  cardBg: '#ffffff',        // White cards
-  cardBorder: '#e2e8f0',    // Light gray border
+  cardBg: '#ffffff',        
+  cardBorder: '#e2e8f0',   
   
-  // Primary Colors - Green
-  primary: '#059669',       // Emerald green
-  primaryLight: '#34d399',  // Light green
-  primaryDark: '#047857',   // Dark green
-  primarySoft: '#ecfdf5',   // Very light green background
-  
-  // Status Colors
-  pending: '#f59e0b',       // Amber
+  primary: '#059669',      
+  primaryLight: '#34d399', 
+  primaryDark: '#047857',   
+  primarySoft: '#ecfdf5',   
+
+  pending: '#f59e0b',      
   pendingLight: '#fef3c7',
-  inProgress: '#8b5cf6',    // Purple
+  inProgress: '#8b5cf6',    
   inProgressLight: '#ede9fe',
-  resolved: '#10b981',      // Green
+  resolved: '#10b981',      
   resolvedLight: '#d1fae5',
   
-  // Priority Colors
-  low: '#64748b',           // Slate
-  medium: '#f59e0b',        // Amber
-  high: '#ef4444',          // Red
-  urgent: '#dc2626',        // Dark red
+  low: '#64748b',          
+  medium: '#f59e0b',       
+  high: '#ef4444',        
+  urgent: '#dc2626',        
   
-  // Category Colors
-  electrical: '#3b82f6',    // Blue
-  plumbing: '#0ea5e9',      // Sky blue
-  carpentry: '#8b5cf6',     // Purple
-  cleaning: '#10b981',      // Green
+  electrical: '#3b82f6',   
+  plumbing: '#0ea5e9',      
+  carpentry: '#8b5cf6',    
+  cleaning: '#10b981',     
+ 
   
-  // Text Colors
-  textPrimary: '#0f172a',   // Dark slate
-  textSecondary: '#475569', // Medium slate
-  textMuted: '#64748b',     // Light slate
-  
-  // Borders
+  textPrimary: '#0f172a',   
+  textSecondary: '#475569', 
+  textMuted: '#64748b',     
+
   border: '#e2e8f0',
   borderLight: '#f1f5f9',
   
-  // Gradients
+ 
   primaryGradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
   pendingGradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
   inProgressGradient: 'linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%)',
   resolvedGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
   
-  // Shadows
   cardShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   hoverShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
   
-  // Border Radius
+
   borderRadius: {
     sm: '6px',
     md: '8px',
@@ -126,14 +116,12 @@ const theme = {
     xl: '16px'
   },
   
-  // Typography
+
   fontPrimary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   fontSecondary: "'SF Pro Display', 'Inter', 'Segoe UI', sans-serif",
 };
 
-/* ─────────────────────────────────────────────
-   Styled Components
-───────────────────────────────────────────── */
+
 const StyledPaper = styled(Paper)(({ theme: muiTheme }) => ({
   padding: muiTheme.spacing(3),
   margin: muiTheme.spacing(2),
@@ -320,7 +308,7 @@ const StudentComplaints = () => {
   const [viewComplaint, setViewComplaint] = useState(null);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   
-  // Simple form state
+ 
   const [newComplaint, setNewComplaint] = useState({
     title: '',
     description: '',
@@ -330,7 +318,7 @@ const StudentComplaints = () => {
     isAnonymous: false
   });
 
-  // Load complaints from localStorage on mount
+ 
   useEffect(() => {
     const saved = localStorage.getItem('myComplaints');
     if (saved) {
@@ -371,7 +359,7 @@ const StudentComplaints = () => {
     try {
       setSubmitting(true);
       
-      // Create complaint object
+      
       const complaintData = {
   title: newComplaint.title,
   description: newComplaint.description,
@@ -381,10 +369,10 @@ const StudentComplaints = () => {
   isAnonymous: newComplaint.isAnonymous
 };
 
-      // Try to send to backend, but don't wait for it
+      
    const res = await studentService.createComplaint(complaintData);
 
-// backend ninn vann data use cheyyanam
+
 const updatedComplaints = [res.data, ...complaints];
 
 setComplaints(updatedComplaints);
@@ -393,7 +381,7 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
       showSnackbar('Complaint raised: ' + res.data.complaintNumber, 'success');
       setOpenDialog(false);
       
-      // Reset form
+      
       setNewComplaint({
         title: '',
         description: '',
@@ -533,7 +521,7 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
       `}</style>
 
       <StyledPaper elevation={0}>
-        {/* Header */}
+        
         <Box 
           display="flex" 
           justifyContent="space-between" 
@@ -599,7 +587,7 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
           </Box>
         </Box>
 
-        {/* Stats Cards */}
+       
         <Box sx={{ mb: 4 }}>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -668,7 +656,7 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
           </Grid>
         </Box>
 
-        {/* Complaints List */}
+        
         {complaints.length > 0 ? (
           <TableContainer 
             component={Paper} 
@@ -801,7 +789,7 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
           </Paper>
         )}
 
-        {/* Raise Complaint Dialog */}
+     
         <StyledDialog 
           open={openDialog} 
           onClose={() => setOpenDialog(false)} 
@@ -913,7 +901,7 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
           </form>
         </StyledDialog>
 
-        {/* View Dialog */}
+       
         <StyledDialog 
           open={openViewDialog} 
           onClose={() => setOpenViewDialog(false)} 
@@ -930,7 +918,6 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
           <StyledDialogContent>
             {viewComplaint && (
               <Box>
-                {/* Header with complaint number */}
                 <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
                   <Box>
                     <Typography variant="caption" sx={{ color: theme.textMuted, display: 'block' }}>
@@ -949,7 +936,6 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
 
                 <Divider sx={{ borderColor: theme.borderLight, mb: 3 }} />
 
-                {/* Title */}
                 <Box mb={3}>
                   <Typography variant="caption" sx={{ color: theme.textMuted, display: 'block', mb: 1 }}>
                     Title
@@ -959,7 +945,6 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
                   </Typography>
                 </Box>
 
-                {/* Description */}
                 <Box mb={3}>
                   <Typography variant="caption" sx={{ color: theme.textMuted, display: 'block', mb: 1 }}>
                     Description
@@ -976,7 +961,6 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
                   </Paper>
                 </Box>
 
-                {/* Details Grid */}
                 <Grid container spacing={2} sx={{ mb: 3 }}>
                   <Grid size={{ xs: 12, md: 4 }}>
                     <Box sx={{ p: 2, background: theme.bgLight, borderRadius: theme.borderRadius.lg, border: `1px solid ${theme.border}` }}>
@@ -1021,7 +1005,6 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
                   </Grid>
                 </Grid>
 
-                {/* Timeline */}
                 {viewComplaint.timeline && viewComplaint.timeline.length > 0 && (
                   <>
                     <Divider sx={{ borderColor: theme.borderLight, mb: 3 }} />
@@ -1079,7 +1062,6 @@ localStorage.setItem('myComplaints', JSON.stringify(updatedComplaints));
           </DialogActions>
         </StyledDialog>
 
-        {/* Snackbar */}
         <Snackbar
           open={snackbar.open}
           autoHideDuration={6000}

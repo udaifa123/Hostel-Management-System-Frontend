@@ -24,7 +24,7 @@ const Profile = () => {
     dateOfBirth: user?.dateOfBirth || '',
     gender: user?.gender || '',
     bloodGroup: user?.bloodGroup || '',
-    // Parent fields
+    
     occupation: user?.occupation || '',
     relationship: user?.relationship || '',
     alternatePhone: user?.alternatePhone || ''
@@ -38,7 +38,6 @@ const Profile = () => {
 
   const [showPasswordSection, setShowPasswordSection] = useState(false);
 
-  // Fetch latest profile data
   useEffect(() => {
     fetchProfileData();
   }, []);
@@ -85,7 +84,7 @@ const Profile = () => {
         if (response.data) {
           toast.success('Profile updated successfully!');
           setIsEditing(false);
-          fetchProfileData(); // Refresh data
+          fetchProfileData();
         }
       }
     } catch (error) {
@@ -110,8 +109,7 @@ const Profile = () => {
 
     setLoading(true);
     try {
-      // API call to change password
-      // await authAPI.changePassword(passwordData);
+  
       toast.success('Password changed successfully!');
       setPasswordData({
         currentPassword: '',
@@ -140,7 +138,7 @@ const Profile = () => {
 
   return (
     <div className="max-w-5xl mx-auto px-4 py-8">
-      {/* Profile Header */}
+ 
       <div className="bg-gradient-to-r from-blue-600 to-indigo-600 rounded-2xl shadow-xl overflow-hidden mb-6">
         <div className="relative h-32 bg-gradient-to-r from-blue-800 to-indigo-800">
           <button className="absolute top-4 right-4 bg-white/20 p-2 rounded-full hover:bg-white/30 transition">
@@ -192,11 +190,11 @@ const Profile = () => {
         </div>
       </div>
 
-      {/* Profile Content */}
+      
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Left Column - Personal Info */}
+       
         <div className="lg:col-span-2 space-y-6">
-          {/* Personal Information */}
+          
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <User size={20} className="text-blue-600" />
@@ -283,7 +281,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Academic Information (for students) */}
           {user?.role === 'student' && (
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -361,7 +358,6 @@ const Profile = () => {
             </div>
           )}
 
-          {/* Parent Information */}
           {user?.role === 'parent' && (
             <div className="bg-white rounded-xl shadow-md p-6">
               <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
@@ -423,9 +419,7 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Right Column - Account Settings */}
         <div className="space-y-6">
-          {/* Account Info */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4">Account Info</h2>
             
@@ -449,7 +443,6 @@ const Profile = () => {
             </div>
           </div>
 
-          {/* Change Password */}
           <div className="bg-white rounded-xl shadow-md p-6">
             <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
               <Key size={20} className="text-blue-600" />
@@ -513,7 +506,6 @@ const Profile = () => {
             )}
           </div>
 
-          {/* Danger Zone */}
           <div className="bg-white rounded-xl shadow-md p-6 border border-red-200">
             <h2 className="text-lg font-semibold text-red-600 mb-4">Danger Zone</h2>
             

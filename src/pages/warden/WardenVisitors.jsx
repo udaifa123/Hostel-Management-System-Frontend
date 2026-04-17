@@ -97,25 +97,21 @@ const WardenVisits = () => {
     try {
       console.log('Fetching all visit requests...');
       
-      // Fetch pending visits
       const pendingResponse = await axios.get(`${API_URL}/warden/visitors/pending`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Pending visits response:', pendingResponse.data);
       
-      // Fetch all approved visits (not just active)
       const approvedResponse = await axios.get(`${API_URL}/warden/visitors/approved`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Approved visits response:', approvedResponse.data);
       
-      // Fetch rejected visits
       const rejectedResponse = await axios.get(`${API_URL}/warden/visitors/rejected`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       console.log('Rejected visits response:', rejectedResponse.data);
       
-      // Fetch completed visits
       const completedResponse = await axios.get(`${API_URL}/warden/visitors/completed`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -126,35 +122,30 @@ const WardenVisits = () => {
       let rejectedData = [];
       let completedData = [];
       
-      // Process pending
       if (pendingResponse.data && pendingResponse.data.success && pendingResponse.data.data) {
         pendingData = pendingResponse.data.data;
       } else if (pendingResponse.data && Array.isArray(pendingResponse.data)) {
         pendingData = pendingResponse.data;
       }
       
-      // Process approved
       if (approvedResponse.data && approvedResponse.data.success && approvedResponse.data.data) {
         approvedData = approvedResponse.data.data;
       } else if (approvedResponse.data && Array.isArray(approvedResponse.data)) {
         approvedData = approvedResponse.data;
       }
       
-      // Process rejected
       if (rejectedResponse.data && rejectedResponse.data.success && rejectedResponse.data.data) {
         rejectedData = rejectedResponse.data.data;
       } else if (rejectedResponse.data && Array.isArray(rejectedResponse.data)) {
         rejectedData = rejectedResponse.data;
       }
       
-      // Process completed
       if (completedResponse.data && completedResponse.data.success && completedResponse.data.data) {
         completedData = completedResponse.data.data;
       } else if (completedResponse.data && Array.isArray(completedResponse.data)) {
         completedData = completedResponse.data;
       }
       
-      // Combine all visits
       const allVisits = [...pendingData, ...approvedData, ...rejectedData, ...completedData];
       console.log('All visits:', allVisits);
       console.log('Stats - Pending:', pendingData.length, 'Approved:', approvedData.length, 'Rejected:', rejectedData.length, 'Completed:', completedData.length);
@@ -164,7 +155,6 @@ const WardenVisits = () => {
       
     } catch (error) {
       console.error('Error fetching visits:', error);
-      // Fallback to just pending and active if specific endpoints don't exist
       try {
         console.log('Trying fallback endpoints...');
         const pendingResponse = await axios.get(`${API_URL}/warden/visitors/pending`, {
@@ -338,10 +328,8 @@ const WardenVisits = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-      {/* Top accent bar */}
       <Box sx={{ height: 4, bgcolor: G[600], mb: 3, borderRadius: 2 }} />
 
-      {/* Header */}
       <Paper elevation={0} sx={{
         p: 3,
         mb: 4,
@@ -386,7 +374,6 @@ const WardenVisits = () => {
         </Button>
       </Paper>
 
-      {/* Stats Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={2.4}>
           <Card sx={{ borderRadius: 3, bgcolor: G[800], border: `1px solid ${G[700]}` }}>
@@ -450,7 +437,7 @@ const WardenVisits = () => {
         </Grid>
       </Grid>
 
-      {/* Tabs */}
+      
       <Paper elevation={0} sx={{ mb: 3, borderRadius: 2.5, border: `1px solid ${G[200]}` }}>
         <Tabs 
           value={tabValue} 
@@ -473,7 +460,7 @@ const WardenVisits = () => {
         </Tabs>
       </Paper>
 
-      {/* Visits List */}
+      
       {filteredVisits.length === 0 ? (
         <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 3, border: `1px solid ${G[200]}` }}>
           <ScheduleIcon sx={{ fontSize: 80, color: G[400], mb: 2 }} />
@@ -648,7 +635,7 @@ const WardenVisits = () => {
         </Grid>
       )}
 
-      {/* Approve/Reject Dialog */}
+      
       <Dialog 
         open={openDialog} 
         onClose={() => setOpenDialog(false)} 
@@ -747,7 +734,7 @@ const WardenVisits = () => {
         </DialogActions>
       </Dialog>
 
-      {/* View Details Dialog */}
+      
       <Dialog 
         open={openViewDialog} 
         onClose={() => setOpenViewDialog(false)} 
@@ -845,7 +832,7 @@ const WardenVisits = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
+      
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

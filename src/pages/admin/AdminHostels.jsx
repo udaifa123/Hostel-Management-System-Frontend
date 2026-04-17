@@ -49,7 +49,7 @@ import adminService from '../../services/adminService';
 import AdminLayout from '../../components/Layout/AdminLayout';
 import toast from 'react-hot-toast';
 
-// ─── Green Design Tokens ───────────────────────────────────────────────────────
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -65,7 +65,7 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ─── Stat Card ─────────────────────────────────────────────────────────────────
+
 const StatCard = ({ label, value, icon: Icon, dark = false }) => {
   const IconComponent = Icon;
   return (
@@ -109,7 +109,7 @@ const StatCard = ({ label, value, icon: Icon, dark = false }) => {
   );
 };
 
-// ─── Dialog TextField style helper ────────────────────────────────────────────
+
 const dialogField = {
   '& .MuiOutlinedInput-root': {
     borderRadius: 2,
@@ -123,9 +123,9 @@ const dialogField = {
   '& input': { color: G[800] },
 };
 
-// ─── Main Component ────────────────────────────────────────────────────────────
+
 const AdminHostels = () => {
-  // const navigate = useNavigate();
+  
   const [loading, setLoading] = useState(true);
   const [hostels, setHostels] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -153,7 +153,7 @@ const AdminHostels = () => {
       const response = await adminService.getHostels();
       console.log('Fetch hostels response:', response);
       
-      // Check different possible response structures
+      
       if (response.success && response.hostels) {
         setHostels(response.hostels);
         console.log('Hostels loaded:', response.hostels.length);
@@ -227,26 +227,26 @@ const AdminHostels = () => {
     }
   };
 
-  // Convert type to lowercase for backend
+
   const getTypeForBackend = (typeValue) => {
     return typeValue.toLowerCase();
   };
 
   const handleSubmit = async () => {
     try {
-      // Validate required fields
+      
       if (!formData.name || !formData.code || !formData.location || !formData.capacity) {
         toast.error('Please fill all required fields');
         return;
       }
 
-      // Convert type to match backend expectations
+      
       const convertedType = getTypeForBackend(formData.type);
       
       console.log('Original type:', formData.type);
       console.log('Converted type:', convertedType);
       
-      // Prepare data for submission
+     
       const submitData = {
         name: formData.name.trim(),
         code: formData.code.trim().toUpperCase(),
@@ -325,11 +325,11 @@ const AdminHostels = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent */}
+      
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
-        {/* ── Header ── */}
+        
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -374,7 +374,7 @@ const AdminHostels = () => {
           </Box>
         </Paper>
 
-        {/* ── Stat Cards ── */}
+       
         <Grid container spacing={2.5} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Hostels"   value={hostels.length}  icon={HomeIcon}   dark />
@@ -390,7 +390,7 @@ const AdminHostels = () => {
           </Grid>
         </Grid>
 
-        {/* ── Search Bar ── */}
+     
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <TextField
             fullWidth
@@ -427,7 +427,6 @@ const AdminHostels = () => {
           </IconButton>
         </Box>
 
-        {/* ── Table ── */}
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 3, bgcolor: '#ffffff',
           border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
@@ -451,7 +450,7 @@ const AdminHostels = () => {
                 filteredHostels.map((hostel) => {
                   const occ = Math.round(((hostel.stats?.occupiedRooms || 0) / (hostel.stats?.totalRooms || 1)) * 100);
                   
-                  // ✅ FIXED: Line 128 - Safe type display with proper case handling
+                  
                   const typeMap = {
                     girls: 'Girls',
                     boys: 'Boys',
@@ -590,7 +589,7 @@ const AdminHostels = () => {
           </Table>
         </TableContainer>
 
-        {/* ── Add / Edit Dialog ── */}
+        
         <Dialog
           open={openDialog}
           onClose={handleCloseDialog}

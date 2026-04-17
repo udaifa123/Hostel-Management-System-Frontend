@@ -64,7 +64,6 @@ import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// ==================== Green Design Tokens ====================
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -80,7 +79,6 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// Progress Bar Component
 const ProgressBar = ({ value, label, color, total }) => {
   const percentage = total > 0 ? (value / total) * 100 : 0;
   return (
@@ -106,7 +104,6 @@ const ProgressBar = ({ value, label, color, total }) => {
   );
 };
 
-// Stats Card with Progress
 const StatsCard = ({ title, value, total, color, icon, subtitle }) => {
   const percentage = total > 0 ? (value / total) * 100 : 0;
   return (
@@ -212,13 +209,11 @@ const WardenMaintenance = () => {
       setRequests(requestsData);
       setStats(statsData);
       
-      // Calculate completion rate
       const total = requestsData.length;
       const completed = requestsData.filter(r => r.status === 'completed').length;
       const rate = total > 0 ? (completed / total) * 100 : 0;
       setCompletionRate(rate);
       
-      // Calculate average resolution time (in hours)
       const completedRequests = requestsData.filter(r => r.status === 'completed' && r.startedAt && r.completedAt);
       if (completedRequests.length > 0) {
         const totalTime = completedRequests.reduce((sum, r) => {
@@ -404,7 +399,6 @@ const WardenMaintenance = () => {
     return true;
   });
 
-  // Calculate completion percentage by priority
   const getPriorityStats = () => {
     const priorities = ['urgent', 'high', 'medium', 'low'];
     return priorities.map(priority => {
@@ -435,7 +429,6 @@ const WardenMaintenance = () => {
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Header */}
         <Paper elevation={0} sx={{
           p: 3,
           mb: 4,
@@ -479,7 +472,6 @@ const WardenMaintenance = () => {
           </Button>
         </Paper>
 
-        {/* Overall Progress Card */}
         <Card sx={{ mb: 4, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, overflow: 'hidden' }}>
           <Box sx={{ p: 3 }}>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -560,7 +552,6 @@ const WardenMaintenance = () => {
           </Box>
         </Card>
 
-        {/* Stats Cards with Progress */}
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid size={{ xs: 12, sm: 6, md: 3 }}>
             <StatsCard
@@ -604,7 +595,6 @@ const WardenMaintenance = () => {
           </Grid>
         </Grid>
 
-        {/* Tabs */}
         <Paper elevation={0} sx={{ mb: 3, borderRadius: 2.5, border: `1px solid ${G[200]}` }}>
           <Tabs
             value={tabValue}
@@ -626,7 +616,6 @@ const WardenMaintenance = () => {
           </Tabs>
         </Paper>
 
-        {/* Maintenance Requests Table */}
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 3,
           bgcolor: '#ffffff',
@@ -655,7 +644,6 @@ const WardenMaintenance = () => {
                 const blockName = req.roomId?.block ? `Block ${req.roomId.block}` : '';
                 const studentName = req.reportedBy?.name || req.studentName || 'Unknown';
                 
-                // Calculate progress based on status
                 let progressValue = 0;
                 if (req.status === 'pending') progressValue = 20;
                 else if (req.status === 'assigned') progressValue = 40;
@@ -793,7 +781,6 @@ const WardenMaintenance = () => {
           </Table>
         </TableContainer>
 
-        {/* Create Request Dialog */}
         <Dialog 
           open={openDialog} 
           onClose={() => setOpenDialog(false)} 
@@ -954,7 +941,6 @@ const WardenMaintenance = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Add Note Dialog */}
         <Dialog 
           open={openNoteDialog} 
           onClose={() => setOpenNoteDialog(false)} 

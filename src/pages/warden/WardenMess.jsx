@@ -63,7 +63,6 @@ import { useAuth } from '../../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// ==================== Green Design Tokens ====================
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -79,7 +78,6 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ==================== Constants ====================
 const DAYS = [
   { id: 'monday', label: 'Monday', icon: <EventNoteIcon /> },
   { id: 'tuesday', label: 'Tuesday', icon: <EventNoteIcon /> },
@@ -97,7 +95,6 @@ const MEAL_TYPES = [
   { id: 'dinner', label: 'Dinner', icon: <DinnerIcon />, time: '7:00 PM - 9:00 PM', color: '#9c27b0' }
 ];
 
-// Demo data for when backend is not available
 const DEMO_MENU = {
   monday: { 
     breakfast: 'Poha, Tea, Banana', 
@@ -143,11 +140,9 @@ const DEMO_MENU = {
   }
 };
 
-// ==================== Main Component ====================
 const WardenMess = () => {
   const { token } = useAuth();
   
-  // State
   const [loading, setLoading] = useState(true);
   const [menu, setMenu] = useState({});
   const [selectedDay, setSelectedDay] = useState(null);
@@ -167,7 +162,6 @@ const WardenMess = () => {
     lastUpdated: null
   });
 
-  // Calculate stats
   const calculateStats = (menuData) => {
     let total = 0;
     let special = 0;
@@ -189,7 +183,6 @@ const WardenMess = () => {
     });
   };
 
-  // Fetch menu data
   const fetchMenu = useCallback(async () => {
     try {
       setLoading(true);
@@ -205,7 +198,6 @@ const WardenMess = () => {
           setMenu(menuData);
           calculateStats(menuData);
         } else {
-          // Use demo data
           setMenu(DEMO_MENU);
           calculateStats(DEMO_MENU);
           showSnackbar('Using demo menu data', 'info');
@@ -254,10 +246,8 @@ const WardenMess = () => {
       const updatedMenu = { ...menu };
       
       if (selectedMeal === 'all') {
-        // Update all meals for the day
         updatedMenu[selectedDay] = { ...editForm };
       } else {
-        // Update single meal
         if (!updatedMenu[selectedDay]) updatedMenu[selectedDay] = {};
         updatedMenu[selectedDay][selectedMeal] = editForm.value;
       }
@@ -380,10 +370,8 @@ const WardenMess = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-      {/* Top accent bar */}
       <Box sx={{ height: 4, bgcolor: G[600], mb: 3, borderRadius: 2 }} />
 
-      {/* Header */}
       <Paper elevation={0} sx={{
         p: 3,
         mb: 4,
@@ -445,7 +433,6 @@ const WardenMess = () => {
         </Box>
       </Paper>
 
-      {/* Stats Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ borderRadius: 3, bgcolor: G[800], border: `1px solid ${G[700]}` }}>
@@ -525,7 +512,6 @@ const WardenMess = () => {
         </Grid>
       </Grid>
 
-      {/* Tabs */}
       <Paper elevation={0} sx={{ mb: 3, borderRadius: 2.5, border: `1px solid ${G[200]}` }}>
         <Tabs
           value={tabValue}
@@ -546,7 +532,6 @@ const WardenMess = () => {
         </Tabs>
       </Paper>
 
-      {/* Weekly Menu View */}
       {tabValue === 0 && (
         <Grid container spacing={3}>
           {DAYS.map((day) => {
@@ -667,7 +652,6 @@ const WardenMess = () => {
         </Grid>
       )}
 
-      {/* Meal Times View */}
       {tabValue === 1 && (
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 3,
@@ -716,7 +700,6 @@ const WardenMess = () => {
         </TableContainer>
       )}
 
-      {/* History View */}
       {tabValue === 2 && (
         <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 3, border: `1px solid ${G[200]}` }}>
           <HistoryIcon sx={{ fontSize: 64, color: G[400], mb: 2 }} />
@@ -727,7 +710,7 @@ const WardenMess = () => {
         </Paper>
       )}
 
-      {/* Action Menu */}
+      
       <Menu anchorEl={anchorEl} open={Boolean(anchorEl)} onClose={handleMenuClose}>
         <MenuItem onClick={() => { handleMenuClose(); handleEditDay(actionDay); }}>
           <ListItemIcon><EditIcon fontSize="small" sx={{ color: G[600] }} /></ListItemIcon>
@@ -744,7 +727,7 @@ const WardenMess = () => {
         </MenuItem>
       </Menu>
 
-      {/* Edit Meal Dialog */}
+      
       <Dialog 
         open={openDialog} 
         onClose={() => setOpenDialog(false)} 
@@ -814,7 +797,7 @@ const WardenMess = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Copy Day Dialog */}
+      
       <Dialog 
         open={openCopyDialog} 
         onClose={() => setOpenCopyDialog(false)} 
@@ -868,7 +851,6 @@ const WardenMess = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}
@@ -883,7 +865,7 @@ const WardenMess = () => {
   );
 };
 
-// History icon component
+
 const HistoryIcon = ({ sx }) => (
   <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" style={sx}>
     <path d="M13 3c-4.97 0-9 4.03-9 9H1l3.89 3.89.07.14L9 12H6c0-3.87 3.13-7 7-7s7 3.13 7 7-3.13 7-7 7c-1.93 0-3.68-.79-4.94-2.06l-1.42 1.42C8.27 19.99 10.51 21 13 21c4.97 0 9-4.03 9-9s-4.03-9-9-9zm-1 5v5l4.28 2.54.72-1.21-3.5-2.08V8H12z"/>

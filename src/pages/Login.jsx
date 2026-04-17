@@ -47,7 +47,6 @@ const Login = () => {
       if (result && result.success) {
         toast.success(`Welcome back, ${result.user.name || 'User'}!`);
         
-        // Redirect based on user role
         switch(result.user.role) {
           case 'admin':
             navigate('/admin/dashboard');
@@ -89,16 +88,13 @@ const Login = () => {
 
   return (
     <div className="login-wrapper">
-      {/* Decorative Background */}
       <div className="login-bg">
         <div className="bg-shape shape-1"></div>
         <div className="bg-shape shape-2"></div>
         <div className="bg-shape shape-3"></div>
       </div>
 
-      {/* Main Container */}
       <div className="login-container">
-        {/* Left Side - Hero Section */}
         <div className="login-hero">
           <div className="hero-content">
             <div className="hero-badge">
@@ -151,7 +147,6 @@ const Login = () => {
           </div>
         </div>
 
-        {/* Right Side - Login Form */}
         <div className="login-form-section">
           <div className="form-card">
             <div className="form-header">
@@ -159,7 +154,6 @@ const Login = () => {
               <p>Please select your role and login</p>
             </div>
 
-            {/* Role Selector */}
             <div className="role-selector">
               {roles.map((role) => (
                 <button
@@ -182,7 +176,6 @@ const Login = () => {
               ))}
             </div>
 
-            {/* Role Preview */}
             <div className="role-preview" style={{ backgroundColor: roles.find(r => r.id === selectedRole)?.bgColor }}>
               <p>{getDashboardPreview()}</p>
             </div>
@@ -289,7 +282,6 @@ const Login = () => {
         </div>
       </div>
 
-      {/* Styles */}
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800;900&family=Nunito:wght@300;400;500;600;700;800&display=swap');
 

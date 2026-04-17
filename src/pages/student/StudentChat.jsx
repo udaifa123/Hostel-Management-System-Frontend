@@ -293,7 +293,7 @@ const StudentChat = () => {
 
   return (
     <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', flexDirection: 'column' }}>
-      {/* Connection Status */}
+   
       {!isConnected && (
         <Alert 
           severity="warning" 
@@ -304,7 +304,7 @@ const StudentChat = () => {
         </Alert>
       )}
 
-      {/* Chat Header */}
+    
       <Paper sx={{ p: 2, mb: 2 }}>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center" gap={2}>
@@ -326,7 +326,7 @@ const StudentChat = () => {
             </Box>
           </Box>
           
-          {/* Call Buttons */}
+         
           <Box display="flex" gap={1}>
             {renderCallButton('audio', <PhoneIcon />, 'Audio Call')}
             {renderCallButton('video', <VideoCallIcon />, 'Video Call')}
@@ -334,7 +334,7 @@ const StudentChat = () => {
         </Box>
       </Paper>
 
-      {/* Messages Area */}
+     
       <Paper sx={{ flex: 1, overflow: 'auto', p: 2, mb: 2, bgcolor: '#f8fafc' }}>
         {messages.length === 0 ? (
           <Box display="flex" justifyContent="center" alignItems="center" height="100%">
@@ -393,7 +393,6 @@ const StudentChat = () => {
           ))
         )}
         
-        {/* Typing Indicator */}
         {isTyping && (
           <Box display="flex" alignItems="center" gap={1}>
             <Avatar sx={{ width: 24, height: 24, bgcolor: '#10b981' }}>
@@ -407,7 +406,7 @@ const StudentChat = () => {
         <div ref={messagesEndRef} />
       </Paper>
 
-      {/* Message Input */}
+      
       <Paper sx={{ p: 2 }}>
         <TextField
           fullWidth
@@ -435,7 +434,7 @@ const StudentChat = () => {
         />
       </Paper>
 
-      {/* Snackbar */}
+      
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

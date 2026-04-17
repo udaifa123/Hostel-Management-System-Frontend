@@ -47,7 +47,7 @@ import {
 import adminService from '../../services/adminService';
 import toast from 'react-hot-toast';
 
-// ─── Green Design Tokens ───────────────────────────────────────────────
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -63,7 +63,6 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ─── Stat Card Component ───────────────────────────────────────────────────────
 const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
   <Card elevation={0} sx={{
     borderRadius: 3,
@@ -104,7 +103,7 @@ const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
   </Card>
 );
 
-// ─── Main Component ────────────────────────────────────────────────────────────
+
 const AdminStudents = () => {
   const [students, setStudents] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -140,7 +139,7 @@ const AdminStudents = () => {
       const response = await adminService.getStudents();
       console.log('Students API Response:', response);
       
-      // Handle different response structures
+      
       let studentsData = [];
       if (response.success && response.students) {
         studentsData = response.students;
@@ -152,7 +151,7 @@ const AdminStudents = () => {
         studentsData = response;
       }
       
-      // Transform the data to a consistent format
+      
       const transformedStudents = studentsData.map(student => ({
         _id: student._id || student.id,
         name: student.name,
@@ -377,12 +376,12 @@ const AdminStudents = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
+ 
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
 
-        {/* ── Header ── */}
+        
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -427,7 +426,7 @@ const AdminStudents = () => {
           </Box>
         </Paper>
 
-        {/* ── Stat Cards - FIXED GAP ── */}
+       
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={2.4}>
             <StatCard label="Total Students" value={stats.total} icon={SchoolIcon} dark />
@@ -446,7 +445,7 @@ const AdminStudents = () => {
           </Grid>
         </Grid>
 
-        {/* ── Search ── */}
+        
         <Box sx={{ display: 'flex', gap: 2, mb: 3 }}>
           <TextField
             fullWidth
@@ -483,7 +482,7 @@ const AdminStudents = () => {
           </IconButton>
         </Box>
 
-        {/* ── Table ── */}
+        
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 3, bgcolor: '#ffffff',
           border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
@@ -509,7 +508,7 @@ const AdminStudents = () => {
                     '&:hover': { bgcolor: G[50] },
                     '& td': { borderBottom: `1px solid ${G[100]}`, py: 1.75 }
                   }}>
-                    {/* Name + Email */}
+                    
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                         <Avatar sx={{
@@ -533,7 +532,7 @@ const AdminStudents = () => {
                       </Box>
                     </TableCell>
 
-                    {/* Phone */}
+                   
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                         <PhoneIcon sx={{ fontSize: 14, color: G[400] }} />
@@ -541,7 +540,7 @@ const AdminStudents = () => {
                       </Box>
                     </TableCell>
 
-                    {/* Hostel & Room */}
+                    
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.75 }}>
                         <Avatar sx={{ bgcolor: G[100], width: 26, height: 26, borderRadius: 1 }}>
@@ -558,7 +557,7 @@ const AdminStudents = () => {
                       </Box>
                     </TableCell>
 
-                    {/* Course & Year */}
+                    
                     <TableCell>
                       <Box>
                         <Typography sx={{ color: G[800], fontSize: '0.85rem', fontWeight: 500 }}>
@@ -570,7 +569,7 @@ const AdminStudents = () => {
                       </Box>
                     </TableCell>
 
-                    {/* Attendance */}
+                    
                     <TableCell>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
                         <Box sx={{ minWidth: 45 }}>
@@ -599,7 +598,7 @@ const AdminStudents = () => {
                       </Box>
                     </TableCell>
 
-                    {/* Fees */}
+                    
                     <TableCell>
                       <Chip
                         label={student.feesStatus === 'paid' ? 'Paid' : student.feesStatus === 'pending' ? 'Pending' : 'Overdue'}
@@ -617,7 +616,7 @@ const AdminStudents = () => {
                       />
                     </TableCell>
 
-                    {/* Status */}
+                    
                     <TableCell>
                       <Chip
                         label={student.status === 'active' ? 'Active' : 'Inactive'}
@@ -635,7 +634,7 @@ const AdminStudents = () => {
                       />
                     </TableCell>
 
-                    {/* Actions */}
+                    
                     <TableCell align="right">
                       <IconButton size="small" onClick={() => handleOpenDialog(student)} sx={{
                         color: G[600], bgcolor: G[100], borderRadius: 1.5, mr: 1,
@@ -675,7 +674,7 @@ const AdminStudents = () => {
           </Table>
         </TableContainer>
 
-        {/* ── Add/Edit Student Dialog ── */}
+       
         <Dialog
           open={openDialog}
           onClose={handleCloseDialog}

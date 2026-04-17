@@ -1,7 +1,6 @@
 import api from './api';
 
 const studentService = {
-  // ==================== DASHBOARD ====================
   getDashboardStats: async () => {
     try {
       console.log('Fetching dashboard stats...');
@@ -14,7 +13,6 @@ const studentService = {
     }
   },
 
-  // ==================== PROFILE ====================
   getProfile: async () => {
     try {
       console.log('Fetching profile...');
@@ -39,7 +37,6 @@ const studentService = {
     }
   },
 
-  // ==================== LEAVES ====================
   getLeaves: async () => {
     try {
       console.log('Fetching leaves...');
@@ -100,8 +97,7 @@ const studentService = {
     }
   },
 
-  // ==================== COMPLAINTS ====================
-  // Replace the getComplaints and createComplaint functions with these:
+  
 
 getComplaints: async () => {
   try {
@@ -134,7 +130,6 @@ createComplaint: async (complaintData) => {
   }
 },
 
-  // ==================== NOTIFICATIONS ====================
   getNotifications: async () => {
     try {
       console.log('Fetching notifications...');
@@ -167,7 +162,6 @@ createComplaint: async (complaintData) => {
     }
   },
 
- // services/studentService.js - Update this method
 
 markAllNotificationsAsRead: async () => {
   try {
@@ -177,7 +171,6 @@ markAllNotificationsAsRead: async () => {
     return response.data;
   } catch (error) {
     console.error('Error in markAllNotificationsAsRead:', error.response?.data || error.message);
-    // Don't throw error, just return success false
     return { success: false, message: error.response?.data?.message || 'Failed to mark all as read' };
   }
 },
@@ -207,15 +200,13 @@ markAllNotificationsAsRead: async () => {
     }
   },
 
-  // ==================== VISITS ====================
- // ==================== VISITS ====================
+ 
 getVisits: async () => {
   try {
     console.log('Fetching visits...');
     const response = await api.get('/student/visits');
     console.log('Visits response:', response.data);
     
-    // Handle different response structures
     if (response.data && response.data.success && response.data.data) {
       return response.data.data;
     }
@@ -255,7 +246,6 @@ cancelVisit: async (id) => {
     throw error;
   }
 },
-  // ==================== CHAT ====================
   getMessages: async () => {
     try {
       console.log('Fetching chat messages...');
@@ -306,7 +296,6 @@ cancelVisit: async (id) => {
     }
   },
 
-  // ==================== ATTENDANCE ====================
   getAttendance: async (month, year) => {
     try {
       console.log(`Fetching attendance for ${month} ${year}...`);
@@ -382,9 +371,7 @@ cancelVisit: async (id) => {
   },
 
 
-// ==================== FEES & PAYMENT ====================
-// In studentService.js - Update getMyFees
-// In studentService.js - Update getMyFees
+
 getMyFees: async () => {
   try {
     console.log('📡 Calling getMyFees API...');
@@ -392,7 +379,6 @@ getMyFees: async () => {
     console.log('📡 getMyFees response status:', response.status);
     console.log('📡 getMyFees response data:', response.data);
     
-    // Always return a valid structure
     if (response.data && response.data.success) {
       return {
         success: true,
@@ -400,7 +386,6 @@ getMyFees: async () => {
       };
     }
     
-    // Fallback for any response
     return {
       success: false,
       data: { fees: [], summary: {} }
@@ -464,7 +449,6 @@ getPaymentHistory: async (feeId) => {
     throw error.response?.data || error.message;
   }
 },
-  // ==================== UTILITY METHODS ====================
   checkHealth: async () => {
     try {
       const response = await api.get('/health');

@@ -42,9 +42,7 @@ import { format, formatDistance } from 'date-fns';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-/* ─────────────────────────────────────────────
-   Professional Typography System
-───────────────────────────────────────────── */
+
 const T = {
   navy:    '#f3f8f5',
   navyMid: '#eaf2ed',
@@ -69,9 +67,7 @@ const T = {
   barGrad:  'linear-gradient(90deg, #047857 0%, #34d399 100%)',
 };
 
-/* ─────────────────────────────────────────────
-   Typography Components
-───────────────────────────────────────────── */
+
 const Heading1 = ({ children, sx = {}, ...props }) => (
   <Typography sx={{ fontFamily: T.fontSecondary, fontSize: { xs: '1.8rem', md: '2.2rem' }, fontWeight: 600, letterSpacing: '-0.02em', lineHeight: 1.2, color: T.white, ...sx }} {...props}>
     {children}
@@ -174,14 +170,13 @@ const StudentDashboard = () => {
       
       const token = localStorage.getItem('token');
       
-      // Fetch dashboard stats
+      
       const statsResponse = await fetch(`${API_URL}/student/dashboard`, {
         headers: { Authorization: `Bearer ${token}` }
       });
       let statsData = await statsResponse.json();
       console.log('✅ Dashboard stats:', statsData);
       
-      // Fetch notifications
       const notifResponse = await fetch(`${API_URL}/student/notifications`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -195,7 +190,7 @@ const StudentDashboard = () => {
         notificationsList = notifData.notifications;
       }
       
-      // Fetch leaves
+   
       const leavesResponse = await fetch(`${API_URL}/student/leaves`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -207,7 +202,7 @@ const StudentDashboard = () => {
         leavesList = leavesData.data;
       }
       
-      // Fetch complaints
+     
       const complaintsResponse = await fetch(`${API_URL}/student/complaints`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -219,7 +214,7 @@ const StudentDashboard = () => {
         complaintsList = complaintsData.data;
       }
       
-      // Fetch visits
+      
       const visitsResponse = await fetch(`${API_URL}/student/visits`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -231,10 +226,10 @@ const StudentDashboard = () => {
         visitsList = visitsData.data;
       }
       
-      // Calculate pending visits count
+      
       const pendingVisitsCount = visitsList.filter(v => v.status === 'pending').length;
       
-      // Set dashboard data
+     
       const stats = statsData?.data || statsData || {};
       
       setDashboardData({
@@ -363,7 +358,7 @@ const StudentDashboard = () => {
         .stat-card:hover { transform: translateY(-4px) !important; }
       `}</style>
 
-      {/* Top Bar */}
+    
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4} className="fade-up fade-up-1">
         <Box>
           <SectionLabel>Hostel Management System</SectionLabel>
@@ -374,14 +369,14 @@ const StudentDashboard = () => {
         </IconButton>
       </Box>
 
-      {/* Error Alert */}
+      
       {error && (
         <Alert severity="error" sx={{ mb: 3, borderRadius: 2, bgcolor: 'rgba(239,68,68,0.07)', color: '#7f1d1d', border: '1px solid rgba(239,68,68,0.2)' }} onClose={() => setError(null)} action={<Button color="inherit" size="small" onClick={fetchDashboardData}>Retry</Button>}>
           <BodyText>{error}</BodyText>
         </Alert>
       )}
 
-      {/* Hero Welcome */}
+      
       <GlassCard className="fade-up fade-up-1" sx={{ p: { xs: 3, md: 4 }, mb: 4, position: 'relative', overflow: 'hidden', background: 'linear-gradient(135deg, #eaf2ed 0%, #d4ede1 60%, #f3f8f5 100%)', borderColor: 'rgba(5,150,105,0.2)' }}>
         <Box sx={{ position: 'absolute', top: 0, left: 0, right: 0, height: '2px', background: T.goldLine }} />
         <Box sx={{ position: 'absolute', top: '-60px', right: '-60px', width: 220, height: 220, borderRadius: '50%', background: 'radial-gradient(circle, rgba(5,150,105,0.10) 0%, transparent 70%)' }} />
@@ -410,7 +405,7 @@ const StudentDashboard = () => {
         </Grid>
       </GlassCard>
 
-      {/* Stat Cards */}
+     
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         {statCards.map((card, i) => (
           <Grid item xs={12} sm={6} md={3} key={i}>
@@ -459,9 +454,9 @@ const StudentDashboard = () => {
         </Box>
       </GlassCard> */}
 
-      {/* Activity Grid */}
+      
       <Grid container spacing={3} sx={{ mb: 4 }}>
-        {/* Notifications */}
+     
         <Grid item xs={12} md={4}>
           <ActivityPanel
             title="Notifications"
@@ -492,7 +487,7 @@ const StudentDashboard = () => {
           </ActivityPanel>
         </Grid>
 
-        {/* Leaves */}
+       
         <Grid item xs={12} md={4}>
           <ActivityPanel
             title="Leave Applications"
@@ -528,7 +523,7 @@ const StudentDashboard = () => {
           </ActivityPanel>
         </Grid>
 
-        {/* Complaints */}
+      
         <Grid item xs={12} md={4}>
           <ActivityPanel
             title="Complaints"
@@ -561,7 +556,7 @@ const StudentDashboard = () => {
         </Grid>
       </Grid>
 
-      {/* Quick Actions */}
+     
       <GlassCard className="fade-up fade-up-5" sx={{ p: { xs: 3, md: 4 } }}>
         <SectionLabel>Quick Actions</SectionLabel>
         <Heading3 sx={{ mb: 3 }}>Common Tasks</Heading3>
@@ -576,7 +571,7 @@ const StudentDashboard = () => {
         </Grid>
       </GlassCard>
 
-      {/* Snackbar */}
+     
       <Snackbar open={snackbar.open} autoHideDuration={6000} onClose={handleCloseSnack} anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}>
         <Alert onClose={handleCloseSnack} severity={snackbar.severity} sx={{ borderRadius: 2 }}>
           <BodyText>{snackbar.message}</BodyText>
@@ -586,7 +581,7 @@ const StudentDashboard = () => {
   );
 };
 
-/* Sub-components */
+
 const StatusDot = ({ color }) => <Box sx={{ width: 6, height: 6, borderRadius: '50%', bgcolor: color, flexShrink: 0 }} />;
 
 const StatusBadge = ({ status }) => {

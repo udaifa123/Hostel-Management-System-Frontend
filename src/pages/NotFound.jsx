@@ -8,7 +8,7 @@ const NotFound = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-indigo-50 to-purple-50 flex items-center justify-center px-4 py-12">
       <div className="max-w-2xl w-full text-center">
-        {/* Animated 404 */}
+       
         <div className="relative mb-8">
           <h1 className="text-[150px] md:text-[200px] font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-indigo-600 leading-none animate-pulse">
             404
@@ -18,7 +18,7 @@ const NotFound = () => {
           </div>
         </div>
 
-        {/* Error Message */}
+       
         <div className="mb-8">
           <div className="flex justify-center mb-4">
             <AlertCircle size={60} className="text-indigo-600" />
@@ -32,7 +32,6 @@ const NotFound = () => {
           </p>
         </div>
 
-        {/* Search Suggestions */}
         <div className="bg-white rounded-xl shadow-lg p-6 mb-8 max-w-md mx-auto">
           <h3 className="font-semibold text-gray-700 mb-3 flex items-center justify-center gap-2">
             <Search size={18} />
@@ -72,7 +71,7 @@ const NotFound = () => {
           </div>
         </div>
 
-        {/* Action Buttons */}
+        
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
           <button
             onClick={() => navigate(-1)}
@@ -91,13 +90,13 @@ const NotFound = () => {
           </Link>
         </div>
 
-        {/* Fun Facts */}
+        
         <div className="mt-12 text-sm text-gray-500">
           <p>Fun fact: This error page has been visited 404 times! 😄</p>
         </div>
       </div>
 
-      {/* Decorative Background Elements */}
+      
       <div className="fixed inset-0 pointer-events-none overflow-hidden">
         <div className="absolute top-1/4 left-1/4 w-64 h-64 bg-blue-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob"></div>
         <div className="absolute top-1/3 right-1/4 w-64 h-64 bg-indigo-200 rounded-full mix-blend-multiply filter blur-xl opacity-20 animate-blob animation-delay-2000"></div>

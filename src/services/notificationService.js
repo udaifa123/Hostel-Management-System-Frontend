@@ -1,4 +1,3 @@
-// services/notificationService.js
 import api from './api';
 import { io } from 'socket.io-client';
 
@@ -56,7 +55,7 @@ class NotificationService {
       const audio = new Audio('/notification.mp3');
       audio.volume = 0.3;
       audio.play().catch(() => {
-        // Fallback beep
+      
         const beep = new AudioContext();
         const oscillator = beep.createOscillator();
         const gain = beep.createGain();

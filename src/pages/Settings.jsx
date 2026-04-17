@@ -8,7 +8,7 @@ import toast from 'react-hot-toast';
 
 const Settings = () => {
   const [settings, setSettings] = useState({
-    // Notification Settings
+    
     notifications: {
       email: true,
       push: true,
@@ -20,7 +20,7 @@ const Settings = () => {
       systemUpdates: false
     },
     
-    // Appearance
+   
     appearance: {
       theme: 'light',
       fontSize: 'medium',
@@ -28,7 +28,7 @@ const Settings = () => {
       animations: true
     },
     
-    // Language & Region
+  
     language: {
       preferred: 'english',
       dateFormat: 'DD/MM/YYYY',
@@ -36,15 +36,14 @@ const Settings = () => {
       firstDayOfWeek: 'monday'
     },
     
-    // Privacy
+   
     privacy: {
       profileVisibility: 'public',
       showOnlineStatus: true,
       showLastSeen: true,
       allowMessagesFrom: 'everyone'
     },
-    
-    // Accessibility
+ 
     accessibility: {
       highContrast: false,
       largeText: false,
@@ -66,14 +65,14 @@ const Settings = () => {
   };
 
   const handleSaveSettings = () => {
-    // Save to localStorage or API
+   
     localStorage.setItem('userSettings', JSON.stringify(settings));
     toast.success('Settings saved successfully!');
   };
 
   const handleResetSettings = () => {
     if (window.confirm('Reset all settings to default?')) {
-      // Reset logic here
+   
       toast.success('Settings reset to default');
     }
   };
@@ -113,7 +112,7 @@ const Settings = () => {
       </div>
 
       <div className="bg-white rounded-xl shadow-lg overflow-hidden">
-        {/* Tabs */}
+       
         <div className="border-b overflow-x-auto">
           <div className="flex">
             {tabs.map(tab => (
@@ -133,9 +132,9 @@ const Settings = () => {
           </div>
         </div>
 
-        {/* Tab Content */}
+  
         <div className="p-6">
-          {/* Notifications Tab */}
+         
           {activeTab === 'notifications' && (
             <div className="space-y-6">
               <div>
@@ -242,7 +241,7 @@ const Settings = () => {
             </div>
           )}
 
-          {/* Appearance Tab */}
+        
           {activeTab === 'appearance' && (
             <div className="space-y-6">
               <div>
@@ -310,7 +309,7 @@ const Settings = () => {
             </div>
           )}
 
-          {/* Language Tab */}
+          
           {activeTab === 'language' && (
             <div className="space-y-6">
               <div>
@@ -371,7 +370,7 @@ const Settings = () => {
             </div>
           )}
 
-          {/* Privacy Tab */}
+        
           {activeTab === 'privacy' && (
             <div className="space-y-6">
               <div>
@@ -424,7 +423,7 @@ const Settings = () => {
             </div>
           )}
 
-          {/* Accessibility Tab */}
+        
           {activeTab === 'accessibility' && (
             <div className="space-y-6">
               <div className="space-y-3">
@@ -471,7 +470,6 @@ const Settings = () => {
             </div>
           )}
 
-          {/* Data & Storage Tab */}
           {activeTab === 'data' && (
             <div className="space-y-6">
               <div className="bg-gray-50 p-4 rounded-lg">

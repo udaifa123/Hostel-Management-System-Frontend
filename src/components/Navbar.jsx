@@ -23,7 +23,6 @@ const Navbar = () => {
     <>
       <nav className={`navbar ${scrolled ? "navbar-scrolled" : ""}`}>
         <div className="nav-container">
-          {/* Logo with Image */}
           <Link to="/" className="logo">
             <img 
               src={logo} 
@@ -32,7 +31,6 @@ const Navbar = () => {
             />
           </Link>
 
-          {/* Desktop Menu */}
           <div className="nav-links">
             <Link to="/" className="nav-link">
               Home
@@ -46,7 +44,6 @@ const Navbar = () => {
             </Link>
           </div>
 
-          {/* Desktop Actions */}
           <div className="nav-actions">
             {!isAuthenticated ? (
               <div className="auth-buttons">
@@ -90,7 +87,6 @@ const Navbar = () => {
             )}
           </div>
 
-          {/* Mobile Menu Button */}
           <button
             className="menu-icon"
             onClick={() => setMenuOpen(!menuOpen)}
@@ -100,7 +96,6 @@ const Navbar = () => {
           </button>
         </div>
 
-        {/* Mobile Menu */}
         <div className={`mobile-menu ${menuOpen ? "open" : ""}`}>
           <Link to="/" onClick={() => setMenuOpen(false)}>
             Home
@@ -132,7 +127,6 @@ const Navbar = () => {
         </div>
       </nav>
 
-      {/* CSS */}
       <style>{`
         :root {
           --primary: #119d09ff;

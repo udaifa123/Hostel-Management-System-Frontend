@@ -96,7 +96,7 @@ const ParentAttendance = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header */}
+    
       <Paper
         elevation={0}
         sx={{
@@ -125,7 +125,7 @@ const ParentAttendance = () => {
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
 
-        {/* Filter */}
+      
         <Paper
           elevation={0}
           sx={{ p: 3, mb: 4, borderRadius: '16px', border: '1.5px solid #d1fae5', bgcolor: '#fff', boxShadow: '0 4px 16px rgba(6,95,70,0.07)' }}
@@ -164,7 +164,7 @@ const ParentAttendance = () => {
           </Grid>
         </Paper>
 
-        {/* Summary Cards */}
+      
         {summary && (
           <Grid container spacing={3} sx={{ mb: 4 }}>
             {[
@@ -192,7 +192,7 @@ const ParentAttendance = () => {
           </Grid>
         )}
 
-        {/* Table */}
+        
         <TableContainer
           component={Paper}
           elevation={0}

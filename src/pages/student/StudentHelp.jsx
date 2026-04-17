@@ -185,7 +185,7 @@ const StudentHelp = () => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5' }}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Header */}
+       
         <Paper sx={{ p: 3, mb: 4, borderRadius: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
             <IconButton onClick={() => navigate('/student/dashboard')}>
@@ -199,7 +199,7 @@ const StudentHelp = () => {
         </Paper>
 
         <Grid container spacing={4}>
-          {/* Left Column - FAQs */}
+         
           <Grid item xs={12} md={8}>
             <Paper sx={{ p: 3, borderRadius: 2 }}>
               <Typography variant="h5" gutterBottom sx={{ color: '#10B981', display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -233,9 +233,9 @@ const StudentHelp = () => {
             </Paper>
           </Grid>
 
-          {/* Right Column */}
+          
           <Grid item xs={12} md={4}>
-            {/* Quick Guides */}
+           
             <Paper sx={{ p: 3, borderRadius: 2, mb: 4 }}>
               <Typography variant="h6" gutterBottom sx={{ color: '#10B981' }}>
                 Quick Guides
@@ -261,7 +261,7 @@ const StudentHelp = () => {
               ))}
             </Paper>
 
-            {/* Emergency Contacts */}
+          
             <Paper sx={{ p: 3, borderRadius: 2, mb: 4, bgcolor: '#fee2e2' }}>
               <Typography variant="h6" gutterBottom sx={{ color: '#dc2626', display: 'flex', alignItems: 'center', gap: 1 }}>
                 <WarningIcon /> Emergency Contacts
@@ -280,7 +280,7 @@ const StudentHelp = () => {
               </List>
             </Paper>
 
-            {/* Contact Information */}
+           
             <Paper sx={{ p: 3, borderRadius: 2 }}>
               <Typography variant="h6" gutterBottom sx={{ color: '#10B981' }}>
                 Contact Information
@@ -313,7 +313,7 @@ const StudentHelp = () => {
               </Typography>
             </Paper>
 
-            {/* Support Form */}
+            
             <Paper sx={{ p: 3, borderRadius: 2, mt: 4 }}>
               <Typography variant="h6" gutterBottom sx={{ color: '#10B981' }}>
                 Need More Help?

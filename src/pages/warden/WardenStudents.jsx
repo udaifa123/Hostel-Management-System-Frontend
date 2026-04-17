@@ -97,11 +97,9 @@ const WardenStudents = () => {
       
       console.log('✅ Students response:', response.data);
       
-      // Handle the actual response structure from your backend
       let studentsData = [];
       
       if (response.data.students && Array.isArray(response.data.students)) {
-        // Your backend sends { success: true, students: [...], count: 3 }
         studentsData = response.data.students;
       } else if (response.data.data && Array.isArray(response.data.data)) {
         studentsData = response.data.data;
@@ -115,7 +113,6 @@ const WardenStudents = () => {
         setStudents([]);
         setFilteredStudents([]);
       } else {
-        // Transform data for display - handle nested user object
         const transformed = studentsData.map(s => ({
           _id: s._id,
           name: s.user?.name || s.name || 'N/A',
@@ -207,7 +204,6 @@ const WardenStudents = () => {
 
   return (
     <Box>
-      {/* Header with Add Button */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Typography variant="h4" fontWeight="bold">
           Student Management
@@ -231,7 +227,6 @@ const WardenStudents = () => {
         </Box>
       </Box>
 
-      {/* Stats Cards */}
       <Grid container spacing={3} mb={3}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ borderRadius: 2, bgcolor: '#eff6ff' }}>
@@ -267,7 +262,6 @@ const WardenStudents = () => {
         </Grid>
       </Grid>
 
-      {/* Search and Filters */}
       <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={4}>
@@ -332,7 +326,6 @@ const WardenStudents = () => {
         </Grid>
       </Paper>
 
-      {/* Students Table */}
       {filteredStudents.length === 0 ? (
         <Paper sx={{ p: 4, textAlign: 'center', borderRadius: 2 }}>
           <SchoolIcon sx={{ fontSize: 60, color: '#9ca3af', mb: 2 }} />
@@ -446,7 +439,6 @@ const WardenStudents = () => {
         </TableContainer>
       )}
 
-      {/* View Student Dialog */}
       <Dialog open={openViewDialog} onClose={handleCloseDialog} maxWidth="md" fullWidth>
         {selectedStudent && (
           <>

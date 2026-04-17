@@ -172,7 +172,7 @@ const Contact = () => {
   return (
     <div className="contact-page">
 
-      {/* ── HERO ── */}
+     
       <section className="contact-hero">
         <div className="hero-pattern" />
         <div className="container">
@@ -199,7 +199,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ── INFO CARDS ── */}
+    
       <section className="info-cards-section">
         <div className="container">
           <div className="section-header">
@@ -239,12 +239,12 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ── FORM + MAP ── */}
+     
       <section className="form-section">
         <div className="container">
           <div className="form-wrapper">
 
-            {/* Form */}
+          
             <div className="form-content" ref={formRef}>
               <div className="form-header">
                 <h2 className="form-title">Send Us a Message</h2>
@@ -263,7 +263,6 @@ const Contact = () => {
 
               <form onSubmit={handleSubmit} className="modern-form" noValidate>
 
-                {/* Inquiry type */}
                 <div className="form-group full-width">
                   <label className="fi-label">Inquiry Type</label>
                   <div className="inquiry-grid">
@@ -436,7 +435,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ── FAQ ACCORDION ── */}
+ 
       <section className="faq-section">
         <div className="container">
           <div className="section-header centered">
@@ -463,7 +462,7 @@ const Contact = () => {
         </div>
       </section>
 
-      {/* ── SOCIAL ── */}
+     
       <section className="social-section">
         <div className="container">
           <div className="social-content">

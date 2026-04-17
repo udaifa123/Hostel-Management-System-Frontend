@@ -1,4 +1,3 @@
-// pages/student/StudentNotifications.jsx
 import React, { useState, useEffect } from 'react';
 import {
   Box,
@@ -55,9 +54,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-/* ─────────────────────────────────────────────
-   White & Green Theme System (Light Mode)
-───────────────────────────────────────────── */
+
 const theme = {
   bg: '#f8fafc',
   bgLight: '#ffffff',
@@ -165,7 +162,7 @@ const StudentNotifications = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [tabValue, setTabValue] = useState(0);
 
-  // Demo data for testing
+ 
   const demoNotifications = [
     {
       _id: '1',
@@ -209,7 +206,7 @@ const StudentNotifications = () => {
       
       console.log('📞 Fetching notifications from backend...');
       
-      // Try to fetch from backend
+     
       try {
         const response = await fetch(`${API_URL}/student/notifications`, {
           headers: { Authorization: `Bearer ${token}` }
@@ -230,7 +227,7 @@ const StudentNotifications = () => {
           notificationsList.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
           setNotifications(notificationsList);
         } else {
-          // Use demo data if no real data
+          
           setNotifications(demoNotifications);
         }
       } catch (err) {
@@ -238,7 +235,7 @@ const StudentNotifications = () => {
         setNotifications(demoNotifications);
       }
       
-      // Trigger event to update sidebar badge
+      
       window.dispatchEvent(new Event('notificationRead'));
       
     } catch (err) {
@@ -278,13 +275,11 @@ const StudentNotifications = () => {
 
   const handleMarkAsRead = async (id) => {
     try {
-      // Update local state
       const updatedNotifications = notifications.map(notif => 
         notif._id === id ? { ...notif, isRead: true, read: true } : notif
       );
       setNotifications(updatedNotifications);
       
-      // Trigger event to update sidebar badge
       window.dispatchEvent(new Event('notificationRead'));
       
       showSnackbar('Notification marked as read', 'success');
@@ -298,7 +293,7 @@ const StudentNotifications = () => {
     try {
       console.log("Marking all notifications as read...");
       
-      // Update local state - mark all as read
+      
       const updatedNotifications = notifications.map(notif => ({
         ...notif,
         isRead: true,
@@ -307,7 +302,6 @@ const StudentNotifications = () => {
       
       setNotifications(updatedNotifications);
       
-      // Trigger event to update sidebar badge
       window.dispatchEvent(new Event('notificationRead'));
       
       showSnackbar(`All ${notifications.length} notifications marked as read`, 'success');
@@ -323,7 +317,7 @@ const StudentNotifications = () => {
       const updatedNotifications = notifications.filter(notif => notif._id !== id);
       setNotifications(updatedNotifications);
       
-      // Trigger event to update sidebar badge
+     
       window.dispatchEvent(new Event('notificationRead'));
       
       showSnackbar('Notification deleted', 'success');
@@ -337,7 +331,7 @@ const StudentNotifications = () => {
     try {
       setNotifications([]);
       
-      // Trigger event to update sidebar badge
+      
       window.dispatchEvent(new Event('notificationRead'));
       
       showSnackbar('All notifications deleted', 'success');
@@ -366,7 +360,7 @@ const StudentNotifications = () => {
     }
   };
 
-  // Filter notifications
+
   const filteredNotifications = notifications.filter(notif => {
     if (filter === 'unread') return !notif.isRead && !notif.read;
     if (filter === 'read') return notif.isRead || notif.read;
@@ -403,7 +397,7 @@ const StudentNotifications = () => {
   return (
     <Box sx={{ minHeight: '100vh', background: theme.bg, p: { xs: 2, sm: 3, md: 4 } }}>
       <StyledPaper elevation={0}>
-        {/* Header */}
+        
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
           <Box display="flex" alignItems="center" gap={3}>
             <Badge 
@@ -465,7 +459,7 @@ const StudentNotifications = () => {
           </Box>
         </Box>
 
-        {/* Filter Menu */}
+       
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -495,7 +489,7 @@ const StudentNotifications = () => {
           </MenuItem>
         </Menu>
 
-        {/* Error Alert */}
+       
         {error && (
           <Zoom in={!!error}>
             <Alert severity="error" sx={{ mb: 3, borderRadius: theme.borderRadius.lg }} onClose={() => setError(null)}>
@@ -504,7 +498,7 @@ const StudentNotifications = () => {
           </Zoom>
         )}
 
-        {/* Stats Cards */}
+        
         {notifications.length > 0 && (
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={4}>
@@ -534,7 +528,7 @@ const StudentNotifications = () => {
           </Grid>
         )}
 
-        {/* Type Filter Tabs */}
+        
         {notifications.length > 0 && (
           <Tabs
             value={tabValue}
@@ -562,7 +556,7 @@ const StudentNotifications = () => {
           </Tabs>
         )}
 
-        {/* Notifications List */}
+       
         <Box sx={{ maxHeight: 600, overflow: 'auto', pr: 1 }}>
           {filteredNotifications.length > 0 ? (
             filteredNotifications.map((notification, index) => {
@@ -681,7 +675,7 @@ const StudentNotifications = () => {
           )}
         </Box>
 
-        {/* Snackbar */}
+       
         <Snackbar
           open={snackbar.open}
           autoHideDuration={4000}

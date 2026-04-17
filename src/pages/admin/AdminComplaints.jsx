@@ -45,7 +45,7 @@ import {
 import adminService from '../../services/adminService';
 import toast from 'react-hot-toast';
 
-// ─── Green Design Tokens ───────────────────────────────────────────────
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -61,7 +61,7 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ─── Stat Card Component ───────────────────────────────────────────────────────
+
 const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
   <Card elevation={0} sx={{
     borderRadius: 3,
@@ -102,7 +102,6 @@ const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
   </Card>
 );
 
-// ─── Main Component ────────────────────────────────────────────────────────────
 const AdminComplaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -233,12 +232,12 @@ const AdminComplaints = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
+      
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
 
-        {/* ── Header ── */}
+    
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -275,7 +274,7 @@ const AdminComplaints = () => {
           </Button>
         </Paper>
 
-        {/* ── Stat Cards - FIXED GAP ── */}
+        
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Complaints" value={stats.total} icon={ComplaintIcon} dark />
@@ -291,7 +290,7 @@ const AdminComplaints = () => {
           </Grid>
         </Grid>
 
-        {/* ── Search and Filter ── */}
+        
         <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
           <TextField
             fullWidth
@@ -345,7 +344,7 @@ const AdminComplaints = () => {
           </IconButton>
         </Box>
 
-        {/* Filter Menu */}
+       
         <Menu
           anchorEl={filterAnchor}
           open={Boolean(filterAnchor)}
@@ -395,7 +394,7 @@ const AdminComplaints = () => {
           </MenuItem>
         </Menu>
 
-        {/* ── Complaints Table ── */}
+        
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 3, bgcolor: '#ffffff',
           border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
@@ -575,7 +574,7 @@ const AdminComplaints = () => {
           </Table>
         </TableContainer>
 
-        {/* ── View Complaint Details Dialog ── */}
+        
         <Dialog
           open={openDialog}
           onClose={() => setOpenDialog(false)}
@@ -737,7 +736,7 @@ const AdminComplaints = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Snackbar for notifications */}
+        
         <Snackbar
           open={openSnackbar}
           autoHideDuration={4000}

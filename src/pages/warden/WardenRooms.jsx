@@ -63,7 +63,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// Room status configuration
+
 const ROOM_STATUS = {
   AVAILABLE: 'available',
   OCCUPIED: 'occupied',
@@ -151,12 +151,11 @@ const WardenRooms = () => {
   const [rowsPerPage, setRowsPerPage] = useState(10);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  // Dialog State
+
   const [openCreateDialog, setOpenCreateDialog] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedRoom, setSelectedRoom] = useState(null);
 
-  // Form State
   const [formData, setFormData] = useState({
     roomNumber: '',
     block: 'A',
@@ -166,7 +165,7 @@ const WardenRooms = () => {
     status: 'vacant'
   });
 
-  // Stats
+
   const [stats, setStats] = useState({
     total: 0,
     vacant: 0,
@@ -178,7 +177,7 @@ const WardenRooms = () => {
     totalOccupants: 0
   });
 
-  // Fetch rooms
+  
   const fetchRooms = async () => {
     try {
       setLoading(true);
@@ -194,7 +193,7 @@ const WardenRooms = () => {
       setRooms(roomsData);
       setFilteredRooms(roomsData);
       
-      // Calculate stats
+ 
       const newStats = roomsData.reduce((acc, room) => {
         acc.total++;
         acc[room.status]++;
@@ -226,7 +225,7 @@ const WardenRooms = () => {
     }
   };
 
-  // Create room
+ 
   const handleCreateRoom = async () => {
     try {
       setLoading(true);
@@ -261,7 +260,7 @@ const WardenRooms = () => {
     }
   };
 
-  // Delete room
+ 
   const handleDeleteRoom = async (room) => {
     if (room.occupants?.length > 0) {
       setSnackbar({
@@ -408,7 +407,6 @@ const WardenRooms = () => {
 
   return (
     <Box p={3}>
-      {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4}>
         <Box>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -434,10 +432,10 @@ const WardenRooms = () => {
         </Button>
       </Box>
 
-      {/* Stats */}
+   
       {renderStats()}
 
-      {/* Search */}
+      
       <Paper sx={{ p: 2, mb: 3 }}>
         <TextField
           fullWidth
@@ -462,7 +460,7 @@ const WardenRooms = () => {
         />
       </Paper>
 
-      {/* Rooms Grid */}
+     
       {filteredRooms.length === 0 ? (
         <Paper sx={{ p: 8, textAlign: 'center' }}>
           <RoomIcon sx={{ fontSize: 80, color: '#94a3b8', mb: 2 }} />
@@ -557,7 +555,7 @@ const WardenRooms = () => {
         </>
       )}
 
-      {/* Create Room Dialog */}
+    
       <Dialog
         open={openCreateDialog}
         onClose={() => setOpenCreateDialog(false)}
@@ -654,7 +652,7 @@ const WardenRooms = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Menu */}
+      
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -667,7 +665,7 @@ const WardenRooms = () => {
         </MenuItem>
       </Menu>
 
-      {/* Snackbar */}
+    
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

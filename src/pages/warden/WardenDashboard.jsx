@@ -73,31 +73,24 @@ const WardenDashboard = () => {
     fetchDashboardData();
   }, []);
 
-  // Helper function to extract student name from various possible structures
   const extractStudentName = (item) => {
     console.log('Extracting name from:', item);
     
-    // Try to get student name from complaint/leave object
     if (item.student) {
-      // If student has user object with name
       if (item.student.user && item.student.user.name) {
         return item.student.user.name;
       }
-      // If student has direct name property
       if (item.student.name) {
         return item.student.name;
       }
-      // If student has studentName property
       if (item.student.studentName) {
         return item.student.studentName;
       }
-      // If student is a string ID, we need to fetch it
       if (typeof item.student === 'string') {
         return 'Student ID: ' + item.student.slice(-6);
       }
     }
     
-    // Direct properties on the item
     if (item.studentName) return item.studentName;
     if (item.name) return item.name;
     if (item.user?.name) return item.user.name;
@@ -120,7 +113,6 @@ const WardenDashboard = () => {
       if (response.data.success) {
         const data = response.data.data;
         
-        // Process complaints to extract student names
         const processedComplaints = (data.recentComplaints || []).map(complaint => {
           const studentName = extractStudentName(complaint);
           console.log(`Complaint "${complaint.title}" - Student: ${studentName}`);
@@ -130,7 +122,6 @@ const WardenDashboard = () => {
           };
         });
         
-        // Process leaves to extract student names
         const processedLeaves = (data.recentLeaves || []).map(leave => {
           const studentName = extractStudentName(leave);
           console.log(`Leave request - Student: ${studentName}`);
@@ -323,7 +314,6 @@ const WardenDashboard = () => {
 
   return (
     <Box>
-      {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={4} flexWrap="wrap" gap={2}>
         <Box>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -342,14 +332,12 @@ const WardenDashboard = () => {
         </Button>
       </Box>
 
-      {/* Error Alert */}
       {error && (
         <Alert severity="warning" sx={{ mb: 3 }} onClose={() => setError(null)}>
           {error} - Showing demo data
         </Alert>
       )}
 
-      {/* Stats Grid */}
       <Grid container spacing={3} mb={4}>
         {statCards.map((stat, index) => (
           <Grid item xs={12} sm={6} md={3} key={index}>
@@ -391,7 +379,6 @@ const WardenDashboard = () => {
         ))}
       </Grid>
 
-      {/* Charts and Recent Activity */}
       <Grid container spacing={3}>
         <Grid item xs={12} md={8}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
@@ -463,7 +450,7 @@ const WardenDashboard = () => {
           </Paper>
         </Grid>
 
-        {/* Recent Complaints - Fixed */}
+       
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>
@@ -526,7 +513,7 @@ const WardenDashboard = () => {
           </Paper>
         </Grid>
 
-        {/* Pending Leave Requests - Fixed */}
+        
         <Grid item xs={12} md={6}>
           <Paper sx={{ p: 3, borderRadius: 3 }}>
             <Typography variant="h6" fontWeight="bold" gutterBottom>

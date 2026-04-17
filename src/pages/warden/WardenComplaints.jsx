@@ -51,7 +51,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// Green Design Tokens
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -68,7 +68,7 @@ const G = {
 const WardenComplaints = () => {
   const { token } = useAuth();
   
-  // State
+ 
   const [loading, setLoading] = useState(true);
   const [complaints, setComplaints] = useState([]);
   const [filteredComplaints, setFilteredComplaints] = useState([]);
@@ -81,7 +81,7 @@ const WardenComplaints = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [updating, setUpdating] = useState(false);
 
-  // Stats
+
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -90,7 +90,7 @@ const WardenComplaints = () => {
     highPriority: 0
   });
 
-  // Fetch complaints from backend
+  
   const fetchComplaints = useCallback(async () => {
     try {
       setLoading(true);
@@ -160,7 +160,7 @@ const WardenComplaints = () => {
     }
   }, [token, fetchComplaints]);
 
-  // Calculate stats
+  
   const calculateStats = (complaintsArray) => {
     const newStats = {
       total: complaintsArray.length,
@@ -172,7 +172,7 @@ const WardenComplaints = () => {
     setStats(newStats);
   };
 
-  // Filter complaints
+  
   useEffect(() => {
     let filtered = [...complaints];
 
@@ -197,7 +197,7 @@ const WardenComplaints = () => {
     setFilteredComplaints(filtered);
   }, [complaints, searchTerm, statusFilter, categoryFilter]);
 
-  // Handlers
+ 
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -331,10 +331,10 @@ const WardenComplaints = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-      {/* Top accent bar */}
+     
       <Box sx={{ height: 4, bgcolor: G[600], mb: 3, borderRadius: 2 }} />
 
-      {/* Header */}
+      
       <Paper elevation={0} sx={{
         p: 3,
         mb: 4,
@@ -379,7 +379,7 @@ const WardenComplaints = () => {
         </Button>
       </Paper>
 
-      {/* Stats Cards */}
+      
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={2.4}>
           <Card sx={{ borderRadius: 3, bgcolor: G[800], border: `1px solid ${G[700]}` }}>
@@ -443,7 +443,7 @@ const WardenComplaints = () => {
         </Grid>
       </Grid>
 
-      {/* Filters */}
+     
       <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={4}>
@@ -514,7 +514,7 @@ const WardenComplaints = () => {
         </Grid>
       </Paper>
 
-      {/* Complaints Table */}
+      
       <TableContainer component={Paper} elevation={0} sx={{
         borderRadius: 3,
         bgcolor: '#ffffff',
@@ -662,7 +662,7 @@ const WardenComplaints = () => {
         </Table>
       </TableContainer>
 
-      {/* Complaint Details Dialog */}
+     
       <Dialog 
         open={openDialog} 
         onClose={() => setOpenDialog(false)} 
@@ -846,7 +846,7 @@ const WardenComplaints = () => {
         )}
       </Dialog>
 
-      {/* Snackbar */}
+    
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

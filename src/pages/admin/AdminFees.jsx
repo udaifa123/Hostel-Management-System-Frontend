@@ -50,7 +50,7 @@ import { useAuth } from '../../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// ─── Green Design Tokens (Same as AdminHostels) ───────────────────────────────
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -66,7 +66,6 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ─── Stat Card Component (Same as AdminHostels) ───────────────────────────────
 const StatCard = ({ label, value, icon: Icon, dark = false }) => {
   const IconComponent = Icon;
   return (
@@ -278,11 +277,11 @@ const AdminFees = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
+     
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
-        {/* ── Header Section (Same style as AdminHostels) ── */}
+        
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -355,7 +354,7 @@ const AdminFees = () => {
           🤖 Fully Automatic: Fees auto-generated on 1st of every month with attendance penalties and late fines.
         </Alert>
 
-        {/* ── Stat Cards (Same grid as AdminHostels) ── */}
+        
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={4}>
             <StatCard label="Total Fees" value={`₹${(summary.totalAmount || 0).toLocaleString()}`} icon={MoneyIcon} dark />
@@ -368,7 +367,7 @@ const AdminFees = () => {
           </Grid>
         </Grid>
 
-        {/* ── Tabs ── */}
+        
         <Paper elevation={0} sx={{ mb: 3, borderRadius: 3, border: `1px solid ${G[200]}`, overflow: 'hidden' }}>
           <Tabs 
             value={tabValue} 
@@ -395,7 +394,7 @@ const AdminFees = () => {
           </Tabs>
         </Paper>
 
-        {/* ── Fees Table (Same style as AdminHostels table) ── */}
+        
         <TableContainer 
           component={Paper} 
           variant="outlined"
@@ -499,7 +498,7 @@ const AdminFees = () => {
           </Table>
         </TableContainer>
 
-        {/* ── Auto Fee Configuration Dialog (Styled consistently) ── */}
+        
         <Dialog 
           open={openAutoDialog} 
           onClose={() => setOpenAutoDialog(false)} 

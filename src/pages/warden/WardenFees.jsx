@@ -20,7 +20,7 @@ import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// Green Design Tokens
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -55,7 +55,6 @@ const WardenFees = () => {
   const [tabValue, setTabValue] = useState(0);
   const [processing, setProcessing] = useState(false);
 
-  // Demo data for when backend is not available
   const demoFees = [
     {
       _id: '1',
@@ -116,12 +115,10 @@ const WardenFees = () => {
     totalStudents: 5
   };
 
-  // Fetch fees from backend
   const fetchFees = async () => {
     try {
       setLoading(true);
       
-      // Try to fetch from backend
       const response = await axios.get(`${API_URL}/warden/fees`, {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -137,14 +134,12 @@ const WardenFees = () => {
           totalStudents: 0
         });
       } else {
-        // Use demo data if backend returns no data
         setFees(demoFees);
         setSummary(demosummary);
         toast.success('Using demo data (Backend API not configured)', { icon: '📋' });
       }
     } catch (error) {
       console.error('Error fetching fees:', error);
-      // Use demo data on error
       setFees(demoFees);
       setSummary(demosummary);
       toast.success('Using demo data - Backend API not available', { icon: '📋' });
@@ -168,7 +163,6 @@ const WardenFees = () => {
     
     setProcessing(true);
     try {
-      // Update local state for demo
       const updatedFees = fees.map(fee => {
         if (fee._id === selectedFee._id) {
           const newPaidAmount = fee.paidAmount + Number(paymentAmount);
@@ -189,7 +183,6 @@ const WardenFees = () => {
       
       setFees(updatedFees);
       
-      // Update summary
       const newTotalPaid = updatedFees.reduce((sum, f) => sum + f.paidAmount, 0);
       const newTotalPending = updatedFees.reduce((sum, f) => sum + f.dueAmount, 0);
       setSummary({
@@ -224,7 +217,6 @@ const WardenFees = () => {
     
     setProcessing(true);
     try {
-      // Update local state for demo
       const updatedFees = fees.map(fee => {
         if (fee._id === selectedFee._id) {
           const newAmount = fee.amount + Number(fineAmount);
@@ -241,7 +233,6 @@ const WardenFees = () => {
       
       setFees(updatedFees);
       
-      // Update summary
       const newTotalAmount = updatedFees.reduce((sum, f) => sum + f.amount, 0);
       const newTotalPending = updatedFees.reduce((sum, f) => sum + f.dueAmount, 0);
       setSummary({
@@ -305,10 +296,8 @@ const WardenFees = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-      {/* Top accent bar */}
       <Box sx={{ height: 4, bgcolor: G[600], mb: 3, borderRadius: 2 }} />
 
-      {/* Header */}
       <Paper elevation={0} sx={{
         p: 3,
         mb: 4,
@@ -353,7 +342,6 @@ const WardenFees = () => {
         </Button>
       </Paper>
 
-      {/* Stats Cards */}
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={4}>
           <Card sx={{ borderRadius: 3, bgcolor: G[800], border: `1px solid ${G[700]}` }}>
@@ -393,7 +381,6 @@ const WardenFees = () => {
         </Grid>
       </Grid>
 
-      {/* Tabs */}
       <Paper elevation={0} sx={{ mb: 3, borderRadius: 2.5, border: `1px solid ${G[200]}` }}>
         <Tabs
           value={tabValue}
@@ -413,7 +400,6 @@ const WardenFees = () => {
         </Tabs>
       </Paper>
 
-      {/* Fees Table */}
       <TableContainer component={Paper} elevation={0} sx={{
         borderRadius: 3,
         bgcolor: '#ffffff',
@@ -493,7 +479,6 @@ const WardenFees = () => {
         </Table>
       </TableContainer>
 
-      {/* Manual Payment Dialog */}
       <Dialog 
         open={openPaymentDialog} 
         onClose={() => setOpenPaymentDialog(false)} 
@@ -566,7 +551,6 @@ const WardenFees = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Add Fine Dialog */}
       <Dialog 
         open={openFineDialog} 
         onClose={() => setOpenFineDialog(false)} 
@@ -637,7 +621,6 @@ const WardenFees = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Send Reminder Dialog */}
       <Dialog 
         open={openReminderDialog} 
         onClose={() => setOpenReminderDialog(false)} 

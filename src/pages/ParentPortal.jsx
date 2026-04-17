@@ -66,7 +66,7 @@ import { format, parseISO } from 'date-fns';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-// Tab Panel Component
+
 function TabPanel({ children, value, index, ...other }) {
   return (
     <div
@@ -105,7 +105,7 @@ const ParentPortal = () => {
   const [messMenu, setMessMenu] = useState([]);
   const [dashboardSummary, setDashboardSummary] = useState(null);
   
-  // Dialog states
+
   const [chatDialog, setChatDialog] = useState(false);
   const [visitDialog, setVisitDialog] = useState(false);
   const [selectedWarden, setSelectedWarden] = useState(null);
@@ -120,7 +120,7 @@ const ParentPortal = () => {
   useEffect(() => {
     fetchAllData();
 
-    // Socket listeners
+ 
     if (socket) {
       socket.on('new_notification', (notification) => {
         setNotifications(prev => [notification, ...prev]);
@@ -146,66 +146,64 @@ const ParentPortal = () => {
     try {
       setLoading(true);
       
-      // Fetch dashboard summary
+   
       const dashboardRes = await axios.get('/api/parents/dashboard', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setDashboardSummary(dashboardRes.data.data);
 
-      // Fetch student profile
       const profileRes = await axios.get('/api/parents/profile', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setStudent(profileRes.data.data);
 
-      // Fetch attendance
+     
       const attendanceRes = await axios.get('/api/parents/attendance', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setAttendance(attendanceRes.data.data.records);
       setAttendanceSummary(attendanceRes.data.data.summary);
 
-      // Fetch leaves
+   
       const leavesRes = await axios.get('/api/parents/leaves', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setLeaves(leavesRes.data.data.leaves);
       setLeaveCounts(leavesRes.data.data.counts);
 
-      // Fetch complaints
+     
       const complaintsRes = await axios.get('/api/parents/complaints', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setComplaints(complaintsRes.data.data.complaints);
       setComplaintCounts(complaintsRes.data.data.counts);
 
-      // Fetch fees
+     
       const feesRes = await axios.get('/api/parents/fees', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setFees(feesRes.data.data);
 
-      // Fetch notifications
+     
       const notifRes = await axios.get('/api/parents/notifications', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setNotifications(notifRes.data.data.notifications);
       setUnreadCount(notifRes.data.data.unreadCount);
 
-      // Fetch visits
+    
       const visitsRes = await axios.get('/api/parents/visit-requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setVisits(visitsRes.data.data.visits);
       setVisitCounts(visitsRes.data.data.counts);
 
-      // Fetch wardens for chat
       const wardensRes = await axios.get('/api/parents/wardens', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setWardens(wardensRes.data.data);
 
-      // Fetch mess menu
+    
       const menuRes = await axios.get('/api/parents/mess-menu', {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -252,7 +250,7 @@ const ParentPortal = () => {
       setChatMessages(prev => [...prev, res.data.data]);
       setNewMessage('');
 
-      // Emit via socket
+      
       if (socket) {
         socket.emit('send_message', {
           receiverId: selectedWarden._id,
@@ -278,7 +276,7 @@ const ParentPortal = () => {
       setVisitData({ visitDate: '', purpose: 'Family Visit', numberOfVisitors: 1 });
       toast.success('Visit request sent successfully');
       
-      // Refresh visits
+      
       const visitsRes = await axios.get('/api/parents/visit-requests', {
         headers: { Authorization: `Bearer ${token}` }
       });
@@ -336,7 +334,7 @@ const ParentPortal = () => {
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f5f5f5' }}>
       <Container maxWidth="xl" sx={{ py: 4 }}>
-        {/* Welcome Header */}
+    
         <Paper sx={{ p: 3, mb: 3, borderRadius: 2 }}>
           <Grid container spacing={2} alignItems="center">
             <Grid item>
@@ -362,7 +360,7 @@ const ParentPortal = () => {
           </Grid>
         </Paper>
 
-        {/* Stats Cards */}
+       
         <Grid container spacing={3} sx={{ mb: 3 }}>
           <Grid item xs={12} sm={6} md={2.4}>
             <Card sx={{ borderRadius: 2 }}>
@@ -424,7 +422,7 @@ const ParentPortal = () => {
           </Grid>
         </Grid>
 
-        {/* Main Menu Cards */}
+        
         <Grid container spacing={3}>
           <Grid item xs={12} sm={6} md={3}>
             <Card 
@@ -573,7 +571,7 @@ const ParentPortal = () => {
           </Grid>
         </Grid>
 
-        {/* Detailed Views */}
+      
         <Paper sx={{ mt: 4, borderRadius: 2 }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs value={tabValue} onChange={handleTabChange} variant="scrollable" scrollButtons="auto">
@@ -589,7 +587,7 @@ const ParentPortal = () => {
             </Tabs>
           </Box>
 
-          {/* Dashboard Tab */}
+         
           <TabPanel value={tabValue} index={0}>
             <Typography variant="h6" gutterBottom>Recent Activity</Typography>
             <Grid container spacing={3}>
@@ -642,7 +640,7 @@ const ParentPortal = () => {
             </Grid>
           </TabPanel>
 
-          {/* Profile Tab */}
+          
           <TabPanel value={tabValue} index={1}>
             {student && (
               <Grid container spacing={3}>
@@ -694,7 +692,7 @@ const ParentPortal = () => {
             )}
           </TabPanel>
 
-          {/* Attendance Tab */}
+          
           <TabPanel value={tabValue} index={2}>
             <Typography variant="h6" gutterBottom>Attendance Summary</Typography>
             <Grid container spacing={2} sx={{ mb: 3 }}>
@@ -769,7 +767,7 @@ const ParentPortal = () => {
             </Paper>
           </TabPanel>
 
-          {/* Leaves Tab */}
+         
           <TabPanel value={tabValue} index={3}>
             <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
               <Chip label={`Total: ${leaveCounts?.total || 0}`} variant="outlined" />
@@ -810,7 +808,7 @@ const ParentPortal = () => {
             </Grid>
           </TabPanel>
 
-          {/* Complaints Tab */}
+        
           <TabPanel value={tabValue} index={4}>
             <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
               <Chip label={`Total: ${complaintCounts?.total || 0}`} variant="outlined" />
@@ -841,7 +839,7 @@ const ParentPortal = () => {
             </Grid>
           </TabPanel>
 
-          {/* Fees Tab */}
+         
           <TabPanel value={tabValue} index={5}>
             {fees && (
               <>
@@ -909,7 +907,6 @@ const ParentPortal = () => {
             )}
           </TabPanel>
 
-          {/* Notifications Tab */}
           <TabPanel value={tabValue} index={6}>
             <List>
               {notifications.map((notif) => (
@@ -943,7 +940,6 @@ const ParentPortal = () => {
             </List>
           </TabPanel>
 
-          {/* Chat Tab */}
           <TabPanel value={tabValue} index={7}>
             <Typography variant="h6" gutterBottom>Chat with Warden</Typography>
             <Grid container spacing={2}>
@@ -971,7 +967,7 @@ const ParentPortal = () => {
             </Grid>
           </TabPanel>
 
-          {/* Visits Tab */}
+          
           <TabPanel value={tabValue} index={8}>
             <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
               <Typography variant="h6">Visit Requests</Typography>
@@ -1018,7 +1014,7 @@ const ParentPortal = () => {
           </TabPanel>
         </Paper>
 
-        {/* Chat Dialog */}
+       
         <Dialog open={chatDialog} onClose={() => setChatDialog(false)} maxWidth="sm" fullWidth>
           <DialogTitle>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
@@ -1071,7 +1067,7 @@ const ParentPortal = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Visit Dialog */}
+   
         <Dialog open={visitDialog} onClose={() => setVisitDialog(false)} maxWidth="sm" fullWidth>
           <DialogTitle>Request Visit</DialogTitle>
           <DialogContent>

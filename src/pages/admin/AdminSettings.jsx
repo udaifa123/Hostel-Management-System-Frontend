@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   Box,
   Typography,
@@ -38,7 +38,8 @@ import {
   Slider,
   RadioGroup,
   Radio,
-  FormLabel
+  FormLabel,
+  Collapse
 } from '@mui/material';
 import {
   Settings as SettingsIcon,
@@ -63,10 +64,16 @@ import {
   Print as PrintIcon,
   Download as DownloadIcon,
   Close as CloseIcon,
-  CheckCircle as CheckIcon
+  CheckCircle as CheckIcon,
+  Palette as PaletteIcon,
+  Brightness4 as DarkModeIcon,
+  Brightness7 as LightModeIcon,
+  InvertColors as ColorfulIcon,
+  Check as CheckCircleIcon
 } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 
-// ─── Green Design Tokens ───────────────────────────────────────────────
+// Green Design Tokens
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -77,12 +84,127 @@ const G = {
   300: '#8FD9A0',
   200: '#C1EDCA',
   100: '#E4F7E8',
-  50:  '#F4FBF5',
+  50: '#F4FBF5',
 };
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ─── Main Component ────────────────────────────────────────────────────────────
+// Theme definitions
+const THEMES = {
+  light: {
+    name: 'Light',
+    icon: <LightModeIcon />,
+    colors: {
+      primary: '#2E9142',
+      secondary: '#5DC470',
+      background: '#F4FBF5',
+      surface: '#FFFFFF',
+      text: '#0D3318',
+      textSecondary: '#64748B',
+      border: '#E4F7E8',
+      cardBg: '#FFFFFF',
+      sidebar: '#1A5C2A',
+      header: '#1E7A35'
+    }
+  },
+  dark: {
+    name: 'Dark',
+    icon: <DarkModeIcon />,
+    colors: {
+      primary: '#3AAF51',
+      secondary: '#5DC470',
+      background: '#121212',
+      surface: '#1E1E1E',
+      text: '#FFFFFF',
+      textSecondary: '#A0A0A0',
+      border: '#333333',
+      cardBg: '#2D2D2D',
+      sidebar: '#0D3318',
+      header: '#1A5C2A'
+    }
+  },
+  colorful: {
+    name: 'Colorful',
+    icon: <ColorfulIcon />,
+    colors: {
+      primary: '#8B5CF6',
+      secondary: '#EC4899',
+      background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      surface: '#FFFFFF',
+      text: '#1F2937',
+      textSecondary: '#6B7280',
+      border: '#E5E7EB',
+      cardBg: '#FFFFFF',
+      sidebar: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      header: 'linear-gradient(135deg, #F59E0B 0%, #EF4444 100%)'
+    }
+  },
+  ocean: {
+    name: 'Ocean Blue',
+    icon: <PaletteIcon />,
+    colors: {
+      primary: '#1E88E5',
+      secondary: '#42A5F5',
+      background: '#E3F2FD',
+      surface: '#FFFFFF',
+      text: '#0D47A1',
+      textSecondary: '#546E7A',
+      border: '#BBDEFB',
+      cardBg: '#FFFFFF',
+      sidebar: '#1565C0',
+      header: '#1976D2'
+    }
+  },
+  sunset: {
+    name: 'Sunset Orange',
+    icon: <PaletteIcon />,
+    colors: {
+      primary: '#F59E0B',
+      secondary: '#F97316',
+      background: '#FFF7ED',
+      surface: '#FFFFFF',
+      text: '#7C2D12',
+      textSecondary: '#9A3412',
+      border: '#FED7AA',
+      cardBg: '#FFFFFF',
+      sidebar: '#EA580C',
+      header: '#F97316'
+    }
+  },
+  purple: {
+    name: 'Royal Purple',
+    icon: <PaletteIcon />,
+    colors: {
+      primary: '#7C3AED',
+      secondary: '#A78BFA',
+      background: '#F5F3FF',
+      surface: '#FFFFFF',
+      text: '#4C1D95',
+      textSecondary: '#6D28D9',
+      border: '#E9D5FF',
+      cardBg: '#FFFFFF',
+      sidebar: '#6D28D9',
+      header: '#7C3AED'
+    }
+  },
+  teal: {
+    name: 'Teal Green',
+    icon: <PaletteIcon />,
+    colors: {
+      primary: '#0D9488',
+      secondary: '#14B8A6',
+      background: '#F0FDFA',
+      surface: '#FFFFFF',
+      text: '#134E4A',
+      textSecondary: '#115E59',
+      border: '#CCFBF1',
+      cardBg: '#FFFFFF',
+      sidebar: '#0F766E',
+      header: '#14B8A6'
+    }
+  }
+};
+
 const AdminSettings = () => {
   const [tabValue, setTabValue] = useState(0);
   const [openDialog, setOpenDialog] = useState(false);
@@ -91,8 +213,30 @@ const AdminSettings = () => {
   const [openSnackbar, setOpenSnackbar] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState('');
   const [snackbarSeverity, setSnackbarSeverity] = useState('success');
+  const [themeOpen, setThemeOpen] = useState(false);
+  const [currentTheme, setCurrentTheme] = useState('light');
 
-  // Profile Settings
+  // Apply theme to body
+  useEffect(() => {
+    const theme = THEMES[currentTheme];
+    document.body.style.backgroundColor = theme.colors.background;
+    document.body.style.color = theme.colors.text;
+    
+    // Add theme class to body for global styles
+    document.body.className = `theme-${currentTheme}`;
+    
+    // Store theme preference
+    localStorage.setItem('adminTheme', currentTheme);
+  }, [currentTheme]);
+
+  // Load saved theme on mount
+  useEffect(() => {
+    const savedTheme = localStorage.getItem('adminTheme');
+    if (savedTheme && THEMES[savedTheme]) {
+      setCurrentTheme(savedTheme);
+    }
+  }, []);
+
   const [profile, setProfile] = useState({
     name: 'Admin User',
     email: 'admin@hostel.com',
@@ -102,7 +246,6 @@ const AdminSettings = () => {
     avatar: ''
   });
 
-  // Security Settings
   const [security, setSecurity] = useState({
     twoFactorAuth: false,
     sessionTimeout: 30,
@@ -111,7 +254,6 @@ const AdminSettings = () => {
     lastPasswordChange: '2024-01-15'
   });
 
-  // Notification Settings
   const [notifications, setNotifications] = useState({
     emailNotifications: true,
     smsNotifications: false,
@@ -123,18 +265,15 @@ const AdminSettings = () => {
     systemUpdateAlert: true
   });
 
-  // System Settings
   const [system, setSystem] = useState({
     hostelName: 'Greenfield Hostel',
     timezone: 'Asia/Kolkata',
     dateFormat: 'DD/MM/YYYY',
     weekStart: 'Monday',
     language: 'English',
-    theme: 'green',
     maintenanceMode: false
   });
 
-  // Privacy Settings
   const [privacy, setPrivacy] = useState({
     showStudentContact: false,
     showStudentEmail: true,
@@ -183,65 +322,137 @@ const AdminSettings = () => {
     setOpenSnackbar(true);
   };
 
-  const getThemeColors = () => {
-    switch(system.theme) {
-      case 'green':
-        return { primary: G[600], secondary: G[400], bg: G[50] };
-      case 'blue':
-        return { primary: '#1E88E5', secondary: '#64B5F6', bg: '#F0F7FF' };
-      case 'dark':
-        return { primary: '#1A1A2E', secondary: '#16213E', bg: '#0F0F1A' };
-      default:
-        return { primary: G[600], secondary: G[400], bg: G[50] };
-    }
+  const handleThemeChange = (themeKey) => {
+    setCurrentTheme(themeKey);
+    setSnackbarMessage(`${THEMES[themeKey].name} theme applied successfully`);
+    setSnackbarSeverity('success');
+    setOpenSnackbar(true);
+    setThemeOpen(false);
   };
 
+  const currentThemeColors = THEMES[currentTheme].colors;
+
   return (
-    <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
-      <Box sx={{ height: 4, bgcolor: G[600] }} />
+    <Box sx={{ 
+      bgcolor: currentThemeColors.background, 
+      minHeight: '100vh',
+      transition: 'all 0.3s ease'
+    }}>
+      <Box sx={{ height: 4, bgcolor: currentThemeColors.primary }} />
 
       <Box sx={{ p: 3 }}>
-
-        {/* ── Header ── */}
+        {/* Header */}
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
-          bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
-          boxShadow: '0 2px 8px rgba(13,51,24,0.10)',
+          bgcolor: currentThemeColors.surface,
+          border: `1px solid ${currentThemeColors.border}`,
+          boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+          flexWrap: 'wrap',
+          gap: 2
         }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
-            <Avatar sx={{ bgcolor: G[800], width: 46, height: 46, borderRadius: 2 }}>
-              <SettingsIcon sx={{ color: G[200], fontSize: 22 }} />
+            <Avatar sx={{ bgcolor: currentThemeColors.primary, width: 46, height: 46, borderRadius: 2 }}>
+              <SettingsIcon sx={{ color: '#ffffff', fontSize: 22 }} />
             </Avatar>
             <Box>
-              <Typography variant="h5" sx={{ fontWeight: 700, color: G[800], letterSpacing: '-0.01em' }}>
+              <Typography variant="h5" sx={{ fontWeight: 700, color: currentThemeColors.text, letterSpacing: '-0.01em' }}>
                 System Settings
               </Typography>
-              <Typography variant="body2" sx={{ color: G[500], mt: 0.25 }}>
+              <Typography variant="body2" sx={{ color: currentThemeColors.textSecondary, mt: 0.25 }}>
                 Configure application preferences and system configurations
               </Typography>
             </Box>
           </Box>
-          <Button
-            variant="contained"
-            startIcon={<SaveIcon />}
-            onClick={handleSaveSettings}
-            sx={{
-              bgcolor: G[700], color: '#ffffff', fontWeight: 600,
-              borderRadius: 2, textTransform: 'none',
-              boxShadow: '0 4px 12px rgba(30,122,53,0.30)',
-              '&:hover': { bgcolor: G[800] }
-            }}
-          >
-            Save All Settings
-          </Button>
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <Button
+              variant="outlined"
+              startIcon={<PaletteIcon />}
+              onClick={() => setThemeOpen(!themeOpen)}
+              sx={{
+                borderColor: currentThemeColors.border,
+                color: currentThemeColors.text,
+                borderRadius: 2,
+                textTransform: 'none'
+              }}
+            >
+              Theme: {THEMES[currentTheme].name}
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<SaveIcon />}
+              onClick={handleSaveSettings}
+              sx={{
+                bgcolor: currentThemeColors.primary,
+                color: '#ffffff',
+                fontWeight: 600,
+                borderRadius: 2,
+                textTransform: 'none',
+                '&:hover': { opacity: 0.9 }
+              }}
+            >
+              Save All Settings
+            </Button>
+          </Box>
         </Paper>
 
-        {/* ── Settings Tabs ── */}
+        {/* Theme Selection Dropdown */}
+        <Collapse in={themeOpen}>
+          <Paper elevation={0} sx={{
+            p: 3, mb: 3, borderRadius: 3,
+            bgcolor: currentThemeColors.surface,
+            border: `2px solid ${currentThemeColors.primary}`,
+          }}>
+            <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 2, display: 'flex', alignItems: 'center', gap: 1 }}>
+              <PaletteIcon /> Choose Your Theme
+            </Typography>
+            <Grid container spacing={2}>
+              {Object.entries(THEMES).map(([key, theme]) => (
+                <Grid item xs={12} sm={6} md={4} key={key}>
+                  <Card
+                    elevation={0}
+                    onClick={() => handleThemeChange(key)}
+                    sx={{
+                      cursor: 'pointer',
+                      borderRadius: 2,
+                      border: `2px solid ${currentTheme === key ? theme.colors.primary : currentThemeColors.border}`,
+                      bgcolor: theme.colors.surface,
+                      transition: 'all 0.2s ease',
+                      '&:hover': { transform: 'translateY(-2px)', boxShadow: 3 }
+                    }}
+                  >
+                    <CardContent sx={{ p: 2 }}>
+                      <Box display="flex" alignItems="center" gap={2}>
+                        <Avatar sx={{ bgcolor: theme.colors.primary, color: '#fff' }}>
+                          {theme.icon}
+                        </Avatar>
+                        <Box flex={1}>
+                          <Typography fontWeight={600} sx={{ color: theme.colors.text }}>
+                            {theme.name}
+                          </Typography>
+                          <Box display="flex" gap={0.5} mt={0.5}>
+                            <Box sx={{ width: 20, height: 20, bgcolor: theme.colors.primary, borderRadius: 1 }} />
+                            <Box sx={{ width: 20, height: 20, bgcolor: theme.colors.secondary, borderRadius: 1 }} />
+                            <Box sx={{ width: 20, height: 20, bgcolor: theme.colors.sidebar, borderRadius: 1 }} />
+                          </Box>
+                        </Box>
+                        {currentTheme === key && (
+                          <CheckCircleIcon sx={{ color: theme.colors.primary }} />
+                        )}
+                      </Box>
+                    </CardContent>
+                  </Card>
+                </Grid>
+              ))}
+            </Grid>
+          </Paper>
+        </Collapse>
+
+        {/* Tabs */}
         <Paper elevation={0} sx={{
           mb: 3, borderRadius: 2.5,
-          bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
+          bgcolor: currentThemeColors.surface,
+          border: `1px solid ${currentThemeColors.border}`,
         }}>
           <Tabs
             value={tabValue}
@@ -251,13 +462,13 @@ const AdminSettings = () => {
                 textTransform: 'none',
                 fontWeight: 600,
                 fontSize: '0.9rem',
-                color: G[500],
+                color: currentThemeColors.textSecondary,
                 '&.Mui-selected': {
-                  color: G[700],
+                  color: currentThemeColors.primary,
                 }
               },
               '& .MuiTabs-indicator': {
-                bgcolor: G[600],
+                bgcolor: currentThemeColors.primary,
                 height: 3,
               }
             }}
@@ -271,52 +482,45 @@ const AdminSettings = () => {
           </Tabs>
         </Paper>
 
-        {/* ─── Profile Settings Tab ─── */}
+        {/* Tab Contents - Same as before with theme colors applied */}
         {tabValue === 0 && (
           <Grid container spacing={3}>
             <Grid item xs={12} md={4}>
               <Card elevation={0} sx={{
-                borderRadius: 3, bgcolor: '#ffffff',
-                border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+                borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+                border: `1px solid ${currentThemeColors.border}`,
                 textAlign: 'center', p: 3
               }}>
                 <Avatar sx={{
                   width: 120, height: 120,
-                  bgcolor: G[800],
+                  bgcolor: currentThemeColors.primary,
                   fontSize: '3rem',
                   mx: 'auto',
-                  mb: 2
+                  mb: 2,
+                  color: '#fff'
                 }}>
                   {profile.name.charAt(0)}
                 </Avatar>
-                <Typography sx={{ fontWeight: 700, color: G[800], fontSize: '1.2rem' }}>
+                <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, fontSize: '1.2rem' }}>
                   {profile.name}
                 </Typography>
-                <Typography variant="body2" sx={{ color: G[500], mb: 2 }}>
+                <Typography variant="body2" sx={{ color: currentThemeColors.textSecondary, mb: 2 }}>
                   {profile.role}
                 </Typography>
                 <Chip
                   label="Admin"
                   size="small"
-                  sx={{ bgcolor: G[100], color: G[600], fontWeight: 600 }}
+                  sx={{ bgcolor: `${currentThemeColors.primary}20`, color: currentThemeColors.primary, fontWeight: 600 }}
                 />
-                <Button
-                  variant="outlined"
-                  startIcon={<RefreshIcon />}
-                  fullWidth
-                  sx={{ mt: 2, borderColor: G[200], color: G[600] }}
-                >
-                  Change Avatar
-                </Button>
               </Card>
             </Grid>
             <Grid item xs={12} md={8}>
               <Card elevation={0} sx={{
-                borderRadius: 3, bgcolor: '#ffffff',
-                border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+                borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+                border: `1px solid ${currentThemeColors.border}`,
                 p: 3
               }}>
-                <Typography sx={{ fontWeight: 700, color: G[800], mb: 2 }}>
+                <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 2 }}>
                   Personal Information
                 </Typography>
                 <Grid container spacing={2.5}>
@@ -329,8 +533,11 @@ const AdminSettings = () => {
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
-                          '& fieldset': { borderColor: G[200] },
+                          '& fieldset': { borderColor: currentThemeColors.border },
+                          '&:hover fieldset': { borderColor: currentThemeColors.primary },
                         },
+                        '& .MuiInputLabel-root': { color: currentThemeColors.textSecondary },
+                        '& .MuiInputBase-input': { color: currentThemeColors.text }
                       }}
                     />
                   </Grid>
@@ -343,8 +550,11 @@ const AdminSettings = () => {
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
-                          '& fieldset': { borderColor: G[200] },
+                          '& fieldset': { borderColor: currentThemeColors.border },
+                          '&:hover fieldset': { borderColor: currentThemeColors.primary },
                         },
+                        '& .MuiInputLabel-root': { color: currentThemeColors.textSecondary },
+                        '& .MuiInputBase-input': { color: currentThemeColors.text }
                       }}
                     />
                   </Grid>
@@ -357,8 +567,11 @@ const AdminSettings = () => {
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
-                          '& fieldset': { borderColor: G[200] },
+                          '& fieldset': { borderColor: currentThemeColors.border },
+                          '&:hover fieldset': { borderColor: currentThemeColors.primary },
                         },
+                        '& .MuiInputLabel-root': { color: currentThemeColors.textSecondary },
+                        '& .MuiInputBase-input': { color: currentThemeColors.text }
                       }}
                     />
                   </Grid>
@@ -371,8 +584,11 @@ const AdminSettings = () => {
                       sx={{
                         '& .MuiOutlinedInput-root': {
                           borderRadius: 2,
-                          '& fieldset': { borderColor: G[200] },
+                          '& fieldset': { borderColor: currentThemeColors.border },
+                          '&:hover fieldset': { borderColor: currentThemeColors.primary },
                         },
+                        '& .MuiInputLabel-root': { color: currentThemeColors.textSecondary },
+                        '& .MuiInputBase-input': { color: currentThemeColors.text }
                       }}
                     />
                   </Grid>
@@ -381,9 +597,11 @@ const AdminSettings = () => {
                       variant="contained"
                       onClick={handleProfileUpdate}
                       sx={{
-                        bgcolor: G[700], color: '#ffffff',
-                        borderRadius: 2, textTransform: 'none',
-                        '&:hover': { bgcolor: G[800] }
+                        bgcolor: currentThemeColors.primary,
+                        color: '#ffffff',
+                        borderRadius: 2,
+                        textTransform: 'none',
+                        '&:hover': { opacity: 0.9 }
                       }}
                     >
                       Update Profile
@@ -391,16 +609,16 @@ const AdminSettings = () => {
                   </Grid>
                 </Grid>
 
-                <Divider sx={{ my: 3, borderColor: G[100] }} />
+                <Divider sx={{ my: 3, borderColor: currentThemeColors.border }} />
 
-                <Typography sx={{ fontWeight: 700, color: G[800], mb: 2 }}>
+                <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 2 }}>
                   Change Password
                 </Typography>
                 <Button
                   variant="outlined"
                   startIcon={<LockIcon />}
                   onClick={() => { setDialogType('password'); setOpenDialog(true); }}
-                  sx={{ borderColor: G[200], color: G[600] }}
+                  sx={{ borderColor: currentThemeColors.border, color: currentThemeColors.text }}
                 >
                   Change Password
                 </Button>
@@ -409,14 +627,14 @@ const AdminSettings = () => {
           </Grid>
         )}
 
-        {/* ─── Security Settings Tab ─── */}
+        {/* Security Tab */}
         {tabValue === 1 && (
           <Card elevation={0} sx={{
-            borderRadius: 3, bgcolor: '#ffffff',
-            border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+            borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+            border: `1px solid ${currentThemeColors.border}`,
             p: 3
           }}>
-            <Typography sx={{ fontWeight: 700, color: G[800], mb: 3 }}>
+            <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 3 }}>
               Security Configuration
             </Typography>
             <Grid container spacing={3}>
@@ -426,7 +644,7 @@ const AdminSettings = () => {
                     <Switch
                       checked={security.twoFactorAuth}
                       onChange={(e) => setSecurity({...security, twoFactorAuth: e.target.checked})}
-                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                     />
                   }
                   label="Enable Two-Factor Authentication (2FA)"
@@ -443,7 +661,7 @@ const AdminSettings = () => {
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
-                      '& fieldset': { borderColor: G[200] },
+                      '& fieldset': { borderColor: currentThemeColors.border },
                     },
                   }}
                 />
@@ -459,7 +677,7 @@ const AdminSettings = () => {
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
-                      '& fieldset': { borderColor: G[200] },
+                      '& fieldset': { borderColor: currentThemeColors.border },
                     },
                   }}
                 />
@@ -471,34 +689,29 @@ const AdminSettings = () => {
                     <Switch
                       checked={security.loginNotifications}
                       onChange={(e) => setSecurity({...security, loginNotifications: e.target.checked})}
-                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                     />
                   }
                   label="Email notifications for new logins"
                 />
               </Grid>
-              <Grid item xs={12}>
-                <Alert severity="info" sx={{ borderRadius: 2, bgcolor: G[50] }}>
-                  Last password changed: {security.lastPasswordChange}
-                </Alert>
-              </Grid>
             </Grid>
           </Card>
         )}
 
-        {/* ─── Notification Settings Tab ─── */}
+        {/* Notifications Tab */}
         {tabValue === 2 && (
           <Card elevation={0} sx={{
-            borderRadius: 3, bgcolor: '#ffffff',
-            border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+            borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+            border: `1px solid ${currentThemeColors.border}`,
             p: 3
           }}>
-            <Typography sx={{ fontWeight: 700, color: G[800], mb: 3 }}>
+            <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 3 }}>
               Notification Preferences
             </Typography>
             <Grid container spacing={3}>
               <Grid item xs={12}>
-                <Typography sx={{ fontWeight: 600, color: G[700], mb: 2 }}>
+                <Typography sx={{ fontWeight: 600, color: currentThemeColors.text, mb: 2 }}>
                   Channels
                 </Typography>
                 <FormGroup>
@@ -507,7 +720,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.emailNotifications}
                         onChange={(e) => setNotifications({...notifications, emailNotifications: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="Email Notifications"
@@ -517,7 +730,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.smsNotifications}
                         onChange={(e) => setNotifications({...notifications, smsNotifications: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="SMS Notifications"
@@ -527,7 +740,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.pushNotifications}
                         onChange={(e) => setNotifications({...notifications, pushNotifications: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="Push Notifications"
@@ -535,7 +748,7 @@ const AdminSettings = () => {
                 </FormGroup>
               </Grid>
               <Grid item xs={12}>
-                <Typography sx={{ fontWeight: 600, color: G[700], mb: 2 }}>
+                <Typography sx={{ fontWeight: 600, color: currentThemeColors.text, mb: 2 }}>
                   Events
                 </Typography>
                 <FormGroup>
@@ -544,7 +757,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.newComplaintAlert}
                         onChange={(e) => setNotifications({...notifications, newComplaintAlert: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="New Complaint Alerts"
@@ -554,7 +767,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.leaveRequestAlert}
                         onChange={(e) => setNotifications({...notifications, leaveRequestAlert: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="Leave Request Alerts"
@@ -564,7 +777,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.feeReminderAlert}
                         onChange={(e) => setNotifications({...notifications, feeReminderAlert: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="Fee Reminder Alerts"
@@ -574,7 +787,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.attendanceAlert}
                         onChange={(e) => setNotifications({...notifications, attendanceAlert: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="Attendance Alerts"
@@ -584,7 +797,7 @@ const AdminSettings = () => {
                       <Switch
                         checked={notifications.systemUpdateAlert}
                         onChange={(e) => setNotifications({...notifications, systemUpdateAlert: e.target.checked})}
-                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                        sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                       />
                     }
                     label="System Update Alerts"
@@ -595,14 +808,14 @@ const AdminSettings = () => {
           </Card>
         )}
 
-        {/* ─── System Settings Tab ─── */}
+        {/* System Tab */}
         {tabValue === 3 && (
           <Card elevation={0} sx={{
-            borderRadius: 3, bgcolor: '#ffffff',
-            border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+            borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+            border: `1px solid ${currentThemeColors.border}`,
             p: 3
           }}>
-            <Typography sx={{ fontWeight: 700, color: G[800], mb: 3 }}>
+            <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 3 }}>
               System Configuration
             </Typography>
             <Grid container spacing={3}>
@@ -615,7 +828,7 @@ const AdminSettings = () => {
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
-                      '& fieldset': { borderColor: G[200] },
+                      '& fieldset': { borderColor: currentThemeColors.border },
                     },
                   }}
                 />
@@ -680,28 +893,13 @@ const AdminSettings = () => {
                   </Select>
                 </FormControl>
               </Grid>
-              <Grid item xs={12} md={6}>
-                <FormControl fullWidth>
-                  <InputLabel>Theme</InputLabel>
-                  <Select
-                    value={system.theme}
-                    onChange={(e) => setSystem({...system, theme: e.target.value})}
-                    label="Theme"
-                    sx={{ borderRadius: 2 }}
-                  >
-                    <MenuItem value="green">Green (Default)</MenuItem>
-                    <MenuItem value="blue">Blue</MenuItem>
-                    <MenuItem value="dark">Dark Mode</MenuItem>
-                  </Select>
-                </FormControl>
-              </Grid>
               <Grid item xs={12}>
                 <FormControlLabel
                   control={
                     <Switch
                       checked={system.maintenanceMode}
                       onChange={(e) => setSystem({...system, maintenanceMode: e.target.checked})}
-                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                     />
                   }
                   label="Maintenance Mode"
@@ -712,14 +910,14 @@ const AdminSettings = () => {
           </Card>
         )}
 
-        {/* ─── Privacy Settings Tab ─── */}
+        {/* Privacy Tab */}
         {tabValue === 4 && (
           <Card elevation={0} sx={{
-            borderRadius: 3, bgcolor: '#ffffff',
-            border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+            borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+            border: `1px solid ${currentThemeColors.border}`,
             p: 3
           }}>
-            <Typography sx={{ fontWeight: 700, color: G[800], mb: 3 }}>
+            <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 3 }}>
               Privacy & Data Management
             </Typography>
             <Grid container spacing={3}>
@@ -729,7 +927,7 @@ const AdminSettings = () => {
                     <Switch
                       checked={privacy.showStudentContact}
                       onChange={(e) => setPrivacy({...privacy, showStudentContact: e.target.checked})}
-                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                     />
                   }
                   label="Show student contact details to other students"
@@ -741,7 +939,7 @@ const AdminSettings = () => {
                     <Switch
                       checked={privacy.showStudentEmail}
                       onChange={(e) => setPrivacy({...privacy, showStudentEmail: e.target.checked})}
-                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                     />
                   }
                   label="Show student email addresses publicly"
@@ -753,7 +951,7 @@ const AdminSettings = () => {
                     <Switch
                       checked={privacy.publicReports}
                       onChange={(e) => setPrivacy({...privacy, publicReports: e.target.checked})}
-                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                     />
                   }
                   label="Allow public access to reports"
@@ -765,7 +963,7 @@ const AdminSettings = () => {
                     <Switch
                       checked={privacy.allowDataExport}
                       onChange={(e) => setPrivacy({...privacy, allowDataExport: e.target.checked})}
-                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: G[600] } }}
+                      sx={{ '& .MuiSwitch-switchBase.Mui-checked': { color: currentThemeColors.primary } }}
                     />
                   }
                   label="Allow data export for users"
@@ -781,40 +979,36 @@ const AdminSettings = () => {
                   sx={{
                     '& .MuiOutlinedInput-root': {
                       borderRadius: 2,
-                      '& fieldset': { borderColor: G[200] },
+                      '& fieldset': { borderColor: currentThemeColors.border },
                     },
                   }}
                 />
                 <FormHelperText>How long to keep user activity logs</FormHelperText>
               </Grid>
-              <Grid item xs={12}>
-                <Alert severity="warning" sx={{ borderRadius: 2 }}>
-                  Changes to privacy settings may affect user experience and compliance with data protection regulations.
-                </Alert>
-              </Grid>
             </Grid>
           </Card>
         )}
 
-        {/* ─── Backup Settings Tab ─── */}
+        {/* Backup Tab */}
         {tabValue === 5 && (
           <Grid container spacing={3}>
             <Grid item xs={12} md={6}>
               <Card elevation={0} sx={{
-                borderRadius: 3, bgcolor: '#ffffff',
-                border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+                borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+                border: `1px solid ${currentThemeColors.border}`,
                 p: 3, textAlign: 'center'
               }}>
                 <Avatar sx={{
-                  bgcolor: G[100], color: G[600],
+                  bgcolor: `${currentThemeColors.primary}20`,
+                  color: currentThemeColors.primary,
                   width: 64, height: 64, mx: 'auto', mb: 2
                 }}>
                   <BackupIcon sx={{ fontSize: 32 }} />
                 </Avatar>
-                <Typography sx={{ fontWeight: 700, color: G[800], mb: 1 }}>
+                <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 1 }}>
                   Database Backup
                 </Typography>
-                <Typography variant="body2" sx={{ color: G[500], mb: 2 }}>
+                <Typography variant="body2" sx={{ color: currentThemeColors.textSecondary, mb: 2 }}>
                   Create a full backup of all system data
                 </Typography>
                 <Button
@@ -822,9 +1016,10 @@ const AdminSettings = () => {
                   startIcon={<BackupIcon />}
                   onClick={() => { setDialogType('backup'); setOpenDialog(true); }}
                   sx={{
-                    bgcolor: G[700], color: '#ffffff',
-                    borderRadius: 2, textTransform: 'none',
-                    '&:hover': { bgcolor: G[800] }
+                    bgcolor: currentThemeColors.primary,
+                    color: '#ffffff',
+                    borderRadius: 2,
+                    textTransform: 'none'
                   }}
                 >
                   Create Backup
@@ -833,27 +1028,28 @@ const AdminSettings = () => {
             </Grid>
             <Grid item xs={12} md={6}>
               <Card elevation={0} sx={{
-                borderRadius: 3, bgcolor: '#ffffff',
-                border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+                borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+                border: `1px solid ${currentThemeColors.border}`,
                 p: 3, textAlign: 'center'
               }}>
                 <Avatar sx={{
-                  bgcolor: G[100], color: G[600],
+                  bgcolor: `${currentThemeColors.primary}20`,
+                  color: currentThemeColors.primary,
                   width: 64, height: 64, mx: 'auto', mb: 2
                 }}>
                   <RestoreIcon sx={{ fontSize: 32 }} />
                 </Avatar>
-                <Typography sx={{ fontWeight: 700, color: G[800], mb: 1 }}>
+                <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 1 }}>
                   Restore System
                 </Typography>
-                <Typography variant="body2" sx={{ color: G[500], mb: 2 }}>
+                <Typography variant="body2" sx={{ color: currentThemeColors.textSecondary, mb: 2 }}>
                   Restore system from a previous backup
                 </Typography>
                 <Button
                   variant="outlined"
                   startIcon={<RestoreIcon />}
                   onClick={() => { setDialogType('restore'); setOpenDialog(true); }}
-                  sx={{ borderColor: G[200], color: G[600] }}
+                  sx={{ borderColor: currentThemeColors.border, color: currentThemeColors.text }}
                 >
                   Restore Backup
                 </Button>
@@ -861,11 +1057,11 @@ const AdminSettings = () => {
             </Grid>
             <Grid item xs={12}>
               <Card elevation={0} sx={{
-                borderRadius: 3, bgcolor: '#ffffff',
-                border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
+                borderRadius: 3, bgcolor: currentThemeColors.cardBg,
+                border: `1px solid ${currentThemeColors.border}`,
                 p: 3
               }}>
-                <Typography sx={{ fontWeight: 700, color: G[800], mb: 2 }}>
+                <Typography sx={{ fontWeight: 700, color: currentThemeColors.text, mb: 2 }}>
                   System Maintenance
                 </Typography>
                 <Grid container spacing={2}>
@@ -875,7 +1071,7 @@ const AdminSettings = () => {
                       variant="outlined"
                       startIcon={<DeleteIcon />}
                       onClick={() => { setDialogType('clearCache'); setOpenDialog(true); }}
-                      sx={{ borderColor: G[200], color: '#EF4444' }}
+                      sx={{ borderColor: currentThemeColors.border, color: '#EF4444' }}
                     >
                       Clear Cache
                     </Button>
@@ -885,7 +1081,7 @@ const AdminSettings = () => {
                       fullWidth
                       variant="outlined"
                       startIcon={<RefreshIcon />}
-                      sx={{ borderColor: G[200], color: G[600] }}
+                      sx={{ borderColor: currentThemeColors.border, color: currentThemeColors.text }}
                     >
                       Reset Settings
                     </Button>
@@ -895,22 +1091,18 @@ const AdminSettings = () => {
                       fullWidth
                       variant="outlined"
                       startIcon={<DownloadIcon />}
-                      sx={{ borderColor: G[200], color: G[600] }}
+                      sx={{ borderColor: currentThemeColors.border, color: currentThemeColors.text }}
                     >
                       Export Logs
                     </Button>
                   </Grid>
                 </Grid>
-                <Divider sx={{ my: 2, borderColor: G[100] }} />
-                <Alert severity="info" sx={{ borderRadius: 2 }}>
-                  Last backup: March 15, 2024 at 10:30 AM
-                </Alert>
               </Card>
             </Grid>
           </Grid>
         )}
 
-        {/* ─── Password Change Dialog ─── */}
+        {/* Dialogs */}
         <Dialog
           open={openDialog && dialogType === 'password'}
           onClose={() => setOpenDialog(false)}
@@ -919,18 +1111,18 @@ const AdminSettings = () => {
           PaperProps={{
             sx: {
               borderRadius: 3,
-              bgcolor: '#ffffff',
-              border: `1px solid ${G[200]}`,
+              bgcolor: currentThemeColors.surface,
+              border: `1px solid ${currentThemeColors.border}`,
             }
           }}
         >
-          <Box sx={{ height: 4, bgcolor: G[600], borderRadius: '12px 12px 0 0' }} />
+          <Box sx={{ height: 4, bgcolor: currentThemeColors.primary, borderRadius: '12px 12px 0 0' }} />
           <DialogTitle>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5 }}>
-              <Avatar sx={{ bgcolor: G[800], width: 38, height: 38 }}>
-                <PasswordIcon sx={{ color: G[200] }} />
+              <Avatar sx={{ bgcolor: currentThemeColors.primary, width: 38, height: 38 }}>
+                <PasswordIcon sx={{ color: '#fff' }} />
               </Avatar>
-              <Typography variant="h6" sx={{ fontWeight: 700, color: G[800] }}>
+              <Typography variant="h6" sx={{ fontWeight: 700, color: currentThemeColors.text }}>
                 Change Password
               </Typography>
             </Box>
@@ -965,47 +1157,46 @@ const AdminSettings = () => {
             />
           </DialogContent>
           <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
-            <Button onClick={() => setOpenDialog(false)} sx={{ color: G[600] }}>
+            <Button onClick={() => setOpenDialog(false)} sx={{ color: currentThemeColors.textSecondary }}>
               Cancel
             </Button>
             <Button
               variant="contained"
               onClick={handlePasswordChange}
-              sx={{ bgcolor: G[700], '&:hover': { bgcolor: G[800] } }}
+              sx={{ bgcolor: currentThemeColors.primary, '&:hover': { opacity: 0.9 } }}
             >
               Change Password
             </Button>
           </DialogActions>
         </Dialog>
 
-        {/* ─── Backup/Restore Confirmation Dialog ─── */}
         <Dialog
           open={openDialog && (dialogType === 'backup' || dialogType === 'restore' || dialogType === 'clearCache')}
           onClose={() => setOpenDialog(false)}
           PaperProps={{
             sx: {
               borderRadius: 3,
-              bgcolor: '#ffffff',
-              border: `1px solid ${G[200]}`,
+              bgcolor: currentThemeColors.surface,
+              border: `1px solid ${currentThemeColors.border}`,
             }
           }}
         >
           <DialogTitle>
-            <Typography sx={{ fontWeight: 700, color: G[800] }}>
+            <Typography sx={{ fontWeight: 700, color: currentThemeColors.text }}>
               {dialogType === 'backup' && 'Create Database Backup'}
               {dialogType === 'restore' && 'Restore System'}
               {dialogType === 'clearCache' && 'Clear System Cache'}
             </Typography>
           </DialogTitle>
           <DialogContent>
-            <Typography sx={{ color: G[600] }}>
+            <Typography sx={{ color: currentThemeColors.textSecondary }}>
               {dialogType === 'backup' && 'This will create a complete backup of all system data. The backup file will be saved to your computer.'}
               {dialogType === 'restore' && 'This will restore the system from a previous backup. Current data will be overwritten. Are you sure?'}
               {dialogType === 'clearCache' && 'This will clear all cached data from the system. Users may experience slower performance temporarily while caches rebuild.'}
             </Typography>
           </DialogContent>
           <DialogActions sx={{ px: 3, py: 2, gap: 1 }}>
-            <Button onClick={() => setOpenDialog(false)} sx={{ color: G[600] }}>
+            <Button onClick={() => setOpenDialog(false)} sx={{ color: currentThemeColors.textSecondary }}>
               Cancel
             </Button>
             <Button
@@ -1015,7 +1206,7 @@ const AdminSettings = () => {
                 dialogType === 'restore' ? handleRestore :
                 handleClearData
               }
-              sx={{ bgcolor: G[700], '&:hover': { bgcolor: G[800] } }}
+              sx={{ bgcolor: currentThemeColors.primary, '&:hover': { opacity: 0.9 } }}
             >
               {dialogType === 'backup' && 'Create Backup'}
               {dialogType === 'restore' && 'Restore'}
@@ -1024,7 +1215,7 @@ const AdminSettings = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Snackbar for notifications */}
+        {/* Snackbar */}
         <Snackbar
           open={openSnackbar}
           autoHideDuration={4000}
@@ -1035,7 +1226,6 @@ const AdminSettings = () => {
             {snackbarMessage}
           </Alert>
         </Snackbar>
-
       </Box>
     </Box>
   );

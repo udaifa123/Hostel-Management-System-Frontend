@@ -46,7 +46,6 @@ import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// ─── Color Tokens (Same as Parent Pages) ───────────────────────────────
 const G = {
   900: '#064e3b',
   800: '#065f46',
@@ -60,7 +59,6 @@ const G = {
   50: '#ecfdf5',
 };
 
-// ─── Type Config ────────────────────────────────────────────────
 const TYPE_CONFIG = {
   attendance: { label: 'Attendance', color: '#0ea5e9',  bg: '#e0f2fe', icon: <EventIcon sx={{ fontSize: 18 }} /> },
   leave:      { label: 'Leave',      color: '#f59e0b',  bg: '#fef9c3', icon: <InfoIcon sx={{ fontSize: 18 }} /> },
@@ -202,7 +200,6 @@ const ParentNotifications = () => {
         setNotifications(updatedNotifications);
         setUnreadCount(0);
         
-        // Trigger sidebar update
         window.dispatchEvent(new Event('notificationRead'));
         
         toast.success(data.message || 'All notifications marked as read');
@@ -234,7 +231,6 @@ const ParentNotifications = () => {
         const newUnreadCount = updatedNotifications.filter(n => !n.isRead).length;
         setUnreadCount(newUnreadCount);
         
-        // Trigger sidebar update
         window.dispatchEvent(new Event('notificationRead'));
         
         toast.success('Notification deleted');
@@ -289,10 +285,8 @@ const ParentNotifications = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Top accent bar */}
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
-      {/* Header */}
       <Paper
         elevation={0}
         sx={{
@@ -360,9 +354,7 @@ const ParentNotifications = () => {
         </Box>
       </Paper>
 
-      {/* Main Content */}
       <Box sx={{ p: 3 }}>
-        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
@@ -411,7 +403,6 @@ const ParentNotifications = () => {
           </Box>
         </Paper>
 
-        {/* Tabs */}
         <Paper elevation={0} sx={{ mb: 3, borderRadius: 2.5, border: `1px solid ${G[200]}` }}>
           <Tabs
             value={tabValue}
@@ -432,7 +423,6 @@ const ParentNotifications = () => {
           </Tabs>
         </Paper>
 
-        {/* Notification List */}
         <Paper
           elevation={0}
           sx={{
@@ -602,7 +592,6 @@ const ParentNotifications = () => {
         </Paper>
       </Box>
 
-      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

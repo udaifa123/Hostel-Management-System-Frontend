@@ -65,55 +65,49 @@ import { styled } from '@mui/material/styles';
 import studentService from "../../services/studentService";
 import { format } from 'date-fns';
 
-/* ─────────────────────────────────────────────
-   White & Green Theme System (Light Mode)
-───────────────────────────────────────────── */
+
 const theme = {
-  // Background Colors
-  bg: '#f8fafc',           // Main background: light gray
-  bgLight: '#ffffff',       // White
-  bgHover: '#f1f5f9',      // Hover state
+  bg: '#f8fafc',          
+  bgLight: '#ffffff',       
+  bgHover: '#f1f5f9',      
   
-  // Card Colors
-  cardBg: '#ffffff',        // White cards
-  cardBorder: '#e2e8f0',    // Light gray border
-  
-  // Primary Colors - Green
-  primary: '#059669',       // Emerald green
-  primaryLight: '#34d399',  // Light green
-  primaryDark: '#047857',   // Dark green
-  primarySoft: '#ecfdf5',   // Very light green background
-  
-  // Status Colors
-  success: '#10b981',       // Green
+  cardBg: '#ffffff',        
+  cardBorder: '#e2e8f0',  
+
+  primary: '#059669',      
+  primaryLight: '#34d399',  
+  primaryDark: '#047857',   
+  primarySoft: '#ecfdf5',   
+
+ 
+  success: '#10b981',      
   successLight: '#d1fae5',
-  warning: '#f59e0b',       // Amber
+  warning: '#f59e0b',       
   warningLight: '#fef3c7',
-  error: '#ef4444',         // Red
+  error: '#ef4444',        
   errorLight: '#fee2e2',
-  info: '#3b82f6',          // Blue
+  info: '#3b82f6',         
   infoLight: '#dbeafe',
   
-  // Text Colors
-  textPrimary: '#0f172a',   // Dark slate
-  textSecondary: '#475569', // Medium slate
-  textMuted: '#64748b',     // Light slate
+  textPrimary: '#0f172a',   
+  textSecondary: '#475569', 
+  textMuted: '#64748b',     
   
-  // Borders
+  
   border: '#e2e8f0',
   borderLight: '#f1f5f9',
   
-  // Gradients
+
   primaryGradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
   successGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
   warningGradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
   errorGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
   
-  // Shadows
+  
   cardShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   hoverShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
   
-  // Border Radius
+
   borderRadius: {
     sm: '6px',
     md: '8px',
@@ -121,14 +115,12 @@ const theme = {
     xl: '16px'
   },
   
-  // Typography
+ 
   fontPrimary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   fontSecondary: "'SF Pro Display', 'Inter', 'Segoe UI', sans-serif",
 };
 
-/* ─────────────────────────────────────────────
-   Styled Components
-───────────────────────────────────────────── */
+
 const StyledPaper = styled(Paper)(({ theme: muiTheme }) => ({
   padding: muiTheme.spacing(3),
   margin: muiTheme.spacing(2),
@@ -285,12 +277,12 @@ const StudentLeaves = () => {
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState(null);
   
-  // Dialog states
+ 
   const [openDialog, setOpenDialog] = useState(false);
   const [openViewDialog, setOpenViewDialog] = useState(false);
   const [viewLeave, setViewLeave] = useState(null);
   
-  // Form state
+ 
   const [newLeave, setNewLeave] = useState({
     type: 'casual',
     reason: '',
@@ -307,7 +299,7 @@ const StudentLeaves = () => {
 
   const [formErrors, setFormErrors] = useState({});
 
-  // Snackbar state
+  
   const [snackbar, setSnackbar] = useState({
     open: false,
     message: '',
@@ -684,7 +676,7 @@ const StudentLeaves = () => {
       `}</style>
 
       <StyledPaper elevation={0}>
-        {/* Header */}
+      
         <Box 
           display="flex" 
           justifyContent="space-between" 
@@ -747,7 +739,7 @@ const StudentLeaves = () => {
           </Box>
         </Box>
 
-        {/* Error Alert */}
+       
         {error && (
           <Fade in={true}>
             <Alert 
@@ -779,7 +771,7 @@ const StudentLeaves = () => {
           </Fade>
         )}
 
-        {/* Stats Cards */}
+        
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={3}>
             <GlassCard>
@@ -843,7 +835,7 @@ const StudentLeaves = () => {
           </Grid>
         </Grid>
 
-        {/* Leaves Table */}
+        
         <TableContainer 
           component={Paper} 
           variant="outlined"
@@ -1046,7 +1038,7 @@ const StudentLeaves = () => {
           </Table>
         </TableContainer>
 
-        {/* Apply Leave Dialog */}
+
         <StyledDialog 
           open={openDialog} 
           onClose={handleCloseDialog} 
@@ -1063,7 +1055,7 @@ const StudentLeaves = () => {
             </StyledDialogTitle>
             <StyledDialogContent>
               <Grid container spacing={3}>
-                {/* Leave Type */}
+                
                 <Grid item xs={12} md={6}>
                   <FormControl fullWidth error={!!formErrors.type}>
                     <InputLabel sx={{ color: theme.textMuted }}>Leave Type *</InputLabel>
@@ -1091,7 +1083,7 @@ const StudentLeaves = () => {
                   </FormControl>
                 </Grid>
 
-                {/* Destination */}
+             
                 <Grid item xs={12} md={6}>
                   <StyledTextField
                     fullWidth
@@ -1111,7 +1103,7 @@ const StudentLeaves = () => {
                   />
                 </Grid>
 
-                {/* From Date */}
+                
                 <Grid item xs={12} md={6}>
                   <StyledTextField
                     fullWidth
@@ -1138,7 +1130,7 @@ const StudentLeaves = () => {
                   />
                 </Grid>
 
-                {/* To Date */}
+               
                 <Grid item xs={12} md={6}>
                   <StyledTextField
                     fullWidth
@@ -1165,7 +1157,7 @@ const StudentLeaves = () => {
                   />
                 </Grid>
 
-                {/* Reason */}
+               
                 <Grid item xs={12}>
                   <StyledTextField
                     fullWidth
@@ -1204,7 +1196,7 @@ const StudentLeaves = () => {
                   </Divider>
                 </Grid>
 
-                {/* Emergency Contact Name */}
+                
                 <Grid item xs={12} md={4}>
                   <StyledTextField
                     fullWidth
@@ -1223,7 +1215,7 @@ const StudentLeaves = () => {
                   />
                 </Grid>
 
-                {/* Emergency Contact Phone */}
+                
                 <Grid item xs={12} md={4}>
                   <StyledTextField
                     fullWidth
@@ -1242,7 +1234,7 @@ const StudentLeaves = () => {
                   />
                 </Grid>
 
-                {/* Emergency Contact Relationship */}
+               
                 <Grid item xs={12} md={4}>
                   <StyledTextField
                     fullWidth
@@ -1255,7 +1247,6 @@ const StudentLeaves = () => {
                   />
                 </Grid>
 
-                {/* Document Upload */}
                 <Grid item xs={12}>
                   <Button
                     fullWidth
@@ -1304,7 +1295,7 @@ const StudentLeaves = () => {
           </form>
         </StyledDialog>
 
-        {/* View Leave Dialog */}
+        
         <StyledDialog 
           open={openViewDialog} 
           onClose={handleCloseViewDialog} 
@@ -1450,7 +1441,7 @@ const StudentLeaves = () => {
                   </>
                 )}
 
-                {/* Approval Status */}
+           
                 <Grid item xs={12}>
                   <Divider>
                     <Chip 
@@ -1557,7 +1548,7 @@ const StudentLeaves = () => {
           </DialogActions>
         </StyledDialog>
 
-        {/* Snackbar */}
+      
         <Snackbar
           open={snackbar.open}
           autoHideDuration={6000}

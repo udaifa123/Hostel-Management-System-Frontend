@@ -19,7 +19,7 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-gray-100">
-      {/* Navbar */}
+     
       <nav className="bg-white shadow-sm">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16">
@@ -43,11 +43,11 @@ const AdminDashboard = () => {
         </div>
       </nav>
 
-      {/* Main Content */}
+      
       <div className="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
-        {/* Stats */}
+      
         <div className="grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {/* Total Students Card */}
+         
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
@@ -68,7 +68,7 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Total Hostels Card */}
+          
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
@@ -89,7 +89,7 @@ const AdminDashboard = () => {
             </div>
           </div>
 
-          {/* Active Complaints Card */}
+        
           <div className="bg-white overflow-hidden shadow rounded-lg">
             <div className="p-5">
               <div className="flex items-center">
@@ -111,7 +111,6 @@ const AdminDashboard = () => {
           </div>
         </div>
 
-        {/* Welcome Message */}
         <div className="mt-8 bg-white shadow sm:rounded-lg">
           <div className="px-4 py-5 sm:p-6">
             <h3 className="text-lg leading-6 font-medium text-gray-900">

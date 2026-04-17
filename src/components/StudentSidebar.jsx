@@ -46,7 +46,6 @@ const StudentSidebar = () => {
   const [unreadCount, setUnreadCount] = useState(0);
   const [loading, setLoading] = useState(true);
 
-  // Fetch unread notifications count
   const fetchUnreadCount = useCallback(async () => {
     if (!token) return;
     
@@ -97,7 +96,6 @@ const StudentSidebar = () => {
     }
   }, [token, fetchUnreadCount]);
 
-  // Listen for storage events to update badge when notifications are read
   useEffect(() => {
     const handleStorageChange = () => {
       fetchUnreadCount();
@@ -116,10 +114,8 @@ const StudentSidebar = () => {
     };
   }, [fetchUnreadCount]);
 
-  // Refresh unread count when coming back to dashboard
   useEffect(() => {
     if (location.pathname === '/student/notifications') {
-      // Small delay to allow notification page to mark as read
       setTimeout(() => {
         fetchUnreadCount();
       }, 500);
@@ -221,7 +217,6 @@ const StudentSidebar = () => {
         },
       }}
     >
-      {/* Header Section */}
       <Box sx={{ flexShrink: 0, px: 2, pt: 3, pb: 2 }}>
         <Toolbar sx={{ mb: 2 }}>
           <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -251,7 +246,6 @@ const StudentSidebar = () => {
           </Box>
         </Toolbar>
 
-        {/* Profile Card */}
         <Box
           sx={{
             background: '#F8FAFC',
@@ -290,7 +284,6 @@ const StudentSidebar = () => {
 
       <Divider sx={{ mx: 2, my: 1, opacity: 0.5 }} />
 
-      {/* Navigation Menu */}
       <Box sx={{ flex: 1, overflowY: 'auto', px: 2, py: 1 }}>
         <List>
           {menuItems.map((item) => {
@@ -335,7 +328,6 @@ const StudentSidebar = () => {
         </List>
       </Box>
 
-      {/* Logout Section */}
       <Box sx={{ px: 3, pb: 4, pt: 2 }}>
         <Button
           fullWidth

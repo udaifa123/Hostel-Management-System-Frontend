@@ -34,7 +34,6 @@ import parentService from '../../services/parentService';
 import toast from 'react-hot-toast';
 import { format, parseISO, differenceInDays } from 'date-fns';
 
-// ─── Color Tokens ───────────────────────────────────────────────
 const G = {
   900: '#064e3b',
   800: '#065f46',
@@ -98,7 +97,7 @@ const ParentLeaves = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header */}
+     
       <Paper
         elevation={0}
         sx={{
@@ -124,9 +123,9 @@ const ParentLeaves = () => {
         </Box>
       </Paper>
 
-      {/* Main Content */}
+     
       <Box sx={{ p: 3 }}>
-        {/* Welcome Card */}
+      
         <Paper
           elevation={0}
           sx={{
@@ -172,7 +171,7 @@ const ParentLeaves = () => {
           </Box>
         </Paper>
 
-        {/* Stats Section */}
+        
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <TrendingUpIcon sx={{ color: G[600], fontSize: 20 }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
@@ -215,7 +214,7 @@ const ParentLeaves = () => {
 
         <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-        {/* Table Section */}
+       
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <DescriptionIcon sx={{ color: G[600], fontSize: 20 }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
@@ -341,7 +340,7 @@ const ParentLeaves = () => {
         </TableContainer>
       </Box>
 
-      {/* Detail Dialog */}
+      
       <Dialog
         open={detailsOpen}
         onClose={() => setDetailsOpen(false)}

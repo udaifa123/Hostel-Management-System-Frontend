@@ -51,7 +51,7 @@ import adminService from '../../services/adminService';
 import AdminLayout from '../../components/Layout/AdminLayout';
 import toast from 'react-hot-toast';
 
-// ─── Green Design Tokens (Same as AdminHostels) ───────────────────────────────
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -82,7 +82,7 @@ const monthlyTrendData = [
   { month: 'Dec', students: 392, fees: 528000, complaints: 10, leaves: 17 },
 ];
 
-// ─── Stat Card (Same style as AdminHostels) ────────────────────────────────────
+
 const StatCard = ({ label, value, icon: Icon, dark = false, trend, trendValue, subtext }) => {
   const isDark = dark;
   const isPositive = trend === 'up';
@@ -157,7 +157,7 @@ const StatCard = ({ label, value, icon: Icon, dark = false, trend, trendValue, s
   );
 };
 
-// ─── Mini Metric Card ──────────────────────────────────────────────────────────
+
 const MiniMetricCard = ({ label, value, icon: Icon, color, trend }) => {
   const IconComponent = Icon;
   
@@ -205,7 +205,7 @@ const MiniMetricCard = ({ label, value, icon: Icon, color, trend }) => {
   );
 };
 
-// ─── Activity Item ────────────────────────────────────────────────────────────
+
 const ActivityItem = ({ activity }) => {
   const getIcon = () => {
     switch(activity.type) {
@@ -267,7 +267,7 @@ const ActivityItem = ({ activity }) => {
   );
 };
 
-// ─── Main Component ────────────────────────────────────────────────────────────
+
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(true);
   const [stats, setStats] = useState(null);
@@ -448,11 +448,11 @@ const AdminDashboard = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar - Same as AdminHostels */}
+    
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
-        {/* ── Header Section (Same style as AdminHostels) ── */}
+        
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -500,7 +500,6 @@ const AdminDashboard = () => {
           </Box>
         </Paper>
 
-        {/* ── Primary Stat Cards (Same grid as AdminHostels) ── */}
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Students" value={totalStudents.toLocaleString()} icon={SchoolIcon} dark trend="up" trendValue="12" subtext="Active enrollment" />
@@ -516,7 +515,7 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* ── Occupancy & Quick Metrics ── */}
+        
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
@@ -569,7 +568,7 @@ const AdminDashboard = () => {
                 <MiniMetricCard label="Monthly Revenue" value={`₹${(feesCollected / 1000).toFixed(0)}k`} icon={MoneyIcon} color={G[600]} trend={8} />
               </Grid>
               
-              {/* Today's Attendance Card */}
+             
               <Grid item xs={12}>
                 <Paper elevation={0} sx={{
                   p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
@@ -599,7 +598,7 @@ const AdminDashboard = () => {
                 </Paper>
               </Grid>
 
-              {/* Today's Visitors Card */}
+            
               <Grid item xs={12}>
                 <Paper elevation={0} sx={{
                   p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
@@ -631,7 +630,7 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* ── Attendance & Visitors Charts ── */}
+       
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
@@ -674,7 +673,7 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* ── Recent Activities & Monthly Summary ── */}
+        
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
             <Paper elevation={0} sx={{
@@ -759,7 +758,7 @@ const AdminDashboard = () => {
           </Grid>
         </Grid>
 
-        {/* ── Monthly Trend Chart ── */}
+        
         <Paper elevation={0} sx={{
           mt: 4, p: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
         }}>

@@ -30,7 +30,11 @@ import {
   Tooltip,
   Snackbar,
   Alert,
-  InputAdornment
+  InputAdornment,
+  Stepper,
+  Step,
+  StepLabel,
+  StepContent
 } from '@mui/material';
 import {
   Add as AddIcon,
@@ -42,14 +46,16 @@ import {
   CheckCircle as CheckCircleIcon,
   Warning as WarningIcon,
   Search as SearchIcon,
-  Close as CloseIcon
+  Close as CloseIcon,
+  SwapHoriz as SwapIcon,
+  Autorenew as ReplaceIcon
 } from '@mui/icons-material';
 import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// Green Design Tokens
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -70,6 +76,7 @@ const Assets = () => {
   const { token } = useAuth();
   const [loading, setLoading] = useState(true);
   const [assets, setAssets] = useState([]);
+  const [assignments, setAssignments] = useState([]);
   const [stats, setStats] = useState({
     totalAssets: 0,
     totalQuantity: 0,
@@ -79,7 +86,9 @@ const Assets = () => {
   });
   const [openDialog, setOpenDialog] = useState(false);
   const [openAssignDialog, setOpenAssignDialog] = useState(false);
+  const [openReplaceDialog, setOpenReplaceDialog] = useState(false);
   const [selectedAsset, setSelectedAsset] = useState(null);
+  const [selectedAssignment, setSelectedAssignment] = useState(null);
   const [searchTerm, setSearchTerm] = useState('');
   const [categoryFilter, setCategoryFilter] = useState('all');
   const [conditionFilter, setConditionFilter] = useState('all');
@@ -104,6 +113,11 @@ const Assets = () => {
     assignmentType: 'common',
     remarks: ''
   });
+  const [replaceForm, setReplaceForm] = useState({
+    newAssetId: '',
+    reason: '',
+    notes: ''
+  });
   const [students, setStudents] = useState([]);
   const [rooms, setRooms] = useState([]);
   const [submitting, setSubmitting] = useState(false);
@@ -113,6 +127,7 @@ const Assets = () => {
     fetchStats();
     fetchStudents();
     fetchRooms();
+    fetchAssignments();
   }, []);
 
   const fetchAssets = async () => {
@@ -140,6 +155,19 @@ const Assets = () => {
       updateStatsFromAssets([]);
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchAssignments = async () => {
+    try {
+      const response = await axios.get(`${API_URL}/assets/assignments`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      if (response.data.success && response.data.data) {
+        setAssignments(response.data.data);
+      }
+    } catch (error) {
+      console.error('Error fetching assignments:', error);
     }
   };
 
@@ -224,8 +252,8 @@ const Assets = () => {
         showSnackbar('Asset created successfully', 'success');
         setOpenDialog(false);
         resetForm();
-        fetchAssets(); // Refresh the list
-        fetchStats();  // Refresh stats
+        fetchAssets();
+        fetchStats();
       } else {
         showSnackbar(response.data.message || 'Failed to create asset', 'error');
       }
@@ -250,8 +278,8 @@ const Assets = () => {
         showSnackbar('Asset updated successfully', 'success');
         setOpenDialog(false);
         resetForm();
-        fetchAssets(); // Refresh the list
-        fetchStats();  // Refresh stats
+        fetchAssets();
+        fetchStats();
       } else {
         showSnackbar(response.data.message || 'Failed to update asset', 'error');
       }
@@ -273,8 +301,8 @@ const Assets = () => {
       
       if (response.data.success) {
         showSnackbar('Asset deleted successfully', 'success');
-        fetchAssets(); // Refresh the list
-        fetchStats();  // Refresh stats
+        fetchAssets();
+        fetchStats();
       } else {
         showSnackbar(response.data.message || 'Failed to delete asset', 'error');
       }
@@ -309,14 +337,52 @@ const Assets = () => {
         showSnackbar('Asset assigned successfully', 'success');
         setOpenAssignDialog(false);
         resetAssignForm();
-        fetchAssets(); // Refresh the list
-        fetchStats();  // Refresh stats
+        fetchAssets();
+        fetchStats();
+        fetchAssignments();
       } else {
         showSnackbar(response.data.message || 'Failed to assign asset', 'error');
       }
     } catch (error) {
       console.error('Error assigning asset:', error);
       showSnackbar(error.response?.data?.message || 'Failed to assign asset', 'error');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  
+  const handleReplaceAsset = async () => {
+    if (!selectedAssignment) return;
+    if (!replaceForm.newAssetId) {
+      showSnackbar('Please select a replacement asset', 'error');
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const response = await axios.post(`${API_URL}/assets/replace`, {
+        assignmentId: selectedAssignment._id,
+        newAssetId: replaceForm.newAssetId,
+        reason: replaceForm.reason,
+        notes: replaceForm.notes
+      }, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      if (response.data.success) {
+        showSnackbar('Asset replaced successfully', 'success');
+        setOpenReplaceDialog(false);
+        resetReplaceForm();
+        fetchAssets();
+        fetchStats();
+        fetchAssignments();
+      } else {
+        showSnackbar(response.data.message || 'Failed to replace asset', 'error');
+      }
+    } catch (error) {
+      console.error('Error replacing asset:', error);
+      showSnackbar(error.response?.data?.message || 'Failed to replace asset', 'error');
     } finally {
       setSubmitting(false);
     }
@@ -334,8 +400,8 @@ const Assets = () => {
       
       if (response.data.success) {
         showSnackbar('Asset marked as damaged', 'success');
-        fetchAssets(); // Refresh the list
-        fetchStats();  // Refresh stats
+        fetchAssets();
+        fetchStats();
       } else {
         showSnackbar(response.data.message || 'Failed to mark as damaged', 'error');
       }
@@ -373,6 +439,15 @@ const Assets = () => {
     setSelectedAsset(null);
   };
 
+  const resetReplaceForm = () => {
+    setReplaceForm({
+      newAssetId: '',
+      reason: '',
+      notes: ''
+    });
+    setSelectedAssignment(null);
+  };
+
   const handleEdit = (asset) => {
     setSelectedAsset(asset);
     setFormData({
@@ -394,6 +469,19 @@ const Assets = () => {
   const handleAssign = (asset) => {
     setSelectedAsset(asset);
     setOpenAssignDialog(true);
+  };
+
+  const handleReplace = (assignment) => {
+    setSelectedAssignment(assignment);
+    setOpenReplaceDialog(true);
+  };
+
+  const getAvailableAssetsForReplacement = () => {
+    return assets.filter(asset => 
+      asset._id !== selectedAssignment?.assetId?._id && 
+      asset.availableQuantity > 0 &&
+      asset.condition === 'Good'
+    );
   };
 
   const filteredAssets = assets.filter(asset => {
@@ -423,10 +511,8 @@ const Assets = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-      {/* Top accent bar */}
       <Box sx={{ height: 4, bgcolor: G[600], mb: 3, borderRadius: 2 }} />
 
-      {/* Header */}
       <Paper elevation={0} sx={{
         p: 3,
         mb: 4,
@@ -449,7 +535,7 @@ const Assets = () => {
               Asset Management
             </Typography>
             <Typography variant="body2" sx={{ color: G[500], mt: 0.25 }}>
-              Manage hostel assets, track inventory, and assign items
+              Manage hostel assets, track inventory, assign and replace items
             </Typography>
           </Box>
         </Box>
@@ -472,7 +558,7 @@ const Assets = () => {
         </Button>
       </Paper>
 
-      {/* Stats Cards */}
+      
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         {statCards.map((stat, index) => (
           <Grid item xs={12} sm={6} md={2.4} key={index}>
@@ -497,7 +583,7 @@ const Assets = () => {
         ))}
       </Grid>
 
-      {/* Filters */}
+    
       <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={4}>
@@ -561,7 +647,7 @@ const Assets = () => {
         </Grid>
       </Paper>
 
-      {/* Assets Table */}
+      
       <TableContainer component={Paper} elevation={0} sx={{
         borderRadius: 3,
         bgcolor: '#ffffff',
@@ -696,7 +782,69 @@ const Assets = () => {
         </Table>
       </TableContainer>
 
-      {/* Create/Edit Asset Dialog */}
+      {assignments.length > 0 && (
+        <>
+          <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], mt: 4, mb: 2 }}>
+            Active Assignments (Replace Damaged Items)
+          </Typography>
+          <TableContainer component={Paper} elevation={0} sx={{
+            borderRadius: 3,
+            bgcolor: '#ffffff',
+            border: `1px solid ${G[200]}`,
+            boxShadow: '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)'
+          }}>
+            <Table>
+              <TableHead sx={{ bgcolor: G[50] }}>
+                <TableRow>
+                  <TableCell sx={{ color: G[700], fontWeight: 700 }}>Asset</TableCell>
+                  <TableCell sx={{ color: G[700], fontWeight: 700 }}>Assigned To</TableCell>
+                  <TableCell sx={{ color: G[700], fontWeight: 700 }}>Quantity</TableCell>
+                  <TableCell sx={{ color: G[700], fontWeight: 700 }}>Assigned Date</TableCell>
+                  <TableCell sx={{ color: G[700], fontWeight: 700 }}>Status</TableCell>
+                  <TableCell align="center" sx={{ color: G[700], fontWeight: 700 }}>Action</TableCell>
+                </TableRow>
+              </TableHead>
+              <TableBody>
+                {assignments.filter(a => a.status === 'active').map((assignment) => (
+                  <TableRow key={assignment._id} hover>
+                    <TableCell>
+                      <Typography variant="body2" fontWeight={600}>{assignment.assetId?.name || 'Unknown'}</Typography>
+                    </TableCell>
+                    <TableCell>
+                      {assignment.assignmentType === 'student' ? assignment.studentId?.name :
+                       assignment.assignmentType === 'room' ? `Room ${assignment.roomId?.roomNumber}` :
+                       'Common Area'}
+                    </TableCell>
+                    <TableCell>{assignment.quantity}</TableCell>
+                    <TableCell>{new Date(assignment.assignedDate).toLocaleDateString()}</TableCell>
+                    <TableCell>
+                      <Chip 
+                        label={assignment.status}
+                        size="small"
+                        sx={{ 
+                          bgcolor: assignment.status === 'active' ? alpha('#10b981', 0.1) : alpha('#ef4444', 0.1),
+                          color: assignment.status === 'active' ? '#10b981' : '#ef4444'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell align="center">
+                      <Tooltip title="Replace Asset">
+                        <IconButton 
+                          onClick={() => handleReplace(assignment)} 
+                          sx={{ color: '#f59e0b', bgcolor: alpha('#f59e0b', 0.1), borderRadius: 1.5 }}
+                        >
+                          <ReplaceIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </TableContainer>
+        </>
+      )}
+
       <Dialog 
         open={openDialog} 
         onClose={() => { setOpenDialog(false); resetForm(); }} 
@@ -849,7 +997,6 @@ const Assets = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Assign Asset Dialog */}
       <Dialog 
         open={openAssignDialog} 
         onClose={() => { setOpenAssignDialog(false); resetAssignForm(); }} 
@@ -969,7 +1116,104 @@ const Assets = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
+      <Dialog 
+        open={openReplaceDialog} 
+        onClose={() => { setOpenReplaceDialog(false); resetReplaceForm(); }} 
+        maxWidth="sm" 
+        fullWidth
+        PaperProps={{
+          sx: {
+            borderRadius: 3,
+            bgcolor: '#ffffff',
+            border: `1px solid ${G[200]}`,
+            boxShadow: '0 24px 48px rgba(13,51,24,0.15)',
+          }
+        }}
+      >
+        <Box sx={{ height: 4, bgcolor: '#f59e0b', borderRadius: '12px 12px 0 0' }} />
+        <DialogTitle sx={{ bgcolor: G[50], borderBottom: `1px solid ${G[100]}` }}>
+          <Typography variant="h6" fontWeight="bold" sx={{ color: G[800] }}>
+            <SwapIcon sx={{ mr: 1, color: '#f59e0b' }} />
+            Replace Asset
+          </Typography>
+        </DialogTitle>
+        <DialogContent sx={{ mt: 2 }}>
+          {selectedAssignment && (
+            <>
+              <Alert severity="warning" sx={{ mb: 3, borderRadius: 2 }}>
+                <Typography variant="body2">
+                  <strong>Current Asset:</strong> {selectedAssignment.assetId?.name}<br />
+                  <strong>Assigned To:</strong> {
+                    selectedAssignment.assignmentType === 'student' ? selectedAssignment.studentId?.name :
+                    selectedAssignment.assignmentType === 'room' ? `Room ${selectedAssignment.roomId?.roomNumber}` :
+                    'Common Area'
+                  }<br />
+                  <strong>Quantity:</strong> {selectedAssignment.quantity}
+                </Typography>
+              </Alert>
+              
+              <Grid container spacing={2}>
+                <Grid item xs={12}>
+                  <FormControl fullWidth>
+                    <InputLabel>Select Replacement Asset</InputLabel>
+                    <Select
+                      value={replaceForm.newAssetId}
+                      onChange={(e) => setReplaceForm({ ...replaceForm, newAssetId: e.target.value })}
+                      label="Select Replacement Asset"
+                    >
+                      {getAvailableAssetsForReplacement().map(asset => (
+                        <MenuItem key={asset._id} value={asset._id}>
+                          {asset.name} - {asset.availableQuantity} available
+                        </MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                </Grid>
+                
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Reason for Replacement"
+                    multiline
+                    rows={2}
+                    value={replaceForm.reason}
+                    onChange={(e) => setReplaceForm({ ...replaceForm, reason: e.target.value })}
+                    placeholder="e.g., Damaged, Lost, Maintenance issue"
+                    required
+                  />
+                </Grid>
+                
+                <Grid item xs={12}>
+                  <TextField
+                    fullWidth
+                    label="Additional Notes"
+                    multiline
+                    rows={2}
+                    value={replaceForm.notes}
+                    onChange={(e) => setReplaceForm({ ...replaceForm, notes: e.target.value })}
+                    placeholder="Any additional information about the replacement"
+                  />
+                </Grid>
+              </Grid>
+            </>
+          )}
+        </DialogContent>
+        <Box sx={{ height: 1, bgcolor: G[100], my: 2 }} />
+        <DialogActions sx={{ p: 3, gap: 1 }}>
+          <Button onClick={() => { setOpenReplaceDialog(false); resetReplaceForm(); }} sx={{ color: G[600], border: `1px solid ${G[200]}`, px: 3 }}>
+            Cancel
+          </Button>
+          <Button 
+            variant="contained" 
+            onClick={handleReplaceAsset}
+            disabled={submitting || !replaceForm.newAssetId || !replaceForm.reason}
+            sx={{ bgcolor: '#f59e0b', '&:hover': { bgcolor: '#d97706' }, px: 3 }}
+          >
+            {submitting ? 'Replacing...' : 'Replace Asset'}
+          </Button>
+        </DialogActions>
+      </Dialog>
+
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

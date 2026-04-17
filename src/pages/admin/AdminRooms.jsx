@@ -48,7 +48,7 @@ import {
 import adminService from '../../services/adminService';
 import toast from 'react-hot-toast';
 
-// ─── Green Design Tokens ───────────────────────────────────────────────
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -64,7 +64,7 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ─── Stat Card Component ───────────────────────────────────────────────────────
+
 const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
   <Card elevation={0} sx={{
     borderRadius: 3,
@@ -105,7 +105,7 @@ const StatCard = ({ label, value, icon: Icon, dark = false, valueColor }) => (
   </Card>
 );
 
-// ─── Main Component ────────────────────────────────────────────────────────────
+
 const AdminRooms = () => {
   const [rooms, setRooms] = useState([]);
   const [hostels, setHostels] = useState([]);
@@ -150,7 +150,7 @@ const AdminRooms = () => {
     } catch (error) {
       console.error('Error fetching rooms:', error);
       toast.error('Failed to load rooms');
-      // Use mock data as fallback
+      
       const mockRoomsData = [
         { _id: '1', roomNumber: '101', hostelId: 'hostel1', hostelName: 'Boys Hostel A', floor: 1, capacity: 4, currentOccupancy: 3, status: 'occupied', roomType: 'AC', rent: 4500 },
         { _id: '2', roomNumber: '102', hostelId: 'hostel1', hostelName: 'Boys Hostel A', floor: 1, capacity: 2, currentOccupancy: 2, status: 'full', roomType: 'Non-AC', rent: 3500 },
@@ -183,7 +183,7 @@ const AdminRooms = () => {
       setHostels(hostelsData);
     } catch (error) {
       console.error('Error fetching hostels:', error);
-      // Mock hostels data
+     
       setHostels([
         { _id: 'hostel1', name: 'Boys Hostel A' },
         { _id: 'hostel2', name: 'Boys Hostel B' },
@@ -350,12 +350,12 @@ const AdminRooms = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
+  
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
 
-        {/* ── Header ── */}
+        
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -392,7 +392,7 @@ const AdminRooms = () => {
           </Button>
         </Paper>
 
-        {/* ── Stat Cards - FIXED GAP ── */}
+        
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={2.4}>
             <StatCard label="Total Rooms" value={stats.total} icon={RoomIcon} dark />
@@ -411,7 +411,7 @@ const AdminRooms = () => {
           </Grid>
         </Grid>
 
-        {/* Occupancy Overview Card */}
+       
         <Card elevation={0} sx={{
           mb: 3, borderRadius: 3, bgcolor: '#ffffff',
           border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW
@@ -441,7 +441,7 @@ const AdminRooms = () => {
           </CardContent>
         </Card>
 
-        {/* ── Search and Filter ── */}
+       
         <Box sx={{ display: 'flex', gap: 2, mb: 3, flexWrap: 'wrap' }}>
           <TextField
             fullWidth
@@ -497,7 +497,7 @@ const AdminRooms = () => {
           </IconButton>
         </Box>
 
-        {/* ── Rooms Table ── */}
+       
         <TableContainer component={Paper} elevation={0} sx={{
           borderRadius: 3, bgcolor: '#ffffff',
           border: `1px solid ${G[200]}`, boxShadow: CARD_SHADOW,
@@ -671,7 +671,7 @@ const AdminRooms = () => {
           </Table>
         </TableContainer>
 
-        {/* ── Add/Edit Room Dialog ── */}
+        
         <Dialog
           open={openDialog}
           onClose={handleCloseDialog}

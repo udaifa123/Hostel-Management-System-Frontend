@@ -30,7 +30,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, userRole }) => {
 
   return (
     <>
-      {/* Mobile sidebar backdrop */}
+     
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-30 bg-gray-900 bg-opacity-50 lg:hidden"
@@ -38,7 +38,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen, userRole }) => {
         />
       )}
 
-      {/* Sidebar */}
+     
       <aside
         className={`fixed top-0 left-0 z-40 w-64 h-screen pt-20 transition-transform bg-white border-r border-gray-200 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'

@@ -86,7 +86,6 @@ const WardenSidebar = () => {
         },
       }}
     >
-      {/* ── Header ── */}
       <Box
         sx={{
           p: '28px 20px 22px',
@@ -141,7 +140,6 @@ const WardenSidebar = () => {
           {user?.email || 'warden@hostel.com'}
         </Typography>
 
-        {/* Role badge */}
         <Box
           sx={{
             display: 'inline-block', mt: 1.2,
@@ -158,10 +156,8 @@ const WardenSidebar = () => {
         </Box>
       </Box>
 
-      {/* Accent bar */}
       <Box sx={{ height: '3px', background: 'linear-gradient(90deg, #1a6b3c, #4cdb82, #1a6b3c)' }} />
 
-      {/* Nav label */}
       <Typography
         sx={{
           fontSize: '9.5px', fontWeight: 500,
@@ -173,7 +169,6 @@ const WardenSidebar = () => {
         Main Navigation
       </Typography>
 
-      {/* ── Menu Items ── */}
       <List sx={{ px: 1.2, pb: 1, flex: 1, overflowY: 'auto' }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -223,7 +218,6 @@ const WardenSidebar = () => {
                   }}
                 />
 
-                {/* Active dot */}
                 {isActive && (
                   <Box
                     sx={{
@@ -242,7 +236,6 @@ const WardenSidebar = () => {
 
       <Divider sx={{ mx: 1.5, borderColor: '#daeee0' }} />
 
-      {/* ── Logout ── */}
       <List sx={{ px: 1.2, pt: 1, pb: 1 }}>
         <ListItem disablePadding>
           <ListItemButton
@@ -267,7 +260,6 @@ const WardenSidebar = () => {
         </ListItem>
       </List>
 
-      {/* ── Footer branding ── */}
       <Box
         sx={{
           mx: 1.2, mb: 1.5,

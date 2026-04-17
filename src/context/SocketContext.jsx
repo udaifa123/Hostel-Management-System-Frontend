@@ -2,10 +2,10 @@ import React, { createContext, useContext, useEffect, useState, useRef } from "r
 import { io } from "socket.io-client";
 import { useAuth } from "./AuthContext";
 
-// Create context
+
 const SocketContext = createContext(null);
 
-// Custom hook to use socket context
+
 export const useSocket = () => {
   const context = useContext(SocketContext);
   if (!context) {
@@ -14,7 +14,7 @@ export const useSocket = () => {
   return context;
 };
 
-// Provider component
+
 export const SocketProvider = ({ children }) => {
   const { user, token } = useAuth();
   const [socket, setSocket] = useState(null);
@@ -66,7 +66,7 @@ export const SocketProvider = ({ children }) => {
       setOnlineUsers((prev) => prev.filter((id) => id !== userId));
     });
 
-    // ============= CALL EVENTS =============
+   
     socketInstance.on("call:incoming", (data) => {
       console.log("📞 Incoming call event received:", data);
     });
@@ -87,7 +87,7 @@ export const SocketProvider = ({ children }) => {
       console.log("❌ Call failed event received:", data);
     });
 
-    // WebRTC signaling events
+    
     socketInstance.on("webrtc:offer", ({ offer, senderId }) => {
       console.log("📨 WebRTC offer received from:", senderId);
     });
@@ -152,5 +152,5 @@ export const SocketProvider = ({ children }) => {
   );
 };
 
-// Also export as default for flexibility
+
 export default SocketProvider;

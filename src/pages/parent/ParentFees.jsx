@@ -1,4 +1,3 @@
-// pages/parent/ParentFees.jsx
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -175,7 +174,6 @@ const ParentFees = () => {
     }
   };
 
-  // Flatten all fees from all children with proper student name
   const allFees = [];
   childrenData.forEach(child => {
     if (child.fees && child.fees.length) {
@@ -205,7 +203,6 @@ const ParentFees = () => {
   const filteredFees = tabValue === 0 ? allFees : allFees.filter(f => f.status === 'pending' || f.status === 'overdue');
   const pendingTotal = allFees.filter(f => f.status === 'pending' || f.status === 'overdue').length;
 
-  // Calculate totals
   const totalAmount = allFees.reduce((sum, f) => sum + (f.amount || 0), 0);
   const totalPaid = allFees.reduce((sum, f) => sum + (f.paidAmount || 0), 0);
   const totalPending = allFees.reduce((sum, f) => sum + (f.dueAmount || 0), 0);
@@ -220,7 +217,6 @@ const ParentFees = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header */}
       <Paper
         elevation={0}
         sx={{
@@ -246,9 +242,7 @@ const ParentFees = () => {
         </Box>
       </Paper>
 
-      {/* Main Content */}
       <Box sx={{ p: 3 }}>
-        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
@@ -288,7 +282,6 @@ const ParentFees = () => {
           </Box>
         </Paper>
 
-        {/* Stats Section */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <TrendingUpIcon sx={{ color: G[600], fontSize: 20 }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
@@ -331,7 +324,6 @@ const ParentFees = () => {
 
         <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-        {/* Children Summary Cards */}
         {childrenData.length > 0 && (
           <>
             <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
@@ -412,7 +404,6 @@ const ParentFees = () => {
 
         <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-        {/* Tabs */}
         <Paper sx={{ mb: 3, borderRadius: '16px', border: '1.5px solid #d1fae5', overflow: 'hidden' }}>
           <Tabs 
             value={tabValue} 
@@ -434,7 +425,7 @@ const ParentFees = () => {
           </Tabs>
         </Paper>
 
-        {/* Fees Table */}
+       
         <TableContainer
           component={Paper}
           elevation={0}
@@ -546,7 +537,7 @@ const ParentFees = () => {
         </TableContainer>
       </Box>
 
-      {/* Payment Dialog */}
+     
       <Dialog
         open={openPaymentDialog}
         onClose={() => setOpenPaymentDialog(false)}
@@ -649,7 +640,7 @@ const ParentFees = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Receipt Dialog */}
+    
       <Dialog
         open={openReceiptDialog}
         onClose={() => setOpenReceiptDialog(false)}

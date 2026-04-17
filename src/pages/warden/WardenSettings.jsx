@@ -85,7 +85,6 @@ import axios from 'axios';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// Green Design Tokens
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -260,7 +259,6 @@ const WardenSettings = () => {
       console.log('Profile response:', response.data);
       if (response.data && response.data.success) {
         setProfile(response.data.data);
-        // Update auth context if needed
         if (setUser && response.data.data) {
           setUser(prev => ({ ...prev, ...response.data.data }));
         }
@@ -343,11 +341,9 @@ const WardenSettings = () => {
       console.log('Update response:', response.data);
       
       if (response.data && response.data.success) {
-        // Update local profile state
         const updatedProfile = { ...profile, ...editForm };
         setProfile(updatedProfile);
         
-        // Update auth context
         if (setUser) {
           setUser(prev => ({ ...prev, ...updatedProfile }));
         }
@@ -355,7 +351,6 @@ const WardenSettings = () => {
         showNotification('Profile updated successfully!', 'success');
         setEditMode(false);
         
-        // Refetch to ensure consistency
         await fetchProfile();
       } else {
         throw new Error(response.data?.message || 'Failed to update profile');
@@ -438,7 +433,6 @@ const WardenSettings = () => {
         const imageUrl = response.data.data?.imageUrl || imagePreview;
         setProfile(prev => ({ ...prev, profileImage: imageUrl }));
         
-        // Update auth context
         if (setUser) {
           setUser(prev => ({ ...prev, profileImage: imageUrl }));
         }
@@ -557,10 +551,8 @@ const WardenSettings = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-      {/* Top accent bar */}
       <Box sx={{ height: 4, bgcolor: G[600], mb: 3, borderRadius: 2 }} />
 
-      {/* Header */}
       <Fade in timeout={500}>
         <GlassPaper sx={{ p: 4, mb: 4 }}>
           <Grid container spacing={3} alignItems="center">
@@ -668,7 +660,6 @@ const WardenSettings = () => {
         </GlassPaper>
       </Fade>
 
-      {/* Settings Tabs */}
       <GlassPaper sx={{ mb: 4 }}>
         <Tabs
           value={activeTab}
@@ -696,7 +687,6 @@ const WardenSettings = () => {
         </Tabs>
       </GlassPaper>
 
-      {/* Profile Tab Content - Fixed Grid */}
       {activeTab === 0 && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -748,7 +738,6 @@ const WardenSettings = () => {
         </Grid>
       )}
 
-      {/* Notifications Tab */}
       {activeTab === 1 && (
         <SettingsCard>
           <CardContent sx={{ p: 3 }}>
@@ -842,7 +831,6 @@ const WardenSettings = () => {
         </SettingsCard>
       )}
 
-      {/* Security Tab */}
       {activeTab === 2 && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -959,7 +947,6 @@ const WardenSettings = () => {
         </Grid>
       )}
 
-      {/* Appearance Tab */}
       {activeTab === 3 && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -1106,7 +1093,6 @@ const WardenSettings = () => {
         </Grid>
       )}
 
-      {/* Language Tab */}
       {activeTab === 4 && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -1169,7 +1155,6 @@ const WardenSettings = () => {
         </Grid>
       )}
 
-      {/* Privacy Tab */}
       {activeTab === 5 && (
         <Grid container spacing={3}>
           <Grid item xs={12} md={6}>
@@ -1280,7 +1265,6 @@ const WardenSettings = () => {
         </Grid>
       )}
 
-      {/* Image Upload Dialog */}
       <Dialog 
         open={imageUploadOpen} 
         onClose={() => setImageUploadOpen(false)} 
@@ -1363,7 +1347,6 @@ const WardenSettings = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={4000}

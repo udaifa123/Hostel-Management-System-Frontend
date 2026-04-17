@@ -18,7 +18,6 @@ const AdminLogin = () => {
   const [focusedField, setFocusedField] = useState(null);
 
   useEffect(() => {
-    // Check for saved credentials
     const savedEmail = localStorage.getItem('adminEmail');
     const savedRemember = localStorage.getItem('adminRemember');
     if (savedRemember === 'true' && savedEmail) {
@@ -48,7 +47,6 @@ const AdminLogin = () => {
       });
       
       if (result && result.success) {
-        // Save credentials if remember me is checked
         if (rememberMe) {
           localStorage.setItem('adminEmail', formData.email);
           localStorage.setItem('adminRemember', 'true');
@@ -92,7 +90,7 @@ const AdminLogin = () => {
   return (
     <div className="admin-login-wrapper">
       <div className="admin-login-container">
-        {/* Left Panel - Branding */}
+        
         <div className="login-left-panel">
           <div className="brand-content">
             <div className="brand-logo">
@@ -154,7 +152,7 @@ const AdminLogin = () => {
           </div>
         </div>
 
-        {/* Right Panel - Login Form */}
+       
         <div className="login-right-panel">
           <div className="login-form-container">
             <div className="form-header">

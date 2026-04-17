@@ -75,7 +75,6 @@ const ParentSidebar = () => {
         },
       }}
     >
-      {/* ── Profile Header ── */}
       <Box
         sx={{
           px: 2.5,
@@ -116,7 +115,6 @@ const ParentSidebar = () => {
           </Typography>
         </Box>
 
-        {/* Role badge */}
         <Box
           sx={{
             mt: 0.5,
@@ -133,7 +131,6 @@ const ParentSidebar = () => {
         </Box>
       </Box>
 
-      {/* ── Nav Label ── */}
       <Box sx={{ px: 2.5, pt: 2, pb: 0.5 }}>
         <Typography
           sx={{ fontSize: '0.63rem', fontWeight: 700, color: '#10b981', letterSpacing: '0.12em', textTransform: 'uppercase' }}
@@ -142,7 +139,6 @@ const ParentSidebar = () => {
         </Typography>
       </Box>
 
-      {/* ── Menu Items ── */}
       <List sx={{ px: 1.5, flex: 1, overflowY: 'auto', pb: 1 }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -183,7 +179,6 @@ const ParentSidebar = () => {
                     letterSpacing: '-0.01em',
                   }}
                 />
-                {/* Active dot */}
                 {isActive && (
                   <Box
                     sx={{
@@ -200,10 +195,8 @@ const ParentSidebar = () => {
         })}
       </List>
 
-      {/* ── Divider ── */}
       <Divider sx={{ bgcolor: '#d1fae5', mx: 2 }} />
 
-      {/* ── Logout ── */}
       <Box sx={{ px: 1.5, py: 1.5 }}>
         <ListItemButton
           onClick={handleLogout}

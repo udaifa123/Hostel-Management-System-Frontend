@@ -1,9 +1,6 @@
-// frontend/src/services/adminService.js
-
 import api from './api';
 
 const adminService = {
-  // ==================== DASHBOARD ====================
   getDashboardStats: async () => {
     try {
       const response = await api.get('/admin/dashboard');
@@ -14,7 +11,6 @@ const adminService = {
     }
   },
 
-  // ==================== HOSTEL MANAGEMENT ====================
   getHostels: async () => {
     try {
       const response = await api.get('/admin/hostels');
@@ -55,7 +51,6 @@ const adminService = {
     }
   },
 
-  // ==================== WARDEN MANAGEMENT ====================
   getWardens: async () => {
     try {
       const response = await api.get('/admin/wardens');
@@ -96,7 +91,6 @@ const adminService = {
     }
   },
 
-  // ==================== STUDENT MANAGEMENT ====================
   getStudents: async () => {
     try {
       const response = await api.get('/admin/students');
@@ -107,7 +101,6 @@ const adminService = {
     }
   },
 
-  // ✅ ADD THESE STUDENT METHODS
   getStudentById: async (id) => {
     try {
       const response = await api.get(`/admin/students/${id}`);
@@ -148,7 +141,6 @@ const adminService = {
     }
   },
 
-  // ==================== ROOM MANAGEMENT ====================
   getRooms: async () => {
     try {
       const response = await api.get('/admin/rooms');
@@ -159,7 +151,6 @@ const adminService = {
     }
   },
 
-  // ✅ ADD ROOM CRUD METHODS
   createRoom: async (data) => {
     try {
       const response = await api.post('/admin/rooms', data);
@@ -190,7 +181,6 @@ const adminService = {
     }
   },
 
-  // ==================== LEAVE MANAGEMENT ====================
   getLeaves: async () => {
     try {
       const response = await api.get('/admin/leaves');
@@ -201,7 +191,6 @@ const adminService = {
     }
   },
 
-  // ✅ ADD LEAVE UPDATE METHOD
   updateLeaveStatus: async (id, status) => {
     try {
       const response = await api.put(`/admin/leaves/${id}`, { status });
@@ -212,7 +201,6 @@ const adminService = {
     }
   },
 
-  // ==================== COMPLAINT MANAGEMENT ====================
   getComplaints: async () => {
     try {
       const response = await api.get('/admin/complaints');
@@ -223,7 +211,6 @@ const adminService = {
     }
   },
 
-  // ✅ ADD COMPLAINT UPDATE METHOD
   updateComplaintStatus: async (id, status) => {
     try {
       const response = await api.put(`/admin/complaints/${id}`, { status });
@@ -234,7 +221,6 @@ const adminService = {
     }
   },
 
-  // ==================== FEE MANAGEMENT ====================
 getAllFees: async () => {
   try {
     const response = await api.get('/fees/admin/all-fees');
@@ -281,7 +267,6 @@ getFeeAnalytics: async (year) => {
 },
  
 
-  // ==================== ATTENDANCE MANAGEMENT ====================
   getWeeklyAttendance: async () => {
     try {
       const response = await api.get('/admin/attendance/weekly');
@@ -302,7 +287,6 @@ getFeeAnalytics: async (year) => {
     }
   },
 
-  // ==================== VISITOR MANAGEMENT ====================
   getWeeklyVisitors: async () => {
     try {
       const response = await api.get('/admin/visitors/weekly');
@@ -323,7 +307,6 @@ getFeeAnalytics: async (year) => {
     }
   },
 
-  // ==================== ACTIVITY MANAGEMENT ====================
   getRecentActivities: async () => {
     try {
       const response = await api.get('/admin/activities/recent');
@@ -334,7 +317,6 @@ getFeeAnalytics: async (year) => {
     }
   },
 
-  // ==================== REPORTS ====================
   exportReport: async (type, format = 'pdf') => {
     try {
       const response = await api.get(`/admin/reports/export?type=${type}&format=${format}`, {
@@ -347,7 +329,6 @@ getFeeAnalytics: async (year) => {
     }
   },
 
-  // ==================== PROFILE ====================
   getProfile: async () => {
     try {
       const response = await api.get('/admin/profile');
@@ -368,7 +349,6 @@ getFeeAnalytics: async (year) => {
     }
   },
 
-  // ==================== SETTINGS ====================
   getSettings: async () => {
     try {
       const response = await api.get('/admin/settings');

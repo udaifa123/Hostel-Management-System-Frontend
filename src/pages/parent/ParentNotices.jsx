@@ -49,7 +49,6 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ==================== Category Config ====================
 const categoryConfig = {
   general: { label: 'General', color: G[500], bg: alpha(G[500], 0.1), icon: <AnnouncementIcon sx={{ fontSize: '14px' }} /> },
   maintenance: { label: 'Maintenance', color: G[600], bg: alpha(G[600], 0.1), icon: <WarningIcon sx={{ fontSize: '14px' }} /> },
@@ -66,7 +65,6 @@ const ParentNotices = () => {
   const [filterCategory, setFilterCategory] = useState('all');
   const [filterAnchorEl, setFilterAnchorEl] = useState(null);
 
-  // Fetch notices from API
   const fetchNotices = async () => {
     setLoading(true);
     try {
@@ -95,7 +93,6 @@ const ParentNotices = () => {
     fetchNotices();
   }, []);
 
-  // Filter notices
   const filteredNotices = notices.filter(notice => {
     const matchesSearch = 
       notice.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -104,7 +101,6 @@ const ParentNotices = () => {
     return matchesSearch && matchesCategory;
   });
 
-  // Sort: pinned first, then by date
   const sortedNotices = [...filteredNotices].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1;
     if (!a.pinned && b.pinned) return 1;
@@ -125,7 +121,6 @@ const ParentNotices = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header */}
       <Paper
         elevation={0}
         sx={{
@@ -166,9 +161,7 @@ const ParentNotices = () => {
         </Box>
       </Paper>
 
-      {/* Main Content */}
       <Box sx={{ p: 3 }}>
-        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
@@ -208,7 +201,6 @@ const ParentNotices = () => {
           </Box>
         </Paper>
 
-        {/* Stats Cards - FIXED GAP */}
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Card
@@ -304,7 +296,6 @@ const ParentNotices = () => {
           </Grid>
         </Grid>
 
-        {/* Search and Filter */}
         <Paper
           elevation={0}
           sx={{
@@ -368,7 +359,6 @@ const ParentNotices = () => {
           </Grid>
         </Paper>
 
-        {/* Filter Menu */}
         <Menu
           anchorEl={filterAnchorEl}
           open={Boolean(filterAnchorEl)}
@@ -396,7 +386,6 @@ const ParentNotices = () => {
           ))}
         </Menu>
 
-        {/* Notices Grid */}
         {sortedNotices.length === 0 ? (
           <Paper
             elevation={0}

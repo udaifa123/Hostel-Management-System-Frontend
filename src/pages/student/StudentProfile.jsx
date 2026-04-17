@@ -83,29 +83,26 @@ import studentService from '../../services/studentService';
 import { useAuth } from '../../context/AuthContext';
 import { toast } from 'react-hot-toast';
 
-/* ─────────────────────────────────────────────
-   Light Green & White Theme
-───────────────────────────────────────────── */
 const theme = {
-  navy:        '#f3f8f5',          // page background: light green-white
-  navyLight:   '#eaf2ed',          // secondary background
-  navyCard:    '#ffffff',          // card background: pure white
-  navyHover:   '#e2ede6',          // hover state background
+  navy:        '#f3f8f5',          
+  navyLight:   '#eaf2ed',         
+  navyCard:    '#ffffff',         
+  navyHover:   '#e2ede6',          
   border:      'rgba(5,150,105,0.12)',
-  gold:        '#047857',          // primary green (replaces gold)
-  goldLight:   '#059669',          // lighter green
-  goldDark:    '#065f46',          // darker green
-  slate:       '#4a7060',          // muted green-gray text
-  slateLight:  '#7a9a87',          // lighter muted text
-  white:       '#0c1a12',          // main text: dark green-black
-
-  // Status Colors (unchanged)
+  gold:        '#047857',          
+  goldLight:   '#059669',         
+  goldDark:    '#065f46',         
+  slate:       '#4a7060',          
+  slateLight:  '#7a9a87',         
+  white:       '#0c1a12',         
+ 
   success: '#10B981',
   warning: '#F59E0B',
   error:   '#EF4444',
   info:    '#0284c7',
 
-  // Gradients — green variants
+  
+  
   primaryGradient: 'linear-gradient(135deg, #047857 0%, #059669 100%)',
   successGradient: 'linear-gradient(135deg, #10B981 0%, #059669 100%)',
   warningGradient: 'linear-gradient(135deg, #F59E0B 0%, #D97706 100%)',
@@ -113,16 +110,16 @@ const theme = {
   goldGradient:    'linear-gradient(135deg, #047857 0%, #34d399 100%)',
   navyGradient:    'linear-gradient(135deg, #f3f8f5 0%, #eaf2ed 100%)',
 
-  // Typography
+
   fontPrimary:   "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
   fontSecondary: "'SF Pro Display', 'Inter', 'Segoe UI', sans-serif",
 
-  // Shadows — green-tinted
+
   cardShadow:  '0 4px 20px -4px rgba(5,150,105,0.10), 0 1px 4px rgba(5,150,105,0.06)',
   hoverShadow: '0 12px 40px -8px rgba(5,150,105,0.18)',
   goldShadow:  '0 8px 20px -6px rgba(5,150,105,0.25)',
 
-  // Border Radius (unchanged)
+
   borderRadius: {
     sm:  '8px',
     md:  '12px',
@@ -131,7 +128,7 @@ const theme = {
     xxl: '32px'
   },
 
-  // Spacing (unchanged)
+
   spacing: {
     xs:  '4px',
     sm:  '8px',
@@ -142,9 +139,7 @@ const theme = {
   }
 };
 
-/* ─────────────────────────────────────────────
-   Styled Components
-───────────────────────────────────────────── */
+
 const GlassPaper = styled(Paper)(({ theme: muiTheme }) => ({
   background: theme.navyCard,
   backdropFilter: 'blur(20px)',
@@ -667,7 +662,7 @@ const StudentProfile = () => {
       <Container maxWidth="lg" sx={{ position: 'relative', zIndex: 1 }}>
         <Fade in={true} timeout={1000}>
           <div>
-            {/* Modern Header */}
+            
             <GlassPaper sx={{ mb: theme.spacing.xl, p: theme.spacing.lg }}>
               <Grid container spacing={3} alignItems="center">
                 <Grid item xs={12} md={6}>
@@ -783,9 +778,9 @@ const StudentProfile = () => {
               )}
             </GlassPaper>
 
-            {/* Main Content Grid */}
+            
             <Grid container spacing={4}>
-              {/* Left Column */}
+             
               <Grid item xs={12} md={4}>
                 <GradientCard>
                   <CardContent sx={{ p: theme.spacing.xl }}>
@@ -838,7 +833,7 @@ const StudentProfile = () => {
 
                       <Divider sx={{ my: 3, borderColor: alpha(theme.gold, 0.12) }} />
 
-                      {/* Quick Stats */}
+                      
                       <Grid container spacing={2}>
                         <Grid item xs={6}>
                           <StatBox>
@@ -872,7 +867,7 @@ const StudentProfile = () => {
 
                       <Divider sx={{ my: 3, borderColor: alpha(theme.gold, 0.12) }} />
 
-                      {/* Contact Info */}
+                     
                       <Box sx={{ textAlign: 'left' }}>
                         <Typography variant="subtitle2" sx={{ color: theme.slate, gutterBottom: true, fontWeight: 700 }}>
                           Contact Information
@@ -921,11 +916,11 @@ const StudentProfile = () => {
                 </GradientCard>
               </Grid>
 
-              {/* Right Column */}
+             
               <Grid item xs={12} md={8}>
                 <GradientCard>
                   <CardContent sx={{ p: theme.spacing.xl }}>
-                    {/* Section Navigation */}
+                  
                     <Box sx={{ display: 'flex', gap: 1.5, mb: 4, pb: 2, flexWrap: 'wrap', borderBottom: `2px solid ${alpha(theme.gold, 0.12)}` }}>
                       {[
                         { id: 'personal',   label: 'Personal Details',   icon: <PersonIcon />,    color: theme.gold    },
@@ -952,7 +947,7 @@ const StudentProfile = () => {
                       ))}
                     </Box>
 
-                    {/* Personal Information */}
+                   
                     {activeSection === 'personal' && (
                       <Box>
                         <SectionTitle><PersonIcon />Personal Information</SectionTitle>
@@ -995,7 +990,7 @@ const StudentProfile = () => {
                       </Box>
                     )}
 
-                    {/* Academic Information */}
+                    
                     {activeSection === 'academic' && (
                       <Box>
                         <SectionTitle><SchoolIcon />Academic Information</SectionTitle>
@@ -1018,7 +1013,7 @@ const StudentProfile = () => {
                       </Box>
                     )}
 
-                    {/* Hostel Information */}
+                    
                     {activeSection === 'hostel' && (
                       <Box>
                         <SectionTitle><HomeIcon />Hostel Information</SectionTitle>
@@ -1038,7 +1033,7 @@ const StudentProfile = () => {
                       </Box>
                     )}
 
-                    {/* Emergency Contact */}
+                   
                     {activeSection === 'emergency' && (
                       <Box>
                         <SectionTitle><EmergencyIcon />Emergency Contact</SectionTitle>
@@ -1066,7 +1061,7 @@ const StudentProfile = () => {
           </div>
         </Fade>
 
-        {/* Image Upload Dialog */}
+       
         <Dialog
           open={imageUploadOpen}
           onClose={() => setImageUploadOpen(false)}
@@ -1132,7 +1127,7 @@ const StudentProfile = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Edit Dialog */}
+        
         <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth
           TransitionComponent={Zoom}
           PaperProps={{
@@ -1178,7 +1173,7 @@ const StudentProfile = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Snackbar */}
+       
         <Snackbar
           open={snackbar.open} autoHideDuration={4000}
           onClose={() => setSnackbar({ ...snackbar, open: false })}

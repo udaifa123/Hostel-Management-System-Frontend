@@ -66,7 +66,6 @@ const StudentSettings = () => {
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  // Settings state
   const [settings, setSettings] = useState({
     notifications: {
       email: true,
@@ -86,7 +85,6 @@ const StudentSettings = () => {
     }
   });
 
-  // Profile update state
   const [profile, setProfile] = useState({
     name: user?.name || '',
     email: user?.email || '',
@@ -215,7 +213,6 @@ const StudentSettings = () => {
           </Box>
         </Paper>
 
-        {/* Settings Tabs */}
         <Paper sx={{ borderRadius: 2, overflow: 'hidden' }}>
           <Tabs
             value={tabValue}
@@ -229,7 +226,6 @@ const StudentSettings = () => {
             <Tab icon={<PaletteIcon />} label="Appearance" />
           </Tabs>
 
-          {/* Profile Tab */}
           {tabValue === 0 && (
             <Box sx={{ p: 4 }}>
               <Grid container spacing={4}>
@@ -389,7 +385,6 @@ const StudentSettings = () => {
             </Box>
           )}
 
-          {/* Notifications Tab */}
           {tabValue === 1 && (
             <Box sx={{ p: 4 }}>
               <Card sx={{ borderRadius: 2 }}>
@@ -519,7 +514,6 @@ const StudentSettings = () => {
             </Box>
           )}
 
-          {/* Privacy & Security Tab */}
           {tabValue === 2 && (
             <Box sx={{ p: 4 }}>
               <Card sx={{ borderRadius: 2 }}>
@@ -622,7 +616,6 @@ const StudentSettings = () => {
             </Box>
           )}
 
-          {/* Appearance Tab */}
           {tabValue === 3 && (
             <Box sx={{ p: 4 }}>
               <Card sx={{ borderRadius: 2 }}>
@@ -713,7 +706,6 @@ const StudentSettings = () => {
         </Paper>
       </Container>
 
-      {/* Delete Account Dialog */}
       <Dialog open={openDeleteDialog} onClose={() => setOpenDeleteDialog(false)}>
         <DialogTitle sx={{ color: '#ef4444' }}>Delete Account?</DialogTitle>
         <DialogContent>

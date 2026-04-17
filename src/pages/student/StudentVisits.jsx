@@ -39,7 +39,6 @@ import {
 import studentService from '../../services/studentService';
 import toast from 'react-hot-toast';
 
-// ==================== Green Design Tokens ====================
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -89,22 +88,17 @@ const StudentVisits = () => {
       const response = await studentService.getVisits();
       console.log('Visits response:', response);
       
-      // Handle different response structures
       let visitsData = [];
       if (response && response.success && response.data) {
-        // Response has success and data properties
         visitsData = Array.isArray(response.data) ? response.data : [];
         console.log('Extracted from response.data:', visitsData);
       } else if (Array.isArray(response)) {
-        // Response is directly an array
         visitsData = response;
         console.log('Direct array:', visitsData);
       } else if (response && response.data && Array.isArray(response.data)) {
-        // Response.data is array
         visitsData = response.data;
         console.log('Response.data array:', visitsData);
       } else if (response && response.visits && Array.isArray(response.visits)) {
-        // Response has visits property
         visitsData = response.visits;
         console.log('Response.visits array:', visitsData);
       }
@@ -188,7 +182,7 @@ const StudentVisits = () => {
 
   return (
     <Box sx={{ p: 3 }}>
-      {/* Header */}
+     
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
         <Box>
           <Typography variant="h4" sx={{ fontWeight: 700, color: G[800] }}>
@@ -208,7 +202,7 @@ const StudentVisits = () => {
         </Button>
       </Box>
 
-      {/* Stats Cards - FIXED GAP */}
+      
       <Grid container spacing={2.5} sx={{ mb: 4 }}>
         <Grid item xs={12} sm={6} md={3}>
           <Card sx={{ borderRadius: 3, bgcolor: G[800] }}>
@@ -250,7 +244,7 @@ const StudentVisits = () => {
         </Grid>
       </Grid>
 
-      {/* Visits List */}
+     
       {visits.length === 0 ? (
         <Paper sx={{ p: 6, textAlign: 'center', borderRadius: 3, border: `1px solid ${G[200]}` }}>
           <ScheduleIcon sx={{ fontSize: 80, color: G[400], mb: 2 }} />
@@ -341,7 +335,7 @@ const StudentVisits = () => {
         </Grid>
       )}
 
-      {/* Request Visit Dialog */}
+      
       <Dialog open={openDialog} onClose={() => setOpenDialog(false)} maxWidth="sm" fullWidth>
         <Box sx={{ height: 4, bgcolor: G[600] }} />
         <DialogTitle>
@@ -388,7 +382,6 @@ const StudentVisits = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Details Dialog */}
       <Dialog open={!!selectedVisit} onClose={() => setSelectedVisit(null)} maxWidth="sm" fullWidth>
         <DialogTitle>Visit Details</DialogTitle>
         <DialogContent>

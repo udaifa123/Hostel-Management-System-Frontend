@@ -54,7 +54,7 @@ import toast from 'react-hot-toast';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// Green Design Tokens
+
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -469,10 +469,10 @@ const WardenQRScanner = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh', p: 3 }}>
-      {/* Top accent bar */}
+      
       <Box sx={{ height: 4, bgcolor: G[600], mb: 3, borderRadius: 2 }} />
 
-      {/* Header */}
+     
       <Fade in timeout={500}>
         <Paper elevation={0} sx={{
           p: 3,
@@ -520,7 +520,7 @@ const WardenQRScanner = () => {
       </Fade>
 
       <Grid container spacing={3}>
-        {/* Generate QR Section */}
+       
         <Grid item xs={12} md={6}>
           <Zoom in timeout={300}>
             <Paper elevation={0} sx={{
@@ -634,7 +634,7 @@ const WardenQRScanner = () => {
           </Zoom>
         </Grid>
 
-        {/* Scan QR Section */}
+       
         <Grid item xs={12} md={6}>
           <Zoom in timeout={300}>
             <Paper elevation={0} sx={{
@@ -697,7 +697,6 @@ const WardenQRScanner = () => {
                 </Select>
               </FormControl>
 
-              {/* Scanner Container */}
               <Box 
                 id="qr-reader-container"
                 sx={{ 
@@ -819,7 +818,7 @@ const WardenQRScanner = () => {
           </Zoom>
         </Grid>
 
-        {/* QR History Section */}
+     
         <Grid item xs={12}>
           <Fade in timeout={500}>
             <Paper elevation={0} sx={{
@@ -914,7 +913,7 @@ const WardenQRScanner = () => {
         </Grid>
       </Grid>
 
-      {/* QR Details Dialog */}
+   
       <Dialog 
         open={openQRDialog} 
         onClose={() => setOpenQRDialog(false)} 

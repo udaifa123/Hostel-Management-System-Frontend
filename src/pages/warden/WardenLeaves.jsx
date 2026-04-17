@@ -64,7 +64,7 @@ import { format, parseISO } from 'date-fns';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// ==================== Constants ====================
+
 const LEAVE_STATUS = {
   PENDING: 'pending',
   APPROVED: 'approved',
@@ -111,7 +111,6 @@ const LEAVE_TYPES = {
   other: { label: 'Other', color: '#6b7280' }
 };
 
-// ==================== Styled Components ====================
 const StatusChip = ({ status, size = 'small' }) => {
   const config = LEAVE_STATUS_CONFIG[status] || LEAVE_STATUS_CONFIG[LEAVE_STATUS.PENDING];
   
@@ -133,12 +132,10 @@ const StatusChip = ({ status, size = 'small' }) => {
   );
 };
 
-// ==================== Main Component ====================
 const WardenLeaves = () => {
   const theme = useTheme();
   const { token } = useAuth();
   
-  // ==================== State Management ====================
   const [loading, setLoading] = useState(true);
   const [leaves, setLeaves] = useState([]);
   const [filteredLeaves, setFilteredLeaves] = useState([]);
@@ -149,18 +146,17 @@ const WardenLeaves = () => {
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   const [anchorEl, setAnchorEl] = useState(null);
   const [menuLeave, setMenuLeave] = useState(null);
-  
-  // Filters
+ 
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
   const [typeFilter, setTypeFilter] = useState('all');
   const [dateRange, setDateRange] = useState({ start: '', end: '' });
   
-  // Pagination
+
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(10);
 
-  // Stats
+
   const [stats, setStats] = useState({
     total: 0,
     pending: 0,
@@ -169,7 +165,6 @@ const WardenLeaves = () => {
     cancelled: 0
   });
 
-  // ==================== Helper Functions ====================
   const calculateDays = (from, to) => {
     if (!from || !to) return 1;
     try {
@@ -199,7 +194,6 @@ const WardenLeaves = () => {
     setStats(newStats);
   };
 
-  // ==================== Fetch Leaves ====================
   const fetchLeaves = useCallback(async () => {
     try {
       setLoading(true);
@@ -215,7 +209,6 @@ const WardenLeaves = () => {
       
       if (Array.isArray(leavesData)) {
         const transformedLeaves = leavesData.map(leave => {
-          // Safely extract student information
           const student = leave.student || {};
           const user = student.user || {};
           
@@ -224,17 +217,14 @@ const WardenLeaves = () => {
             _id: leave._id,
             leaveNumber: leave.leaveNumber || 'N/A',
             
-            // Student information - properly traversed
             studentId: student._id,
             studentName: user.name || student.name || 'Unknown Student',
             studentEmail: user.email || student.email || '',
             
-            // Academic info
             rollNo: student.rollNumber || student.registrationNumber || 'N/A',
             room: student.room?.roomNumber || 'Not Assigned',
             block: student.room?.block || '',
             
-            // Leave details
             type: leave.type || 'casual',
             reason: leave.reason || '',
             fromDate: leave.fromDate,
@@ -243,7 +233,6 @@ const WardenLeaves = () => {
             status: leave.status || 'pending',
             appliedOn: leave.createdAt || leave.appliedOn,
             
-            // Additional info
             destination: leave.destination || '',
             emergencyContact: leave.emergencyContact || {
               name: leave.emergencyContact?.name || '',
@@ -251,12 +240,10 @@ const WardenLeaves = () => {
               relationship: leave.emergencyContact?.relationship || ''
             },
             
-            // Documents and approvals
             documents: leave.documents || [],
             parentApproval: leave.parentApproval || null,
             wardenApproval: leave.wardenApproval || null,
             
-            // Timestamps
             createdAt: leave.createdAt,
             updatedAt: leave.updatedAt
           };
@@ -280,11 +267,9 @@ const WardenLeaves = () => {
     }
   }, [token, fetchLeaves]);
 
-  // ==================== Filtering ====================
   useEffect(() => {
     let filtered = [...leaves];
 
-    // Tab filter
     if (tabValue === 1) {
       filtered = filtered.filter(l => l.status === LEAVE_STATUS.PENDING);
     } else if (tabValue === 2) {
@@ -295,7 +280,6 @@ const WardenLeaves = () => {
       filtered = filtered.filter(l => l.status === LEAVE_STATUS.CANCELLED);
     }
 
-    // Search filter
     if (searchTerm) {
       const term = searchTerm.toLowerCase();
       filtered = filtered.filter(l =>
@@ -307,12 +291,10 @@ const WardenLeaves = () => {
       );
     }
 
-    // Type filter
     if (typeFilter !== 'all') {
       filtered = filtered.filter(l => l.type === typeFilter);
     }
 
-    // Date range filter
     if (dateRange.start && dateRange.end) {
       const start = new Date(dateRange.start);
       const end = new Date(dateRange.end);
@@ -326,7 +308,6 @@ const WardenLeaves = () => {
     setPage(0);
   }, [leaves, tabValue, searchTerm, typeFilter, dateRange]);
 
-  // ==================== Handlers ====================
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -354,7 +335,6 @@ const WardenLeaves = () => {
 
       console.log('✅ Approve response:', response.data);
 
-      // Update local state
       const updatedLeaves = leaves.map(l => 
         l.id === leave.id 
           ? { 
@@ -401,7 +381,6 @@ const WardenLeaves = () => {
 
       console.log('✅ Reject response:', response.data);
 
-      // Update local state
       const updatedLeaves = leaves.map(l => 
         l.id === selectedLeave.id 
           ? { 
@@ -465,13 +444,11 @@ const WardenLeaves = () => {
     }
   };
 
-  // ==================== Pagination ====================
   const paginatedLeaves = filteredLeaves.slice(
     page * rowsPerPage,
     page * rowsPerPage + rowsPerPage
   );
 
-  // ==================== Render ====================
   if (loading && leaves.length === 0) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -483,7 +460,6 @@ const WardenLeaves = () => {
 
   return (
     <Box>
-      {/* Header */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={3}>
         <Box>
           <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -503,7 +479,6 @@ const WardenLeaves = () => {
         </Button>
       </Box>
 
-      {/* Stats Cards */}
       <Grid container spacing={3} mb={3}>
         <Grid item xs={12} sm={6} md={2.4}>
           <Card sx={{ borderRadius: 2, bgcolor: alpha('#3b82f6', 0.1) }}>
@@ -572,7 +547,6 @@ const WardenLeaves = () => {
         </Grid>
       </Grid>
 
-      {/* Tabs */}
       <Paper sx={{ mb: 3 }}>
         <Tabs 
           value={tabValue} 
@@ -591,7 +565,6 @@ const WardenLeaves = () => {
         </Tabs>
       </Paper>
 
-      {/* Filters */}
       <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} md={4}>
@@ -666,7 +639,6 @@ const WardenLeaves = () => {
         </Grid>
       </Paper>
 
-      {/* Results Summary */}
       <Box display="flex" justifyContent="space-between" alignItems="center" mb={2}>
         <Typography variant="body2" color="textSecondary">
           Showing {paginatedLeaves.length} of {filteredLeaves.length} requests
@@ -676,7 +648,6 @@ const WardenLeaves = () => {
         </Typography>
       </Box>
 
-      {/* Leave Requests List */}
       {filteredLeaves.length === 0 ? (
         <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 2 }}>
           <EventIcon sx={{ fontSize: 80, color: '#94a3b8', mb: 2 }} />
@@ -896,7 +867,6 @@ const WardenLeaves = () => {
             ))}
           </Grid>
 
-          {/* Pagination */}
           <TablePagination
             component="div"
             count={filteredLeaves.length}
@@ -913,7 +883,6 @@ const WardenLeaves = () => {
         </>
       )}
 
-      {/* Menu */}
       <Menu
         anchorEl={anchorEl}
         open={Boolean(anchorEl)}
@@ -942,7 +911,6 @@ const WardenLeaves = () => {
         )}
       </Menu>
 
-      {/* View Details Dialog */}
       <Dialog 
         open={openViewDialog} 
         onClose={() => setOpenViewDialog(false)} 
@@ -1148,7 +1116,6 @@ const WardenLeaves = () => {
         )}
       </Dialog>
 
-      {/* Reject Dialog */}
       <Dialog 
         open={openRejectDialog} 
         onClose={() => setOpenRejectDialog(false)} 
@@ -1195,7 +1162,6 @@ const WardenLeaves = () => {
         </DialogActions>
       </Dialog>
 
-      {/* Snackbar */}
       <Snackbar
         open={snackbar.open}
         autoHideDuration={3000}

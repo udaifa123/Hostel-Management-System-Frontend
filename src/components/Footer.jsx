@@ -64,7 +64,6 @@ const Footer = () => {
   return (
     <footer className="footer-wrapper">
       <div className="footer-container">
-        {/* Newsletter Banner - Positioned Top */}
         <div className="newsletter-card">
           <div className="newsletter-content">
             <div className="newsletter-badge">✨ Exclusive Updates</div>
@@ -82,7 +81,6 @@ const Footer = () => {
         </div>
 
         <div className="footer-main-grid">
-          {/* Brand Identity */}
           <div className="footer-brand">
             <div className="brand-logo">
               <img src={logo} alt="Ilham Logo" className="brand-logo-img" />
@@ -113,7 +111,6 @@ const Footer = () => {
             </div>
           </div>
 
-          {/* Navigation Links */}
           <div className="footer-nav">
             <h4>Quick Navigation</h4>
             <ul>
@@ -136,7 +133,6 @@ const Footer = () => {
             </ul>
           </div>
 
-          {/* Contact Details */}
           <div className="footer-contact">
             <h4>Get In Touch</h4>
             <div className="contact-list">
@@ -157,7 +153,6 @@ const Footer = () => {
           </div>
         </div>
 
-        {/* Bottom Bar */}
         <div className="footer-legal">
           <p>
             © {currentYear} Ilham System. Made with <Heart size={14} className="heart-beat" /> for Campus Excellence.

@@ -65,7 +65,7 @@ import { useAuth } from '../../context/AuthContext';
 import toast from 'react-hot-toast';
 import { format, subMonths } from 'date-fns';
 
-// ── Design Tokens (Same as AdminHostels) ──────────────────────────────────────
+
 const G = {
   900: '#0D3318', 800: '#1A5C2A', 700: '#1E7A35', 600: '#2E9142',
   500: '#3AAF51', 400: '#5DC470', 300: '#8FD9A0', 200: '#C1EDCA',
@@ -75,7 +75,7 @@ const G = {
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 const COLORS = ['#2E9142', '#5DC470', '#8FD9A0', '#C1EDCA', '#F59E0B', '#EF4444', '#3B82F6', '#8B5CF6'];
 
-// ── Stat Card Component (Same as AdminHostels) ────────────────────────────────
+
 const StatCard = ({ label, value, icon: Icon, trend, trendValue, dark = false }) => {
   const IconComponent = Icon;
   const isPositive = trend === 'up';
@@ -143,7 +143,7 @@ const StatCard = ({ label, value, icon: Icon, trend, trendValue, dark = false })
   );
 };
 
-// ── Report Card Component ─────────────────────────────────────────────────────
+
 const ReportCard = ({ report, onClick }) => (
   <Grid item xs={12} sm={6} md={4}>
     <Card elevation={0} sx={{
@@ -182,7 +182,7 @@ const ReportCard = ({ report, onClick }) => (
   </Grid>
 );
 
-// ── Main Component ────────────────────────────────────────────────────────────
+
 const AdminReports = () => {
   const { user } = useAuth();
   const [loading, setLoading] = useState(true);
@@ -318,7 +318,7 @@ const AdminReports = () => {
     totalComplaints: complaintCategories.reduce((s, c) => s + (c.value || 0), 0),
   };
 
-  // Report card configs
+  
   const financialReports = [
     { title: 'Fee Collection Report', desc: 'Detailed fee collection report', icon: MoneyIcon, color: G[600] },
     { title: 'Revenue Summary', desc: 'Monthly, quarterly, yearly revenue', icon: BarChartIcon, color: '#F59E0B' },
@@ -345,11 +345,11 @@ const AdminReports = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
+     
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
-        {/* ── Header Section (Same style as AdminHostels) ── */}
+       
         <Paper elevation={0} sx={{
           p: 3, mb: 4, borderRadius: 3,
           bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
@@ -385,7 +385,7 @@ const AdminReports = () => {
           </Tooltip>
         </Paper>
 
-        {/* ── Quick Stats Cards (Same grid as AdminHostels) ── */}
+        
         <Grid container spacing={2.5} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <StatCard label="Total Students" value={stats.totalStudents} icon={StudentIcon} dark />
@@ -401,7 +401,7 @@ const AdminReports = () => {
           </Grid>
         </Grid>
 
-        {/* ── Tabs ── */}
+        
         <Paper elevation={0} sx={{
           mb: 3, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`, overflow: 'hidden'
         }}>
@@ -424,7 +424,7 @@ const AdminReports = () => {
           </Tabs>
         </Paper>
 
-        {/* ── Overview Dashboard ── */}
+       
         {reportType === 'overview' && (
           <>
             <Paper elevation={0} sx={{
@@ -529,7 +529,7 @@ const AdminReports = () => {
           </>
         )}
 
-        {/* ── Financial Reports ── */}
+        
         {reportType === 'financial' && (
           <Grid container spacing={3}>
             {financialReports.map((r) => (
@@ -538,7 +538,7 @@ const AdminReports = () => {
           </Grid>
         )}
 
-        {/* ── Occupancy Reports ── */}
+      
         {reportType === 'occupancy' && (
           <>
             <Paper elevation={0} sx={{
@@ -571,7 +571,7 @@ const AdminReports = () => {
           </>
         )}
 
-        {/* ── Complaints Reports ── */}
+        
         {reportType === 'complaints' && (
           <Grid container spacing={3}>
             {complaintReports.map((r) => (
@@ -580,7 +580,7 @@ const AdminReports = () => {
           </Grid>
         )}
 
-        {/* ── Date Range Filter Bar ── */}
+        
         <Paper elevation={0} sx={{
           mt: 3, p: 2.5, borderRadius: 3, bgcolor: '#ffffff', border: `1px solid ${G[200]}`,
           display: 'flex', gap: 2, alignItems: 'center', flexWrap: 'wrap',
@@ -641,7 +641,7 @@ const AdminReports = () => {
         </Paper>
       </Box>
 
-      {/* ── Generate Report Dialog ── */}
+     
       <Dialog
         open={openDialog}
         onClose={() => setOpenDialog(false)}
@@ -713,7 +713,7 @@ const AdminReports = () => {
         </DialogContent>
       </Dialog>
 
-      {/* ── Snackbar ── */}
+      
       <Snackbar
         open={openSnackbar}
         autoHideDuration={4000}

@@ -52,7 +52,6 @@ import io from 'socket.io-client';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
 
-// ─── Color Tokens ───────────────────────────────────────────────────────────────
 const G = {
   900: '#064e3b',
   800: '#065f46',
@@ -66,7 +65,6 @@ const G = {
   50: '#ecfdf5',
 };
 
-// Reaction options
 const REACTIONS = [
   { emoji: '👍', label: 'Like' },
   { emoji: '❤️', label: 'Love' },
@@ -90,7 +88,6 @@ const ParentChat = () => {
   const [sending, setSending] = useState(false);
   const [isConnected, setIsConnected] = useState(false);
   
-  // Call states
   const [callDialogOpen, setCallDialogOpen] = useState(false);
   const [isCallActive, setIsCallActive] = useState(false);
   const [callType, setCallType] = useState(null);
@@ -99,7 +96,6 @@ const ParentChat = () => {
   const [callDuration, setCallDuration] = useState(0);
   const callTimerRef = useRef(null);
   
-  // Reaction states
   const [reactionAnchorEl, setReactionAnchorEl] = useState(null);
   const [selectedMessageForReaction, setSelectedMessageForReaction] = useState(null);
   const [messageMenuAnchorEl, setMessageMenuAnchorEl] = useState(null);
@@ -107,7 +103,6 @@ const ParentChat = () => {
   const [removeReactionAnchorEl, setRemoveReactionAnchorEl] = useState(null);
   const [selectedMessageForRemoveReaction, setSelectedMessageForRemoveReaction] = useState(null);
 
-  // ── Socket Setup ────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!token) return;
 
@@ -151,7 +146,6 @@ const ParentChat = () => {
       ));
     });
     
-    // Call events
     socket.on('incoming_call', (data) => {
       console.log('📞 Incoming call:', data);
       toast.success(`${data.from} is calling you...`);
@@ -193,7 +187,6 @@ const ParentChat = () => {
     };
   }, []);
 
-  // ── Data Fetching ───────────────────────────────────────────────────────────
   const fetchWardens = async () => {
     try {
       setLoading(true);
@@ -227,7 +220,6 @@ const ParentChat = () => {
     }
   };
 
-  // ── Send Message ────────────────────────────────────────────────────────────
   const handleSendMessage = async () => {
     if (!newMessage.trim() || !selectedWarden || sending) return;
     setSending(true);
@@ -258,7 +250,6 @@ const ParentChat = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // ── Reaction Functions ──────────────────────────────────────────────────────
   const handleReactionClick = (event, message) => {
     setSelectedMessageForReaction(message);
     setReactionAnchorEl(event.currentTarget);
@@ -312,7 +303,6 @@ const ParentChat = () => {
     handleReactionClose();
   };
 
-  // ── Remove Reaction Functions ────────────────────────────────────────────────
   const handleRemoveReactionClick = (event, message) => {
     setSelectedMessageForRemoveReaction(message);
     setRemoveReactionAnchorEl(event.currentTarget);
@@ -364,7 +354,6 @@ const ParentChat = () => {
     handleRemoveReactionClose();
   };
 
-  // ── Message Menu Functions ──────────────────────────────────────────────────
   const handleMessageMenuOpen = (event, message) => {
     event.preventDefault();
     setSelectedMessageForMenu(message);
@@ -384,7 +373,6 @@ const ParentChat = () => {
     handleMessageMenuClose();
   };
 
-  // ── Call Functions ──────────────────────────────────────────────────────────
   const handleStartCall = (type) => {
     setCallType(type);
     setCallDialogOpen(true);
@@ -450,7 +438,6 @@ const ParentChat = () => {
   const toggleMute = () => setIsMuted(!isMuted);
   const toggleSpeaker = () => setIsSpeakerOff(!isSpeakerOff);
 
-  // ── Loading State ───────────────────────────────────────────────────────────
   if (loading) {
     return (
       <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh', bgcolor: '#f0fdf4' }}>
@@ -459,11 +446,9 @@ const ParentChat = () => {
     );
   }
 
-  // ── Render ── Full Width Layout ────────────────────────────────────────────
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
 
-      {/* ── Header ── */}
       <Paper
         elevation={0}
         sx={{
@@ -499,10 +484,8 @@ const ParentChat = () => {
         </Box>
       </Paper>
 
-      {/* ── Main Content - Full Width ── */}
       <Box sx={{ p: 3, width: '100%' }}>
 
-        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
@@ -543,10 +526,8 @@ const ParentChat = () => {
           </Box>
         </Paper>
 
-        {/* ── Chat Grid - Full Width ── */}
         <Grid container spacing={3} sx={{ width: '100%', margin: 0 }}>
           
-          {/* Wardens Sidebar */}
           <Grid item xs={12} md={3.5}>
             <Paper
               elevation={0}
@@ -616,7 +597,6 @@ const ParentChat = () => {
             </Paper>
           </Grid>
 
-          {/* Chat Area - Full Width */}
           <Grid item xs={12} md={8.5}>
             <Paper
               elevation={0}
@@ -633,7 +613,6 @@ const ParentChat = () => {
             >
               {selectedWarden ? (
                 <>
-                  {/* Chat Top Bar */}
                   <Box sx={{ px: 3, py: 2, borderBottom: '1.5px solid #d1fae5', bgcolor: G[50], display: 'flex', alignItems: 'center', gap: 2 }}>
                     <Avatar sx={{ width: 42, height: 42, bgcolor: G[600] }}>
                       {selectedWarden.name?.charAt(0)?.toUpperCase()}
@@ -660,7 +639,6 @@ const ParentChat = () => {
                     </IconButton>
                   </Box>
 
-                  {/* Active Call Banner */}
                   {isCallActive && (
                     <Box sx={{ px: 3, py: 1.5, bgcolor: G[600], color: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
@@ -681,7 +659,6 @@ const ParentChat = () => {
                     </Box>
                   )}
 
-                  {/* Messages List */}
                   <Box sx={{ flex: 1, overflowY: 'auto', p: 3, display: 'flex', flexDirection: 'column', gap: 1.5, bgcolor: '#fafffe' }}>
                     {messages.length === 0 ? (
                       <Box sx={{ flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', gap: 2 }}>
@@ -718,7 +695,6 @@ const ParentChat = () => {
                                   {msg.content}
                                 </Typography>
                                 
-                                {/* Reaction Button */}
                                 <IconButton
                                   size="small"
                                   onClick={(e) => handleReactionClick(e, msg)}
@@ -736,7 +712,6 @@ const ParentChat = () => {
                                   <EmojiIcon sx={{ fontSize: 14, color: G[500] }} />
                                 </IconButton>
                                 
-                                {/* Reaction Display with Remove Option */}
                                 {msg.reaction && (
                                   <Box
                                     sx={{
@@ -775,7 +750,7 @@ const ParentChat = () => {
                     <div ref={messagesEndRef} />
                   </Box>
 
-                  {/* Input Bar */}
+                  
                   <Box sx={{ px: 3, py: 2, borderTop: '1.5px solid #d1fae5', bgcolor: '#fff', display: 'flex', gap: 1.5, alignItems: 'flex-end' }}>
                     <TextField
                       fullWidth
@@ -822,7 +797,7 @@ const ParentChat = () => {
         </Grid>
       </Box>
 
-      {/* Reaction Popover - Add Reaction */}
+     
       <Popover
         open={Boolean(reactionAnchorEl)}
         anchorEl={reactionAnchorEl}
@@ -859,7 +834,7 @@ const ParentChat = () => {
         </Box>
       </Popover>
 
-      {/* Remove Reaction Confirmation Popover */}
+      
       <Popover
         open={Boolean(removeReactionAnchorEl)}
         anchorEl={removeReactionAnchorEl}
@@ -900,7 +875,7 @@ const ParentChat = () => {
         </Box>
       </Popover>
 
-      {/* Message Context Menu */}
+     
       <Menu
         anchorEl={messageMenuAnchorEl}
         open={Boolean(messageMenuAnchorEl)}
@@ -927,7 +902,7 @@ const ParentChat = () => {
         )}
       </Menu>
 
-      {/* Call Confirmation Dialog */}
+      
       <Dialog open={callDialogOpen} onClose={() => setCallDialogOpen(false)} maxWidth="xs" fullWidth
         PaperProps={{ sx: { borderRadius: '16px', bgcolor: '#fff', border: `1px solid ${G[200]}` } }}>
         <Box sx={{ height: 4, bgcolor: G[600] }} />

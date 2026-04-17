@@ -44,7 +44,6 @@ import {
 } from '@mui/icons-material';
 import wardenService from '../../services/wardenService';
 
-// ==================== Green Design Tokens ====================
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -60,7 +59,6 @@ const G = {
 
 const CARD_SHADOW = '0 1px 4px rgba(30,122,53,0.10), 0 0 0 1px rgba(30,122,53,0.08)';
 
-// ==================== Category Config ====================
 const categoryConfig = {
   general: { label: 'General', color: G[500], bg: alpha(G[500], 0.1), icon: <AnnouncementIcon sx={{ fontSize: '14px' }} /> },
   maintenance: { label: 'Maintenance', color: G[600], bg: alpha(G[600], 0.1), icon: <WarningIcon sx={{ fontSize: '14px' }} /> },
@@ -83,7 +81,6 @@ const WardenNotices = () => {
   const [selectedNoticeId, setSelectedNoticeId] = useState(null);
   const [submitting, setSubmitting] = useState(false);
 
-  // Fetch notices from API
   const fetchNotices = async () => {
     setLoading(true);
     try {
@@ -117,7 +114,6 @@ const WardenNotices = () => {
     setSnackbar({ open: true, message, severity });
   };
 
-  // Filter notices
   const filteredNotices = notices.filter(notice => {
     const matchesSearch = 
       notice.title?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -126,14 +122,12 @@ const WardenNotices = () => {
     return matchesSearch && matchesCategory;
   });
 
-  // Sort: pinned first, then by date
   const sortedNotices = [...filteredNotices].sort((a, b) => {
     if (a.pinned && !b.pinned) return -1;
     if (!a.pinned && b.pinned) return 1;
     return new Date(b.createdAt || b.date) - new Date(a.createdAt || a.date);
   });
 
-  // Create Notice
   const handleCreateNotice = async () => {
     if (!newNotice.title || !newNotice.content) {
       showSnackbar('Please fill all fields', 'error');
@@ -159,7 +153,6 @@ const WardenNotices = () => {
     }
   };
 
-  // Update Notice
   const handleUpdateNotice = async () => {
     if (!newNotice.title || !newNotice.content) {
       showSnackbar('Please fill all fields', 'error');
@@ -192,7 +185,6 @@ const WardenNotices = () => {
     }
   };
 
-  // Pin/Unpin Notice
   const handlePin = async (noticeId, currentPinned) => {
     if (!noticeId) {
       showSnackbar('Invalid notice ID', 'error');
@@ -214,7 +206,6 @@ const WardenNotices = () => {
     setMenuAnchorEl(null);
   };
 
-  // Delete Notice
   const handleDelete = async (noticeId) => {
     if (!noticeId) {
       showSnackbar('Invalid notice ID', 'error');
@@ -290,11 +281,11 @@ const WardenNotices = () => {
 
   return (
     <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-      {/* Top accent bar */}
+     
       <Box sx={{ height: 4, bgcolor: G[600] }} />
 
       <Box sx={{ p: 3 }}>
-        {/* Header */}
+   
         <Paper elevation={0} sx={{
           p: 3,
           mb: 4,
@@ -340,7 +331,6 @@ const WardenNotices = () => {
           </Button>
         </Paper>
 
-        {/* Stats Cards - Fixed Grid Gap */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={3}>
             <Card elevation={0} sx={{
@@ -419,7 +409,7 @@ const WardenNotices = () => {
           </Grid>
         </Grid>
 
-        {/* Search and Filter */}
+       
         <Paper sx={{ p: 2, mb: 3, borderRadius: 2, bgcolor: '#ffffff', border: `1px solid ${G[200]}` }}>
           <Grid container spacing={2} alignItems="center">
             <Grid item xs={12} md={6}>
@@ -485,7 +475,7 @@ const WardenNotices = () => {
           </Grid>
         </Paper>
 
-        {/* Filter Menu */}
+      
         <Menu
           anchorEl={filterAnchorEl}
           open={Boolean(filterAnchorEl)}
@@ -513,7 +503,7 @@ const WardenNotices = () => {
           ))}
         </Menu>
 
-        {/* Notices Grid */}
+        
         {sortedNotices.length === 0 ? (
           <Paper sx={{ p: 8, textAlign: 'center', borderRadius: 3, border: `1px solid ${G[200]}` }}>
             <AnnouncementIcon sx={{ fontSize: 80, color: G[400], mb: 2 }} />
@@ -672,7 +662,7 @@ const WardenNotices = () => {
           </Grid>
         )}
 
-        {/* Menu for notice actions */}
+     
         <Menu
           anchorEl={menuAnchorEl}
           open={Boolean(menuAnchorEl)}
@@ -706,7 +696,6 @@ const WardenNotices = () => {
           )}
         </Menu>
 
-        {/* Create/Edit Dialog */}
         <Dialog
           open={openDialog}
           onClose={() => {
@@ -857,7 +846,7 @@ const WardenNotices = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Snackbar */}
+        
         <Snackbar
           open={snackbar.open}
           autoHideDuration={4000}

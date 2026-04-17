@@ -61,7 +61,6 @@ import { useAuth } from '../../context/AuthContext';
 
 const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
 
-// ==================== Constants ====================
 const ATTENDANCE_STATUS = {
   PRESENT: 'present',
   ABSENT: 'absent',
@@ -108,7 +107,6 @@ const ATTENDANCE_CONFIG = {
   }
 };
 
-// ==================== Styled Components ====================
 const StatusChip = ({ status, size = 'small' }) => {
   const config = ATTENDANCE_CONFIG[status] || ATTENDANCE_CONFIG[ATTENDANCE_STATUS.ABSENT];
   
@@ -130,11 +128,9 @@ const StatusChip = ({ status, size = 'small' }) => {
   );
 };
 
-// ==================== Main Component ====================
 const WardenAttendance = () => {
   const { token } = useAuth();
   
-  // ==================== State Management ====================
   const [loading, setLoading] = useState(true);
   const [students, setStudents] = useState([]);
   const [attendance, setAttendance] = useState([]);
@@ -156,7 +152,6 @@ const WardenAttendance = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedStudent, setSelectedStudent] = useState(null);
 
-  // Filters
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [selectedBlock, setSelectedBlock] = useState('all');
   const [selectedFloor, setSelectedFloor] = useState('all');
@@ -164,7 +159,6 @@ const WardenAttendance = () => {
   const [tabValue, setTabValue] = useState(0);
   const [searchTerm, setSearchTerm] = useState('');
 
-  // ==================== Data Fetching ====================
   const fetchStudents = useCallback(async () => {
     try {
       const response = await axios.get(`${API_URL}/warden/students`, {
@@ -311,7 +305,6 @@ const WardenAttendance = () => {
     }
   }, [selectedDate]);
 
-  // ==================== Filtering ====================
   useEffect(() => {
     let filtered = [...attendance];
 
@@ -347,7 +340,6 @@ const WardenAttendance = () => {
     setFilteredStudents(filtered);
   }, [attendance, searchTerm, selectedBlock, selectedFloor, selectedStatus, tabValue]);
 
-  // ==================== Statistics Calculation ====================
   const calculateStats = (studentsList) => {
     const stats = {
       total: studentsList.length,
@@ -366,7 +358,6 @@ const WardenAttendance = () => {
     setAttendanceStats(stats);
   };
 
-  // ==================== Handlers ====================
   const showSnackbar = (message, severity) => {
     setSnackbar({ open: true, message, severity });
   };
@@ -409,7 +400,6 @@ const WardenAttendance = () => {
       );
 
       showSnackbar('Attendance saved successfully!', 'success');
-      // Refresh data after save
       await fetchStudents();
     } catch (error) {
       console.error('Error saving attendance:', error);
@@ -486,11 +476,9 @@ const WardenAttendance = () => {
     handleMenuClose();
   };
 
-  // ==================== Computed Values ====================
   const uniqueBlocks = [...new Set(students.map(s => s.block))].sort();
   const uniqueFloors = [...new Set(students.map(s => s.floor))].sort((a, b) => a - b);
 
-  // ==================== Render ====================
   if (loading) {
     return (
       <Box display="flex" justifyContent="center" alignItems="center" minHeight="400px">
@@ -503,7 +491,6 @@ const WardenAttendance = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box>
-        {/* Header */}
         <Box display="flex" justifyContent="space-between" alignItems="center" mb={3} flexWrap="wrap" gap={2}>
           <Box>
             <Typography variant="h4" fontWeight="bold" gutterBottom>
@@ -535,7 +522,6 @@ const WardenAttendance = () => {
           </Box>
         </Box>
 
-        {/* Stats Cards */}
         <Grid container spacing={3} mb={3}>
           <Grid size={{ xs: 12, sm: 6, md: 2.4 }}>
             <Card sx={{ borderRadius: 2, bgcolor: alpha('#3b82f6', 0.1) }}>
@@ -609,7 +595,6 @@ const WardenAttendance = () => {
           </Grid>
         </Grid>
 
-        {/* Filters */}
         <Paper sx={{ p: 2, mb: 3, borderRadius: 2 }}>
           <Grid container spacing={2} alignItems="center">
             <Grid size={{ xs: 12, md: 2 }}>
@@ -727,7 +712,6 @@ const WardenAttendance = () => {
           </Grid>
         </Paper>
 
-        {/* Tabs */}
         <Paper sx={{ mb: 3 }}>
           <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
             <Tabs 
@@ -771,7 +755,6 @@ const WardenAttendance = () => {
           </Box>
         </Paper>
 
-        {/* Attendance Table */}
         <TableContainer component={Paper} sx={{ borderRadius: 2 }}>
           <Table>
             <TableHead sx={{ bgcolor: '#f8fafc' }}>
@@ -905,7 +888,6 @@ const WardenAttendance = () => {
           </Table>
         </TableContainer>
 
-        {/* Student Menu */}
         <Menu
           anchorEl={anchorEl}
           open={Boolean(anchorEl)}
@@ -922,7 +904,6 @@ const WardenAttendance = () => {
           </MenuItem>
         </Menu>
 
-        {/* Attendance History Dialog */}
         <Dialog
           open={openHistoryDialog}
           onClose={() => setOpenHistoryDialog(false)}
@@ -975,7 +956,7 @@ const WardenAttendance = () => {
           </DialogActions>
         </Dialog>
 
-        {/* Snackbar */}
+        
         <Snackbar
           open={snackbar.open}
           autoHideDuration={3000}

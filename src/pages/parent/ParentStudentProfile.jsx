@@ -219,7 +219,6 @@ const ParentStudentProfile = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header */}
       <Paper
         elevation={0}
         sx={{
@@ -245,13 +244,11 @@ const ParentStudentProfile = () => {
         </Box>
       </Paper>
 
-      {/* Main Content */}
       <Box sx={{ p: 3 }}>
         {error && (
           <Alert severity="info" sx={{ mb: 3, borderRadius: '16px', fontSize: '0.82rem' }}>{error}</Alert>
         )}
 
-        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
@@ -326,7 +323,6 @@ const ParentStudentProfile = () => {
           </Box>
         </Paper>
 
-        {/* Personal Information */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <TrendingUpIcon sx={{ color: G[600], fontSize: 20 }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
@@ -350,7 +346,6 @@ const ParentStudentProfile = () => {
 
         <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-        {/* Academic Information */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <SchoolIcon sx={{ color: G[600], fontSize: 20 }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
@@ -373,7 +368,6 @@ const ParentStudentProfile = () => {
 
         <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-        {/* Hostel Information */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <HomeIcon sx={{ color: G[600], fontSize: 20 }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>
@@ -395,7 +389,6 @@ const ParentStudentProfile = () => {
         </Grid>
       </Box>
 
-      {/* Edit Dialog */}
       <Dialog
         open={editDialogOpen}
         onClose={() => setEditDialogOpen(false)}

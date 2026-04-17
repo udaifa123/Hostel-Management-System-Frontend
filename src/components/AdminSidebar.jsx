@@ -7,7 +7,7 @@ import {
   Apartment as HostelIcon, AdminPanelSettings as WardenIcon, AttachMoney as FeesIcon,
   ReportProblem as ComplaintIcon, ExitToApp as LeaveIcon, Notifications as NoticeIcon,
   Settings as SettingsIcon, Logout as LogoutIcon, Assessment as ReportsIcon,
-  Inventory as AssetsIcon  // ✅ ADD THIS IMPORT
+  Inventory as AssetsIcon  
 } from '@mui/icons-material';
 
 const drawerWidth = 270;
@@ -26,7 +26,7 @@ const AdminSidebar = () => {
     { text: 'Fees', icon: <FeesIcon />, path: '/admin/fees' },
     { text: 'Complaints', icon: <ComplaintIcon />, path: '/admin/complaints' },
     // { text: 'Leaves', icon: <LeaveIcon />, path: '/admin/leaves' },
-    { text: 'Assets', icon: <AssetsIcon />, path: '/admin/assets' },  // ✅ Now AssetsIcon is defined
+    { text: 'Assets', icon: <AssetsIcon />, path: '/admin/assets' },  
     { text: 'Reports', icon: <ReportsIcon />, path: '/admin/reports' },
     { text: 'Settings', icon: <SettingsIcon />, path: '/admin/settings' },
   ];
@@ -57,7 +57,7 @@ const AdminSidebar = () => {
         },
       }}
     >
-      {/* ── Header ── */}
+   
       <Box
         sx={{
           p: '8px 20px 22px',
@@ -129,10 +129,10 @@ const AdminSidebar = () => {
         </Box>
       </Box>
 
-      {/* Accent bar */}
+    
       <Box sx={{ height: '3px', background: 'linear-gradient(90deg, #1a6b3c, #4cdb82, #1a6b3c)' }} />
 
-      {/* Nav label */}
+    
       <Typography
         sx={{
           fontSize: '9.5px', fontWeight: 500,
@@ -144,7 +144,7 @@ const AdminSidebar = () => {
         Main Navigation
       </Typography>
 
-      {/* ── Menu Items ── */}
+      
       <List sx={{ px: 1.2, pb: 1, flex: 1 }}>
         {menuItems.map((item) => {
           const isActive = location.pathname === item.path;
@@ -194,7 +194,6 @@ const AdminSidebar = () => {
                   }}
                 />
 
-                {/* Active dot */}
                 {isActive && (
                   <Box
                     sx={{
@@ -213,7 +212,6 @@ const AdminSidebar = () => {
 
       <Divider sx={{ mx: 1.5, borderColor: '#daeee0' }} />
 
-      {/* ── Logout ── */}
       <List sx={{ px: 1.2, pt: 1, pb: 1 }}>
         <ListItem disablePadding>
           <ListItemButton
@@ -238,7 +236,6 @@ const AdminSidebar = () => {
         </ListItem>
       </List>
 
-      {/* ── Footer branding ── */}
       <Box
         sx={{
           mx: 1.2, mb: 1.5,

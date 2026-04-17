@@ -10,7 +10,6 @@ export const useAuth = () => useContext(AuthContext);
 export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
-  // Load user from localStorage
   const [user, setUser] = useState(() => {
     try {
       const saved = localStorage.getItem("user");
@@ -23,7 +22,6 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loading, setLoading] = useState(false);
 
-  // Axios instance
   const api = axios.create({
     baseURL: "http://localhost:4000/api",
     headers: {
@@ -31,7 +29,6 @@ export const AuthProvider = ({ children }) => {
     }
   });
 
-  // Attach token automatically
   api.interceptors.request.use((config) => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
@@ -40,15 +37,13 @@ export const AuthProvider = ({ children }) => {
     return config;
   });
 
-  // ✅ LOGIN FUNCTION (supports admin + others)
- // ✅ LOGIN FUNCTION (supports admin + others)
 const login = async (credentials) => {
   setLoading(true);
 
   try {
     console.log("Sending login request with:", credentials);
 
-    // Decide endpoint
+   
     let endpoint = "/auth/login";
 
     if (credentials.role === "admin") {
@@ -61,7 +56,7 @@ const login = async (credentials) => {
       endpoint = "/auth/warden/login";
     }
 
-    // 🔥 FIX: Only send email and password, not the role
+   
     const loginData = {
       email: credentials.email,
       password: credentials.password
@@ -74,7 +69,6 @@ const login = async (credentials) => {
     if (response.data.success) {
       const { token, user } = response.data;
 
-      // Save to localStorage
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
@@ -83,7 +77,7 @@ const login = async (credentials) => {
 
       toast.success(`Welcome back, ${user.name || 'User'}!`);
 
-      // Navigate based on role
+    
       if (user.role === 'admin') {
         navigate('/admin/dashboard');
       } else if (user.role === 'parent') {
@@ -116,7 +110,7 @@ const login = async (credentials) => {
   }
 };
 
-  // ✅ REGISTER
+  
   const register = async (userData) => {
     setLoading(true);
 
@@ -143,7 +137,7 @@ const login = async (credentials) => {
     }
   };
 
-  // ✅ LOGOUT
+  
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");

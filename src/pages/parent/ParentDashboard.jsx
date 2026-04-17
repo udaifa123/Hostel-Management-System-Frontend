@@ -32,9 +32,7 @@ import ParentLayout from '../../components/Layout/ParentLayout';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
 
-/* ─────────────────────────────────────────────
-   Green Design Tokens (Same as ParentAttendance)
-───────────────────────────────────────────── */
+
 const G = {
   900: '#064e3b',
   800: '#065f46',
@@ -47,9 +45,7 @@ const G = {
   50: '#ecfdf5',
 };
 
-/* ─────────────────────────────────────────────
-   Helper – colour map per attendance state
-───────────────────────────────────────────── */
+
 const attendanceDisplay = (state) => {
   const map = {
     present: { label: 'Present', color: G[600], bg: '#d1fae5' },
@@ -58,9 +54,7 @@ const attendanceDisplay = (state) => {
   return map[state] ?? { label: 'Not Marked', color: '#f59e0b', bg: '#fef9c3' };
 };
 
-/* ─────────────────────────────────────────────
-   Main Component
-───────────────────────────────────────────── */
+
 const ParentDashboard = () => {
   const navigate = useNavigate();
   const { user } = useAuth();
@@ -141,7 +135,7 @@ const ParentDashboard = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header - Same as ParentAttendance */}
+    
       <Paper
         elevation={0}
         sx={{
@@ -170,7 +164,7 @@ const ParentDashboard = () => {
 
       <Container maxWidth="xl" sx={{ py: 4 }}>
 
-        {/* ── Welcome Card ── */}
+       
         <Paper
           elevation={0}
           sx={{
@@ -229,7 +223,6 @@ const ParentDashboard = () => {
           </Box>
         </Paper>
 
-        {/* ── Stats Section (Same as ParentAttendance summary cards) ── */}
         <Box sx={{ mb: 4 }}>
           <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
             <TrendingUpIcon sx={{ color: G[600], fontSize: 20 }} />
@@ -268,7 +261,6 @@ const ParentDashboard = () => {
 
         <Divider sx={{ mb: 3.5, borderColor: G[100] }} />
 
-        {/* ── Quick Access Section (Same card style as ParentAttendance) ── */}
         <Box sx={{ display: 'flex', alignItems: 'center', gap: 1, mb: 2 }}>
           <SchoolIcon sx={{ color: G[600], fontSize: 20 }} />
           <Typography sx={{ fontWeight: 700, fontSize: '0.85rem', color: G[700], letterSpacing: '0.08em', textTransform: 'uppercase' }}>

@@ -47,7 +47,6 @@ import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
 import wardenService from '../../services/wardenService';
 import toast from 'react-hot-toast';
 
-// ==================== Green Design Tokens ====================
 const G = {
   900: '#0D3318',
   800: '#1A5C2A',
@@ -85,7 +84,6 @@ const WardenReports = () => {
   const [format, setFormat] = useState('pdf');
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
 
-  // Fetch dashboard stats on component mount
   useEffect(() => {
     fetchDashboardStats();
   }, []);
@@ -217,7 +215,6 @@ const WardenReports = () => {
       
       console.log(`Generated ${report.title} report:`, response);
       
-      // Handle blob response for file download
       if (response instanceof Blob) {
         const url = window.URL.createObjectURL(response);
         const a = document.createElement('a');
@@ -273,11 +270,11 @@ const WardenReports = () => {
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns}>
       <Box sx={{ bgcolor: G[50], minHeight: '100vh' }}>
-        {/* Top accent bar */}
+       
         <Box sx={{ height: 4, bgcolor: G[600] }} />
 
         <Box sx={{ p: 3 }}>
-          {/* Header */}
+         
           <Paper elevation={0} sx={{
             p: 3,
             mb: 4,
@@ -320,7 +317,7 @@ const WardenReports = () => {
             />
           </Paper>
 
-          {/* Quick Stats - Fixed Grid Implementation */}
+          
           <Grid container spacing={3} sx={{ mb: 4 }}>
             <Grid item xs={12} sm={6} md={2.4}>
               <Card sx={{ borderRadius: 3, bgcolor: G[800], border: `1px solid ${G[700]}`, height: '100%' }}>
@@ -384,7 +381,7 @@ const WardenReports = () => {
             </Grid>
           </Grid>
 
-          {/* Reports Grid - Fixed Implementation */}
+         
           <Typography variant="h6" sx={{ fontWeight: 700, color: G[800], mb: 2 }}>
             Available Reports
           </Typography>
@@ -477,7 +474,7 @@ const WardenReports = () => {
             ))}
           </Grid>
 
-          {/* Report Generation Dialog */}
+       
           <Dialog
             open={openDialog}
             onClose={() => setOpenDialog(false)}
@@ -604,7 +601,7 @@ const WardenReports = () => {
             </DialogActions>
           </Dialog>
 
-          {/* Snackbar */}
+          
           <Snackbar
             open={snackbar.open}
             autoHideDuration={4000}

@@ -1,7 +1,6 @@
 import api from './api';
 
 const parentService = {
-  // ==================== DASHBOARD ====================
   getDashboard: async () => {
     try {
       const response = await api.get('/parent/dashboard');
@@ -11,7 +10,6 @@ const parentService = {
     }
   },
 
-  // ==================== STUDENT PROFILE ====================
   getStudentProfile: async () => {
     try {
       const response = await api.get('/parent/student-profile');
@@ -30,7 +28,6 @@ const parentService = {
     }
   },
 
-  // ==================== ATTENDANCE ====================
   getAttendance: async (month = null, year = null) => {
     try {
       let url = '/parent/attendance';
@@ -44,7 +41,6 @@ const parentService = {
     }
   },
 
-  // ==================== LEAVES ====================
   getLeaves: async () => {
     try {
       const response = await api.get('/parent/leaves');
@@ -54,7 +50,6 @@ const parentService = {
     }
   },
 
-  // ==================== COMPLAINTS ====================
   getComplaints: async () => {
     try {
       const response = await api.get('/parent/complaints');
@@ -64,7 +59,6 @@ const parentService = {
     }
   },
 
-  // ==================== NOTICES ====================
   getNotices: async () => {
     try {
       console.log('Fetching notices for parent...');
@@ -77,7 +71,6 @@ const parentService = {
     }
   },
 
-  // ==================== FEES ====================
   getFees: async () => {
     try {
       const response = await api.get('/parent/fees');
@@ -87,8 +80,7 @@ const parentService = {
     }
   },
 
- // services/parentService.js - Add these methods
-// ==================== FEES ====================
+
 getChildrenFees: async () => {
   try {
     const response = await api.get('/fees/parent/children-fees');
@@ -106,7 +98,6 @@ payChildFee: async (paymentData) => {
     throw error.response?.data || error.message;
   }
 },
-  // ==================== NOTIFICATIONS ====================
   getNotifications: async () => {
     try {
       const response = await api.get('/parent/notifications');
@@ -134,10 +125,8 @@ payChildFee: async (paymentData) => {
     }
   },
 
-  // ==================== MESS ====================
  getMessMenu: async () => {
     try {
-      // Use the correct endpoint from your routes
       const response = await api.get('/mess/parent/menu');
       console.log('getMessMenu response:', response.data);
       return response.data;
@@ -149,7 +138,6 @@ payChildFee: async (paymentData) => {
 
   getMessTimings: async () => {
     try {
-      // Use the correct endpoint from your routes
       const response = await api.get('/mess/parent/timings');
       console.log('getMessTimings response:', response.data);
       return response.data;
@@ -160,10 +148,7 @@ payChildFee: async (paymentData) => {
   },
 
 
-  // ==================== VISIT REQUESTS ====================
-// Add this to your parentService.js
-
-// ==================== VISIT REQUESTS ====================
+ 
 getVisitRequests: async () => {
   try {
     const response = await api.get('/parent/visits');
@@ -201,7 +186,6 @@ deleteVisit: async (id) => {
   }
 },
 
-  // ==================== CHAT ====================
   getWardens: async () => {
     try {
       const response = await api.get('/parent/wardens');

@@ -1,4 +1,3 @@
-// pages/parent/ParentMessMenu.jsx
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
@@ -37,7 +36,6 @@ import parentService from '../../services/parentService';
 import toast from 'react-hot-toast';
 import { format, addDays, subDays, startOfWeek, endOfWeek } from 'date-fns';
 
-// ─── Color Tokens (Same as ParentStudentProfile) ───────────────────────────────
 const G = {
   900: '#064e3b',
   800: '#065f46',
@@ -189,7 +187,6 @@ const ParentMessMenu = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header */}
       <Paper
         elevation={0}
         sx={{
@@ -222,9 +219,7 @@ const ParentMessMenu = () => {
         </Box>
       </Paper>
 
-      {/* Main Content */}
       <Box sx={{ p: 3 }}>
-        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
@@ -271,7 +266,6 @@ const ParentMessMenu = () => {
           </Alert>
         )}
 
-        {/* Week Navigation */}
         <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3, flexWrap: 'wrap', gap: 2 }}>
           <Button 
             startIcon={<PrevIcon />} 
@@ -304,7 +298,6 @@ const ParentMessMenu = () => {
           </Button>
         </Box>
 
-        {/* Day Selector */}
         <Paper
           elevation={0}
           sx={{
@@ -345,9 +338,7 @@ const ParentMessMenu = () => {
           </Grid>
         </Paper>
 
-        {/* Main Content Grid */}
         <Grid container spacing={3}>
-          {/* Meals Grid */}
           <Grid item xs={12} md={8}>
             <Paper
               elevation={0}
@@ -399,7 +390,6 @@ const ParentMessMenu = () => {
             </Paper>
           </Grid>
 
-          {/* Timings Sidebar */}
           <Grid item xs={12} md={4}>
             <Paper
               elevation={0}
@@ -428,7 +418,6 @@ const ParentMessMenu = () => {
           </Grid>
         </Grid>
 
-        {/* Info Note */}
         <Paper
           elevation={0}
           sx={{

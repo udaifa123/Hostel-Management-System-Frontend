@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Link, useNavigate } from "react-router-dom";
+// import { Link, useNavigate } from "react-router-dom";
 import {
   MapPin, Users, Star, ArrowRight, Phone, Mail,
   Calendar, BedDouble, CheckCircle, Building2,
@@ -10,7 +10,6 @@ import {
   Eye, TrendingUp, Award, Grid3X3
 } from "lucide-react";
 
-// ─── HOSTEL DATA (unchanged) ────────────────────────────────────────────────
 const HOSTELS_DATA = [
   {
     id: 1,
@@ -158,7 +157,6 @@ const HOSTELS_DATA = [
   }
 ];
 
-// ─── CAMPUS ACTIVITIES DATA ──────────────────────────────────────────────────
 const ACTIVITIES = [
   {
     id: 1,
@@ -242,7 +240,6 @@ const ACTIVITIES = [
   }
 ];
 
-// ─── AMENITY ICON MAP ────────────────────────────────────────────────────────
 const AMENITY_ICONS = {
   "WiFi": { icon: <Wifi size={14} />, bg: "bg-blue-50 text-blue-700 border-blue-100" },
   "Mess": { icon: <UtensilsCrossed size={14} />, bg: "bg-amber-50 text-amber-700 border-amber-100" },
@@ -263,7 +260,6 @@ const AMENITY_ICONS = {
 const getAmenityStyle = (amenity) =>
   AMENITY_ICONS[amenity] || { icon: <CheckCircle size={14} />, bg: "bg-slate-50 text-slate-600 border-slate-100" };
 
-// ─── TAG COLOR MAP ───────────────────────────────────────────────────────────
 const TAG_COLORS = {
   emerald: "bg-emerald-100 text-emerald-800",
   blue: "bg-blue-100 text-blue-800",
@@ -273,7 +269,6 @@ const TAG_COLORS = {
   rose: "bg-rose-100 text-rose-800",
 };
 
-// ─── STATS BAR ───────────────────────────────────────────────────────────────
 const StatsBar = () => (
   <section className="bg-white border-b border-slate-100">
     <div className="max-w-7xl mx-auto px-6 py-8 grid grid-cols-2 md:grid-cols-4 gap-6">
@@ -297,13 +292,11 @@ const StatsBar = () => (
   </section>
 );
 
-// ─── ACTIVITIES SECTION ──────────────────────────────────────────────────────
 const ActivitiesSection = () => {
   const [activeActivity, setActiveActivity] = useState(null);
 
   return (
     <section className="max-w-7xl mx-auto px-6 mt-20 mb-4">
-      {/* Section Header */}
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4 mb-10">
         <div>
           <span className="text-[10px] uppercase tracking-widest font-black text-emerald-500 mb-2 block">Campus Life</span>
@@ -318,7 +311,6 @@ const ActivitiesSection = () => {
         </div>
       </div>
 
-      {/* Activities Grid */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
         {ACTIVITIES.map((activity) => (
           <div
@@ -360,7 +352,6 @@ const ActivitiesSection = () => {
         ))}
       </div>
 
-      {/* Activity Detail Modal */}
       {activeActivity && (
         <div className="fixed inset-0 z-50 flex items-center justify-center px-4">
           <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={() => setActiveActivity(null)} />
@@ -401,8 +392,7 @@ const ActivitiesSection = () => {
   );
 };
 
-// ─── HOSTEL DETAIL MODAL ─────────────────────────────────────────────────────
-const HostelModal = ({ hostel, onClose, onApply }) => {
+const HostelModal = ({ hostel, onClose }) => {
   const [activeTab, setActiveTab] = useState("overview");
   const occupancyPct = Math.round((hostel.currentOccupancy / hostel.capacity) * 100);
   const vacant = hostel.capacity - hostel.currentOccupancy;
@@ -415,7 +405,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
       <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-md" onClick={onClose} />
       <div className="relative bg-white w-full max-w-5xl max-h-[92vh] overflow-y-auto rounded-[3rem] shadow-2xl flex flex-col md:flex-row overflow-hidden border border-white/20">
 
-        {/* BACK/CLOSE */}
         <button onClick={onClose} className="absolute top-6 left-6 z-50 flex items-center gap-2 px-4 py-2 bg-white/20 hover:bg-white text-white hover:text-slate-900 rounded-full transition-all border border-white/20 text-sm font-bold backdrop-blur-md">
           <ChevronLeft size={16} /> Back
         </button>
@@ -423,7 +412,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
           <X size={22} />
         </button>
 
-        {/* LEFT: IMAGE + QUICK STATS */}
         <div className="w-full md:w-[45%] flex flex-col">
           <div className="relative h-72 md:h-80 overflow-hidden">
             <img src={hostel.image} className="w-full h-full object-cover" alt={hostel.name}
@@ -441,7 +429,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
             </div>
           </div>
 
-          {/* Quick stats grid */}
           <div className="grid grid-cols-2 gap-3 p-5 bg-slate-50 border-t border-slate-100 flex-1">
             {[
               { label: "Total Beds", value: hostel.capacity, icon: <BedDouble size={18} className="text-emerald-500" /> },
@@ -459,7 +446,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
             ))}
           </div>
 
-          {/* Occupancy bar */}
           <div className="px-5 pb-5 bg-slate-50">
             <div className="flex justify-between text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2">
               <span>Occupancy</span>
@@ -479,9 +465,7 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
           </div>
         </div>
 
-        {/* RIGHT: TABBED DETAIL */}
         <div className="w-full md:w-[55%] flex flex-col">
-          {/* Tabs */}
           <div className="flex gap-1 p-5 pb-0 border-b border-slate-100">
             {tabs.map((tab) => (
               <button
@@ -500,7 +484,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
 
           <div className="p-8 md:p-10 overflow-y-auto flex-1">
 
-            {/* OVERVIEW TAB */}
             {activeTab === "overview" && (
               <div>
                 <div className="flex items-center gap-3 mb-5">
@@ -515,7 +498,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
                 <h2 className="text-3xl font-bold mb-3 font-serif text-slate-900">{hostel.name}</h2>
                 <p className="text-slate-500 leading-relaxed mb-6">{hostel.description}</p>
 
-                {/* Price range */}
                 <div className="p-5 bg-gradient-to-br from-emerald-50 to-teal-50 rounded-2xl border border-emerald-100 mb-6">
                   <p className="text-[10px] font-black uppercase tracking-widest text-emerald-600 mb-2">Monthly Fee Range</p>
                   <div className="flex items-baseline gap-3">
@@ -526,7 +508,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
                   </div>
                 </div>
 
-                {/* Warden info */}
                 <div className="flex items-center gap-4 p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <div className="w-12 h-12 rounded-2xl bg-emerald-100 flex items-center justify-center text-emerald-700 font-black text-lg">
                     {hostel.warden.split(' ').pop()[0]}
@@ -540,7 +521,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
               </div>
             )}
 
-            {/* AMENITIES TAB */}
             {activeTab === "amenities" && (
               <div>
                 <h3 className="text-xl font-bold font-serif text-slate-900 mb-2">Available Amenities</h3>
@@ -557,7 +537,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
                   })}
                 </div>
 
-                {/* All-campus amenities note */}
                 <div className="mt-6 p-4 bg-slate-50 rounded-2xl border border-slate-100">
                   <p className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-3">Also Available On Campus</p>
                   <div className="flex flex-wrap gap-2">
@@ -571,7 +550,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
               </div>
             )}
 
-            {/* CONTACT TAB */}
             {activeTab === "contact" && (
               <div>
                 <h3 className="text-xl font-bold font-serif text-slate-900 mb-6">Contact & Info</h3>
@@ -594,7 +572,6 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
                   ))}
                 </div>
 
-                {/* Office hours */}
                 <div className="mt-5 p-4 bg-emerald-50 border border-emerald-100 rounded-2xl">
                   <p className="text-[10px] font-black uppercase tracking-widest text-emerald-700 mb-1">Office Hours</p>
                   <p className="text-emerald-800 text-sm font-medium">Monday – Saturday: 9:00 AM – 6:00 PM</p>
@@ -604,15 +581,13 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
             )}
           </div>
 
-          {/* APPLY BUTTON (sticky) */}
           <div className="sticky bottom-0 bg-white p-5 border-t border-slate-100">
             <button
-              onClick={onApply}
-              className="w-full bg-slate-900 hover:bg-emerald-600 text-white py-4 rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl transition-all active:scale-95 flex items-center justify-center gap-3"
+              onClick={onClose}
+              className="w-full bg-slate-200 hover:bg-slate-300 text-slate-700 py-4 rounded-2xl font-black text-sm uppercase tracking-widest transition-all active:scale-95 flex items-center justify-center gap-3"
             >
-              Apply Now
-              <span className="px-3 py-1 bg-white/10 rounded-xl text-xs font-bold">{hostel.priceRange.split(' - ')[0]}/mo</span>
-              <ArrowRight size={18} />
+              Close
+              <X size={18} />
             </button>
           </div>
         </div>
@@ -621,13 +596,12 @@ const HostelModal = ({ hostel, onClose, onApply }) => {
   );
 };
 
-// ─── MAIN COMPONENT ──────────────────────────────────────────────────────────
 const Hostels = () => {
   const [selectedHostel, setSelectedHostel] = useState(null);
   const [filter, setFilter] = useState("all");
   const [searchTerm, setSearchTerm] = useState("");
   const [sortBy, setSortBy] = useState("default");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   useEffect(() => {
     document.body.style.overflow = selectedHostel ? "hidden" : "unset";
@@ -650,7 +624,6 @@ const Hostels = () => {
   return (
     <div className="min-h-screen bg-slate-50 text-slate-900 pb-20">
 
-      {/* ── HERO ── */}
       <section className="relative pt-32 pb-20 px-6 bg-gradient-to-br from-emerald-950 via-slate-900 to-emerald-900 text-white overflow-hidden">
         <div className="absolute inset-0 opacity-20 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]" />
         <div className="max-w-7xl mx-auto relative z-10 text-center">
@@ -667,7 +640,6 @@ const Hostels = () => {
             Discover 8 premium hostels designed to provide comfort, security, and a vibrant student community.
           </p>
 
-          {/* Hero Stats */}
           <div className="flex flex-wrap justify-center gap-6 mt-10">
             {["8 Hostels", "1,570 Beds", "4.6★ Avg Rating", "24/7 Security"].map((s) => (
               <div key={s} className="px-5 py-2.5 bg-white/5 border border-white/10 rounded-full text-sm font-bold text-white/80 backdrop-blur-md">
@@ -678,21 +650,16 @@ const Hostels = () => {
         </div>
       </section>
 
-      {/* ── STATS ── */}
       <StatsBar />
 
-      {/* ── ACTIVITIES ── */}
       <ActivitiesSection />
 
-      {/* ── DIVIDER ── */}
       <div className="max-w-7xl mx-auto px-6 mt-16 mb-4">
         <div className="border-t border-slate-200" />
       </div>
 
-      {/* ── STICKY FILTERS ── */}
       <div className="sticky top-0 z-40 bg-white/80 backdrop-blur-xl border-b border-slate-200 py-5 px-6">
         <div className="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-4">
-          {/* Search */}
           <div className="relative w-full lg:flex-1">
             <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" size={18} />
             <input
@@ -709,7 +676,6 @@ const Hostels = () => {
             )}
           </div>
 
-          {/* Type filter */}
           <div className="flex bg-slate-100 p-1 rounded-2xl">
             {["all", "boys", "girls"].map((type) => (
               <button
@@ -724,7 +690,6 @@ const Hostels = () => {
             ))}
           </div>
 
-          {/* Sort */}
           <select
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value)}
@@ -736,14 +701,12 @@ const Hostels = () => {
             <option value="price">Sort: Lowest Price</option>
           </select>
 
-          {/* Count */}
           <span className="text-slate-400 text-sm font-bold whitespace-nowrap">
             {filtered.length} hostel{filtered.length !== 1 ? "s" : ""}
           </span>
         </div>
       </div>
 
-      {/* ── HOSTEL GRID ── */}
       <main className="max-w-7xl mx-auto px-6 mt-12">
         <div className="mb-6">
           <h2 className="text-3xl font-black font-serif text-slate-900 tracking-tight">
@@ -797,7 +760,6 @@ const Hostels = () => {
                     <span className="flex items-center gap-1"><Clock size={13} /> {hostel.distance}</span>
                   </div>
 
-                  {/* Amenity chips */}
                   <div className="flex flex-wrap gap-1.5 mb-5">
                     {hostel.amenities.slice(0, 3).map((a) => {
                       const style = getAmenityStyle(a);
@@ -814,7 +776,6 @@ const Hostels = () => {
                     )}
                   </div>
 
-                  {/* Occupancy bar */}
                   <div className="mb-6 p-3 bg-slate-50 rounded-2xl border border-slate-100">
                     <div className="flex justify-between text-[10px] font-black text-slate-500 uppercase mb-1.5 tracking-widest">
                       <span>Availability</span>
@@ -859,12 +820,10 @@ const Hostels = () => {
         </div>
       </main>
 
-      {/* ── HOSTEL DETAIL MODAL ── */}
       {selectedHostel && (
         <HostelModal
           hostel={selectedHostel}
           onClose={() => setSelectedHostel(null)}
-          onApply={() => navigate("/register", { state: { hostel: selectedHostel } })}
         />
       )}
     </div>

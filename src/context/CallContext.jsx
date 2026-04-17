@@ -22,10 +22,10 @@ import {
   VideocamOff as VideoCamOffIcon
 } from '@mui/icons-material';
 
-// Create context
+
 const CallContext = createContext(null);
 
-// Custom hook to use call context
+
 export const useCall = () => {
   const context = useContext(CallContext);
   if (!context) {
@@ -34,7 +34,7 @@ export const useCall = () => {
   return context;
 };
 
-// Provider component
+
 export const CallProvider = ({ children }) => {
   const { socket } = useSocket();
   const { user } = useAuth();
@@ -60,7 +60,7 @@ export const CallProvider = ({ children }) => {
   useEffect(() => {
     if (!socket) return;
 
-    // Listen for incoming calls
+    
     socket.on('call:incoming', (data) => {
       console.log('📞 Incoming call received in CallContext:', data);
       setIncomingCall(data);
@@ -132,13 +132,13 @@ export const CallProvider = ({ children }) => {
     try {
       console.log(`📞 Starting ${callType} call to:`, receiverId);
       
-      // Check if socket is connected
+      
       if (!socket || !socket.connected) {
         alert('Not connected to server');
         return;
       }
 
-      // Get user media
+     
       const stream = await navigator.mediaDevices.getUserMedia({
         audio: true,
         video: callType === 'video'
@@ -148,13 +148,13 @@ export const CallProvider = ({ children }) => {
       setActiveCall({ receiverId, callType });
       setCallDialogOpen(true);
 
-      // Notify server
+      
       socket.emit('call:start', { receiverId, callType });
 
-      // Create peer connection
+     
       await createPeerConnection(receiverId);
 
-      // Add local stream to peer connection
+      
       stream.getTracks().forEach(track => {
         if (peerConnection.current) {
           peerConnection.current.addTrack(track, stream);
@@ -187,13 +187,13 @@ export const CallProvider = ({ children }) => {
       setCallDialogOpen(true);
       setIncomingCall(null);
 
-      // Accept call on server
+     
       socket.emit('call:accept', { callId: incomingCall.callId });
 
-      // Create peer connection
+   
       await createPeerConnection(incomingCall.callerId);
 
-      // Add local stream
+     
       stream.getTracks().forEach(track => {
         if (peerConnection.current) {
           peerConnection.current.addTrack(track, stream);
@@ -274,7 +274,7 @@ export const CallProvider = ({ children }) => {
       setRemoteStream(event.streams[0]);
     };
 
-    // Create offer if we're the caller
+   
     if (activeCall && !incomingCall) {
       const offer = await peerConnection.current.createOffer();
       await peerConnection.current.setLocalDescription(offer);
@@ -333,7 +333,6 @@ export const CallProvider = ({ children }) => {
     <CallContext.Provider value={value}>
       {children}
 
-      {/* Incoming Call Dialog */}
       <Dialog open={!!incomingCall} onClose={rejectCall} maxWidth="xs" fullWidth>
         <DialogTitle sx={{ textAlign: 'center' }}>
           <Typography variant="h6" fontWeight="bold">
@@ -375,11 +374,11 @@ export const CallProvider = ({ children }) => {
         </DialogContent>
       </Dialog>
 
-      {/* Active Call Dialog */}
+      
       <Dialog open={callDialogOpen} onClose={endCall} maxWidth="md" fullWidth>
         <DialogContent>
           <Box sx={{ position: 'relative', minHeight: '400px' }}>
-            {/* Remote Video */}
+          
             <video
               ref={remoteVideoRef}
               autoPlay
@@ -392,7 +391,7 @@ export const CallProvider = ({ children }) => {
               }}
             />
 
-            {/* Local Video (Picture-in-Picture) */}
+            
             {activeCall?.callType === 'video' && (
               <video
                 ref={localVideoRef}
@@ -411,7 +410,7 @@ export const CallProvider = ({ children }) => {
               />
             )}
 
-            {/* Call Controls */}
+            
             <Box
               sx={{
                 position: 'absolute',

@@ -17,12 +17,12 @@ class SocketService {
     });
 
     this.socket.on('newMessage', (message) => {
-      // Handle new message notification
+     
       toast.success(`New message from ${message.sender.name}`);
     });
 
     this.socket.on('userTyping', (data) => {
-      // Handle typing indicator
+    
       console.log('User typing:', data);
     });
 

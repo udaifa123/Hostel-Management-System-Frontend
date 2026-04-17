@@ -48,59 +48,53 @@ import { styled } from '@mui/material/styles';
 import studentService from "../../services/studentService";
 import { format, startOfMonth, endOfMonth, eachDayOfInterval, isSameMonth, parseISO } from 'date-fns';
 
-/* ─────────────────────────────────────────────
-   White & Green Theme System (Light Mode)
-───────────────────────────────────────────── */
+
 const theme = {
-  // Background Colors
-  bg: '#f8fafc',           // Main background: light gray
-  bgLight: '#ffffff',       // White
-  bgHover: '#f1f5f9',      // Hover state
+  bg: '#f8fafc',           
+  bgLight: '#ffffff',       
+  bgHover: '#f1f5f9',      
   
-  // Card Colors
-  cardBg: '#ffffff',        // White cards
-  cardBorder: '#e2e8f0',    // Light gray border
+  cardBg: '#ffffff',        
+  cardBorder: '#e2e8f0',   
   
-  // Primary Colors - Green
-  primary: '#059669',       // Emerald green
-  primaryLight: '#34d399',  // Light green
-  primaryDark: '#047857',   // Dark green
-  primarySoft: '#ecfdf5',   // Very light green background
+
+  primary: '#059669',       
+  primaryDark: '#047857',  
+  primarySoft: '#ecfdf5',  
   
-  // Status Colors
-  present: '#10b981',       // Green
+ 
+  present: '#10b981',       
   presentLight: '#d1fae5',
-  absent: '#ef4444',        // Red
+  absent: '#ef4444',        
   absentLight: '#fee2e2',
-  late: '#f59e0b',          // Amber
+  late: '#f59e0b',          
   lateLight: '#fef3c7',
-  halfDay: '#3b82f6',       // Blue
+  halfDay: '#3b82f6',      
   halfDayLight: '#dbeafe',
-  holiday: '#8b5cf6',       // Purple
+  holiday: '#8b5cf6',       
   holidayLight: '#ede9fe',
-  leave: '#ec4899',         // Pink
+  leave: '#ec4899',        
   leaveLight: '#fce7f3',
   
-  // Text Colors
-  textPrimary: '#0f172a',   // Dark slate
-  textSecondary: '#475569', // Medium slate
-  textMuted: '#64748b',     // Light slate
-  
-  // Borders
+
+  textPrimary: '#0f172a',   
+  textSecondary: '#475569', 
+  textMuted: '#64748b',     
+
   border: '#e2e8f0',
   borderLight: '#f1f5f9',
   
-  // Gradients
+ 
   primaryGradient: 'linear-gradient(135deg, #059669 0%, #10b981 100%)',
   successGradient: 'linear-gradient(135deg, #10b981 0%, #059669 100%)',
   warningGradient: 'linear-gradient(135deg, #f59e0b 0%, #d97706 100%)',
   errorGradient: 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)',
   
-  // Shadows
+ 
   cardShadow: '0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1)',
   hoverShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1)',
   
-  // Border Radius
+ 
   borderRadius: {
     sm: '6px',
     md: '8px',
@@ -108,14 +102,12 @@ const theme = {
     xl: '16px'
   },
   
-  // Typography
+
   fontPrimary: "'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif",
   fontSecondary: "'SF Pro Display', 'Inter', 'Segoe UI', sans-serif",
 };
 
-/* ─────────────────────────────────────────────
-   Styled Components
-───────────────────────────────────────────── */
+
 const StyledPaper = styled(Paper)(({ theme: muiTheme }) => ({
   padding: muiTheme.spacing(3),
   margin: muiTheme.spacing(2),
@@ -226,12 +218,7 @@ const CalendarCell = styled(Box)(({ statuscolor, iscurrentmonth }) => ({
   }
 }));
 
-/* ─────────────────────────────────────────────
-   Mock Data Generator (unchanged)
-───────────────────────────────────────────── */
-// KEEP ALL YOUR IMPORTS SAME
 
-// ✅ ADD THIS (Fix for mock function)
 const generateMockAttendance = (month, year) => {
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const records = [];
@@ -271,7 +258,7 @@ const StudentAttendance = () => {
   const [refreshing, setRefreshing] = useState(false);
   const [error, setError] = useState(null);
   
-  // Date states
+
   const [selectedMonth, setSelectedMonth] = useState(new Date());
   const [availableMonths, setAvailableMonths] = useState([]);
 
@@ -281,7 +268,7 @@ const StudentAttendance = () => {
   }
 }, [availableMonths]);
   
-  // Attendance data states
+  
   const [attendanceRecords, setAttendanceRecords] = useState([]);
   const [attendanceStats, setAttendanceStats] = useState({
     totalDays: 0,
@@ -307,7 +294,7 @@ const StudentAttendance = () => {
     const months = [];
     const currentDate = new Date();
     
-    // Generate last 12 months including current
+   
     for (let i = 11; i >= 0; i--) {
       const date = new Date(currentDate.getFullYear(), currentDate.getMonth() - i, 1);
       months.push(date);
@@ -319,7 +306,7 @@ const StudentAttendance = () => {
   const loadMockData = () => {
     setLoading(true);
     
-    // Simulate API delay
+    
     setTimeout(() => {
       try {
         const month = selectedMonth.getMonth();
@@ -327,7 +314,7 @@ const StudentAttendance = () => {
         
         console.log(`Loading mock attendance for ${format(selectedMonth, 'MMMM yyyy')}...`);
         
-        // Generate mock data
+        
         const mockData = generateMockAttendance(month, year);
         
         processAttendanceData(mockData);
@@ -347,7 +334,7 @@ const fetchAttendanceData = async () => {
     setRefreshing(true);
     setError(null);
 
-    // ✅ pass month & year to backend
+    
     const month = selectedMonth.getMonth() + 1;
     const year = selectedMonth.getFullYear();
 
@@ -356,7 +343,7 @@ const fetchAttendanceData = async () => {
     console.log("Attendance API:", data);
 
     if (!data || data.length === 0) {
-      // fallback to mock if empty
+    
       const mock = generateMockAttendance(month - 1, year);
       processAttendanceData(mock);
     } else {
@@ -366,7 +353,6 @@ const fetchAttendanceData = async () => {
   } catch (err) {
     console.error(err);
 
-    // fallback if API fails
     const mock = generateMockAttendance(
       selectedMonth.getMonth(),
       selectedMonth.getFullYear()
@@ -500,9 +486,8 @@ const fetchAttendanceData = async () => {
 
   const days = eachDayOfInterval({ start, end });
 
-  const startDay = start.getDay(); // 0-6
-
-  // add empty cells before first day
+  const startDay = start.getDay();
+ 
   const blanks = Array(startDay).fill(null);
 
   return [...blanks, ...days];
@@ -689,7 +674,7 @@ const fetchAttendanceData = async () => {
           </Box>
         </Box>
 
-        {/* Error Alert */}
+       
         {error && (
           <Alert 
             severity="error" 
@@ -719,7 +704,7 @@ const fetchAttendanceData = async () => {
           </Alert>
         )}
 
-        {/* Statistics Cards */}
+      
         <Box sx={{ mb: 4 }}>
           <Grid container spacing={3}>
             <Grid size={{ xs: 12, sm: 6, md: 3 }}>
@@ -806,7 +791,7 @@ const fetchAttendanceData = async () => {
           </Grid>
         </Box>
 
-        {/* Attendance Percentage */}
+       
         <Box sx={{ mb: 4 }}>
           <Paper sx={{ 
             p: 4, 
@@ -892,7 +877,6 @@ const fetchAttendanceData = async () => {
           </Paper>
         </Box>
 
-        {/* Calendar View */}
         <Box sx={{ mb: 4 }}>
           <Typography 
             variant="h6" 
@@ -979,7 +963,7 @@ const fetchAttendanceData = async () => {
           </Paper>
         </Box>
 
-        {/* Attendance Records Table */}
+        
         <Box>
           <Typography 
             variant="h6" 
@@ -1093,7 +1077,7 @@ const fetchAttendanceData = async () => {
           )}
         </Box>
 
-        {/* Legend */}
+        
         <Box sx={{ 
           mt: 4, 
           p: 3,

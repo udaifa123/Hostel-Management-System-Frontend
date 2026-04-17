@@ -17,7 +17,7 @@ import {
   IconButton,
   Tooltip,
   LinearProgress,
-  CircularProgress,  // ← ADD THIS IMPORT
+  CircularProgress,  
   FormControl,
   InputLabel,
   Select,
@@ -45,7 +45,6 @@ import parentService from '../../services/parentService';
 import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
 
-// ─── Color Tokens (Same as ParentStudentProfile) ───────────────────────────────
 const G = {
   900: '#064e3b',
   800: '#065f46',
@@ -219,7 +218,6 @@ const ParentVisits = () => {
 
   return (
     <Box sx={{ minHeight: '100vh', bgcolor: '#f0fdf4' }}>
-      {/* Header */}
       <Paper
         elevation={0}
         sx={{
@@ -275,9 +273,7 @@ const ParentVisits = () => {
         </Box>
       </Paper>
 
-      {/* Main Content */}
       <Box sx={{ p: 3 }}>
-        {/* Welcome Card */}
         <Paper
           elevation={0}
           sx={{
@@ -317,7 +313,6 @@ const ParentVisits = () => {
           </Box>
         </Paper>
 
-        {/* Stats Cards */}
         <Grid container spacing={3} sx={{ mb: 4 }}>
           <Grid item xs={12} sm={6} md={2.4}>
             <Card
@@ -429,7 +424,6 @@ const ParentVisits = () => {
           </Grid>
         </Grid>
 
-        {/* Visits List */}
         {visits.length === 0 ? (
           <Paper
             elevation={0}
@@ -604,7 +598,6 @@ const ParentVisits = () => {
           </Grid>
         )}
 
-        {/* Request Visit Dialog */}
         <Dialog 
           open={openDialog} 
           onClose={() => setOpenDialog(false)} 
@@ -804,7 +797,6 @@ const ParentVisits = () => {
           </DialogActions>
         </Dialog>
 
-        {/* View Details Dialog */}
         <Dialog 
           open={!!selectedVisit} 
           onClose={() => setSelectedVisit(null)} 
