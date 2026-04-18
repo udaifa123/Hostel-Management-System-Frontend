@@ -53,7 +53,7 @@ import {
   Person as PersonIcon,
   Wc as GenderIcon,
   Bloodtype as BloodIcon,
-  Emergency as EmergencyIcon,
+  Warning as EmergencyIcon,  // ✅ Use Warning icon instead
   CloudUpload as CloudUploadIcon,
   Delete as DeleteIcon,
   CheckCircle as CheckCircleIcon,
