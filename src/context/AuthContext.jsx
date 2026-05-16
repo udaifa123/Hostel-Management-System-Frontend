@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   const api = axios.create({
-    baseURL: "http://localhost:4000/api",
+    baseURL: "https://hostel-management-system-backened-1.onrender.com/api",
     headers: {
       "Content-Type": "application/json"
     }

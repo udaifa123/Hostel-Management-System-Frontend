@@ -7,7 +7,7 @@ class SocketService {
   }
 
   connect(token) {
-    this.socket = io('http://localhost:5000', {
+    this.socket = io('https://hostel-management-system-backened-1.onrender.com/api', {
       auth: { token },
       transports: ['websocket'],
     });
