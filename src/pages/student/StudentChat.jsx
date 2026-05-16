@@ -8,12 +8,10 @@ import {
   Avatar,
   Badge,
   CircularProgress,
-  Toolbar,
   InputAdornment,
   Alert,
   Snackbar,
   Tooltip,
-  Divider,
   Chip,
   alpha,
   useTheme
@@ -47,10 +45,14 @@ const StudentChat = () => {
   const [error, setError] = useState(null);
   const [typing, setTyping] = useState(false);
   const [isTyping, setIsTyping] = useState(false);
+  const [sendingMessage, setSendingMessage] = useState(false);
+  const [conversationId, setConversationId] = useState(null);
+  const [retryCount, setRetryCount] = useState(0); // Add retry counter
   const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
   
   const messagesEndRef = useRef(null);
   const typingTimeoutRef = useRef(null);
+  const isSendingRef = useRef(false); // Add ref to prevent multiple sends
 
   useEffect(() => {
     fetchWardenInfo();
@@ -81,6 +83,7 @@ const StudentChat = () => {
     const handleNewMessage = (message) => {
       if (message.sender._id === warden._id || message.receiver._id === warden._id) {
         setMessages(prev => [...prev, message]);
+        markMessagesAsRead();
       }
     };
 
@@ -126,6 +129,7 @@ const StudentChat = () => {
     } catch (error) {
       console.error('Error fetching warden:', error);
       setError('Failed to load chat. Please try again.');
+      showSnackbar('Failed to load warden information', 'error');
     } finally {
       setLoading(false);
     }
@@ -138,47 +142,126 @@ const StudentChat = () => {
       const response = await axios.get(`${API_URL}/chat/messages/${warden._id}`, {
         headers: { Authorization: `Bearer ${token}` }
       });
-      setMessages(response.data.data || []);
       
+      if (response.data.data) {
+        setMessages(response.data.data || []);
+      }
+      
+      markMessagesAsRead();
+    } catch (error) {
+      console.error('Error fetching messages:', error);
+      // Don't show error for message fetch failures
+    }
+  };
+
+  const markMessagesAsRead = async () => {
+    if (!warden || !warden._id) return;
+    
+    try {
       await axios.put(`${API_URL}/chat/read/${warden._id}`, {}, {
         headers: { Authorization: `Bearer ${token}` }
       });
     } catch (error) {
-      console.error('Error fetching messages:', error);
+      console.error('Error marking messages as read:', error);
     }
   };
 
   const handleSendMessage = async () => {
-    if (!newMessage.trim() || !warden || !warden._id || !isConnected) return;
+    // Prevent multiple simultaneous sends
+    if (isSendingRef.current) {
+      console.log('Already sending a message, skipping...');
+      return;
+    }
+    
+    if (!newMessage.trim() || !warden || !warden._id) {
+      showSnackbar('Cannot send empty message', 'warning');
+      return;
+    }
+
+    if (!isConnected) {
+      showSnackbar('Not connected to chat server. Please wait...', 'warning');
+      return;
+    }
+
+    isSendingRef.current = true;
+    setSendingMessage(true);
+    const messageContent = newMessage.trim();
+    const currentMessage = newMessage; // Store current message
+    setNewMessage(''); // Clear input immediately
 
     try {
-      const response = await axios.post(`${API_URL}/chat/send`, {
+      const requestData = {
         receiverId: warden._id,
-        content: newMessage
-      }, {
+        content: messageContent
+      };
+      
+      if (conversationId) {
+        requestData.conversationId = conversationId;
+      }
+      
+      console.log('Sending message with data:', requestData);
+      
+      const response = await axios.post(`${API_URL}/chat/send`, requestData, {
         headers: { Authorization: `Bearer ${token}` }
       });
 
-      setMessages(prev => [...prev, response.data.data]);
-      setNewMessage('');
-      
-      if (sendTyping) {
-        sendTyping(warden._id, false);
+      if (response.data && response.data.data) {
+        setMessages(prev => [...prev, response.data.data]);
+        
+        if (response.data.data.conversationId && !conversationId) {
+          setConversationId(response.data.data.conversationId);
+        }
+        
+        if (sendTyping) {
+          sendTyping(warden._id, false);
+        }
+        
+        setTimeout(scrollToBottom, 100);
+        setRetryCount(0); // Reset retry count on success
       }
     } catch (error) {
       console.error('Error sending message:', error);
-      showSnackbar('Failed to send message', 'error');
+      
+      // Restore the message if send failed
+      setNewMessage(currentMessage);
+      
+      let errorMessage = 'Failed to send message';
+      
+      if (error.response) {
+        const serverError = error.response.data?.message || '';
+        console.error('Server response:', error.response.data);
+        
+        if (serverError.includes('duplicate key error')) {
+          errorMessage = 'Refreshing conversation...';
+          showSnackbar(errorMessage, 'info');
+          // Refresh messages to get conversation ID
+          await fetchMessages();
+          // Don't retry automatically - let user retry manually
+        } else {
+          errorMessage = serverError || `Server error: ${error.response.status}`;
+          showSnackbar(errorMessage, 'error');
+        }
+      } else if (error.request) {
+        errorMessage = 'No response from server. Check your connection.';
+        showSnackbar(errorMessage, 'error');
+      } else {
+        errorMessage = error.message || 'Failed to send message';
+        showSnackbar(errorMessage, 'error');
+      }
+    } finally {
+      setSendingMessage(false);
+      isSendingRef.current = false;
     }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter' && !e.shiftKey) {
+    if (e.key === 'Enter' && !e.shiftKey && !sendingMessage && !isSendingRef.current) {
       e.preventDefault();
       handleSendMessage();
     }
   };
 
-  const handleTyping = (e) => {
+  const handleTypingInput = (e) => {
     const value = e.target.value;
     setNewMessage(value);
 
@@ -189,11 +272,18 @@ const StudentChat = () => {
       sendTyping(warden._id, true);
     }
 
+    if (value.length === 0 && typing) {
+      setTyping(false);
+      sendTyping(warden._id, false);
+    }
+
     clearTimeout(typingTimeoutRef.current);
     typingTimeoutRef.current = setTimeout(() => {
-      setTyping(false);
-      if (sendTyping && warden?._id) {
-        sendTyping(warden._id, false);
+      if (typing) {
+        setTyping(false);
+        if (sendTyping && warden?._id) {
+          sendTyping(warden._id, false);
+        }
       }
     }, 1000);
   };
@@ -247,22 +337,24 @@ const StudentChat = () => {
   const renderCallButton = (type, icon, label) => {
     const isDisabled = !isConnected || !warden?._id;
     
-    return (
-      <span>
-        <Tooltip title={label}>
-          <IconButton
-            onClick={() => handleCall(type)}
-            disabled={isDisabled}
-            sx={{ 
-              color: !isDisabled ? '#10b981' : '#94a3b8',
-              '&:hover': { bgcolor: alpha('#10b981', 0.1) }
-            }}
-          >
-            {icon}
-          </IconButton>
-        </Tooltip>
-      </span>
+    const button = (
+      <IconButton
+        onClick={() => handleCall(type)}
+        disabled={isDisabled}
+        sx={{ 
+          color: !isDisabled ? '#10b981' : '#94a3b8',
+          '&:hover': { bgcolor: alpha('#10b981', 0.1) }
+        }}
+      >
+        {icon}
+      </IconButton>
     );
+
+    if (isDisabled) {
+      return <span>{button}</span>;
+    }
+    
+    return <Tooltip title={label}>{button}</Tooltip>;
   };
 
   if (loading) {
@@ -293,7 +385,7 @@ const StudentChat = () => {
 
   return (
     <Box sx={{ height: 'calc(100vh - 100px)', display: 'flex', flexDirection: 'column' }}>
-   
+      {/* Connection Status */}
       {!isConnected && (
         <Alert 
           severity="warning" 
@@ -304,7 +396,7 @@ const StudentChat = () => {
         </Alert>
       )}
 
-    
+      {/* Header with Warden Info */}
       <Paper sx={{ p: 2, mb: 2 }}>
         <Box display="flex" alignItems="center" justifyContent="space-between">
           <Box display="flex" alignItems="center" gap={2}>
@@ -326,7 +418,7 @@ const StudentChat = () => {
             </Box>
           </Box>
           
-         
+          {/* Call Buttons */}
           <Box display="flex" gap={1}>
             {renderCallButton('audio', <PhoneIcon />, 'Audio Call')}
             {renderCallButton('video', <VideoCallIcon />, 'Video Call')}
@@ -334,7 +426,7 @@ const StudentChat = () => {
         </Box>
       </Paper>
 
-     
+      {/* Messages Area */}
       <Paper sx={{ flex: 1, overflow: 'auto', p: 2, mb: 2, bgcolor: '#f8fafc' }}>
         {messages.length === 0 ? (
           <Box display="flex" justifyContent="center" alignItems="center" height="100%">
@@ -356,7 +448,7 @@ const StudentChat = () => {
                   key={msg._id}
                   sx={{
                     display: 'flex',
-                    justifyContent: msg.sender._id === user.id ? 'flex-end' : 'flex-start',
+                    justifyContent: msg.sender?._id === user?.id ? 'flex-end' : 'flex-start',
                     mb: 2
                   }}
                 >
@@ -365,11 +457,11 @@ const StudentChat = () => {
                       elevation={0}
                       sx={{
                         p: 2,
-                        bgcolor: msg.sender._id === user.id ? '#10b981' : 'white',
-                        color: msg.sender._id === user.id ? 'white' : 'inherit',
+                        bgcolor: msg.sender?._id === user?.id ? '#10b981' : 'white',
+                        color: msg.sender?._id === user?.id ? 'white' : 'inherit',
                         borderRadius: 2,
-                        borderTopRightRadius: msg.sender._id === user.id ? 0 : 2,
-                        borderTopLeftRadius: msg.sender._id === user.id ? 2 : 0
+                        borderTopRightRadius: msg.sender?._id === user?.id ? 0 : 2,
+                        borderTopLeftRadius: msg.sender?._id === user?.id ? 2 : 0
                       }}
                     >
                       <Typography variant="body2">{msg.content}</Typography>
@@ -378,7 +470,7 @@ const StudentChat = () => {
                       <Typography variant="caption" color="textSecondary" sx={{ mr: 0.5 }}>
                         {formatMessageTime(msg.createdAt)}
                       </Typography>
-                      {msg.sender._id === user.id && (
+                      {msg.sender?._id === user?.id && (
                         msg.isRead ? (
                           <DoneAllIcon fontSize="small" sx={{ color: '#10b981' }} />
                         ) : (
@@ -406,7 +498,7 @@ const StudentChat = () => {
         <div ref={messagesEndRef} />
       </Paper>
 
-      
+      {/* Message Input */}
       <Paper sx={{ p: 2 }}>
         <TextField
           fullWidth
@@ -414,19 +506,24 @@ const StudentChat = () => {
           maxRows={4}
           placeholder="Type a message..."
           value={newMessage}
-          onChange={handleTyping}
+          onChange={handleTypingInput}
           onKeyPress={handleKeyPress}
-          disabled={!isConnected || !warden?._id}
+          disabled={!isConnected || sendingMessage}
           InputProps={{
             endAdornment: (
               <InputAdornment position="end">
                 <IconButton
                   color="primary"
                   onClick={handleSendMessage}
-                  disabled={!newMessage.trim() || !isConnected || !warden?._id}
-                  sx={{ bgcolor: '#10b981', color: 'white', '&:hover': { bgcolor: '#059669' } }}
+                  disabled={!newMessage.trim() || !isConnected || sendingMessage}
+                  sx={{ 
+                    bgcolor: '#10b981', 
+                    color: 'white', 
+                    '&:hover': { bgcolor: '#059669' },
+                    '&.Mui-disabled': { bgcolor: alpha('#10b981', 0.5) }
+                  }}
                 >
-                  <SendIcon />
+                  {sendingMessage ? <CircularProgress size={24} color="inherit" /> : <SendIcon />}
                 </IconButton>
               </InputAdornment>
             )
@@ -434,10 +531,10 @@ const StudentChat = () => {
         />
       </Paper>
 
-      
+      {/* Snackbar for Notifications */}
       <Snackbar
         open={snackbar.open}
-        autoHideDuration={3000}
+        autoHideDuration={4000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
         anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
       >
