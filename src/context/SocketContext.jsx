@@ -30,7 +30,7 @@ export const SocketProvider = ({ children }) => {
 
     console.log("🔌 Connecting socket...");
 
-    const socketInstance = io("http://localhost:4000", {
+    const socketInstance = io("https://hostel-management-system-backened-1.onrender.com/api", {
       auth: { token },
       transports: ["websocket", "polling"],
       reconnection: true,

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = 'http://localhost:4000/api'; // IMPORTANT: port 4000
+const API_URL = 'https://hostel-management-system-backened-1.onrender.com/api'; // IMPORTANT: port 4000
 
 const api = axios.create({
   baseURL: API_URL,

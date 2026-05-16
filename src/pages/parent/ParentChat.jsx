@@ -50,7 +50,7 @@ import toast from 'react-hot-toast';
 import { format, parseISO } from 'date-fns';
 import io from 'socket.io-client';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hostel-management-system-backened-1.onrender.com/api';
 
 const G = {
   900: '#064e3b',

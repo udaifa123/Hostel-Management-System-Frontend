@@ -44,7 +44,7 @@ import {
 import { format, parseISO, formatDistance } from 'date-fns';
 import toast from 'react-hot-toast';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hostel-management-system-backened-1.onrender.com/api';
 
 const G = {
   900: '#064e3b',

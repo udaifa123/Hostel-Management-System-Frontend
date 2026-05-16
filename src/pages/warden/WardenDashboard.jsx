@@ -37,7 +37,7 @@ import axios from 'axios';
 import { useAuth } from '../../context/AuthContext';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hostel-management-system-backened-1.onrender.com/api';
 
 const WardenDashboard = () => {
   const navigate = useNavigate();

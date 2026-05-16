@@ -36,7 +36,7 @@ const ImageUpload = ({ onUploadSuccess, multiple = false }) => {
 
     try {
       const endpoint = multiple ? '/api/upload/images' : '/api/upload/image';
-      const response = await axios.post(`http://localhost:4000${endpoint}`, formData, {
+      const response = await axios.post(`https://hostel-management-system-backened-1.onrender.com/api${endpoint}`, formData, {
         headers: {
           'Content-Type': 'multipart/form-data',
           Authorization: `Bearer ${localStorage.getItem('token')}`

@@ -13,7 +13,7 @@ class NotificationService {
       this.socket.disconnect();
     }
     
-    this.socket = io(import.meta.env.VITE_API_URL || 'http://localhost:4000', {
+    this.socket = io(import.meta.env.VITE_API_URL || 'https://hostel-management-system-backened-1.onrender.com/api', {
       auth: { token },
       transports: ['websocket', 'polling'],
       reconnection: true,

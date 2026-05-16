@@ -52,7 +52,7 @@ import { styled } from '@mui/material/styles';
 import { format, formatDistance } from 'date-fns';
 import { useAuth } from '../../context/AuthContext';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hostel-management-system-backened-1.onrender.com/api';
 
 
 const theme = {

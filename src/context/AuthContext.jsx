@@ -23,7 +23,7 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(false);
 
   const api = axios.create({
-    baseURL: "https://hostel-management-system-backened-1.onrender.com/api",
+    baseURL: import.meta.env.VITE_API_URL,
     headers: {
       "Content-Type": "application/json"
     }

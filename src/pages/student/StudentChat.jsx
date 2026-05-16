@@ -32,7 +32,7 @@ import { useSocket } from '../../context/SocketContext';
 import { useCall } from '../../context/CallContext';
 import { format, isToday, isYesterday } from 'date-fns';
 
-const API_URL = import.meta.env.VITE_API_URL || 'http://localhost:4000/api';
+const API_URL = import.meta.env.VITE_API_URL || 'https://hostel-management-system-backened-1.onrender.com/api';
 
 const StudentChat = () => {
   const theme = useTheme();
