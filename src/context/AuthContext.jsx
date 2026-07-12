@@ -22,13 +22,15 @@ export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(localStorage.getItem("token") || "");
   const [loading, setLoading] = useState(false);
 
+  // ✅ API instance
   const api = axios.create({
     baseURL: import.meta.env.VITE_API_URL,
     headers: {
-      "Content-Type": "application/json"
-    }
+      "Content-Type": "application/json",
+    },
   });
 
+  // ✅ Attach token
   api.interceptors.request.use((config) => {
     const savedToken = localStorage.getItem("token");
     if (savedToken) {
@@ -37,82 +39,64 @@ export const AuthProvider = ({ children }) => {
     return config;
   });
 
-const login = async (credentials) => {
-  setLoading(true);
+  // ✅ LOGIN (FIXED)
+  const login = async (credentials) => {
+    setLoading(true);
 
-  try {
-    console.log("Sending login request with:", credentials);
+    try {
+      console.log("Sending login request with:", credentials);
 
-   
-    // let endpoint = "/auth/login";
+      // ✅ ONLY ONE ENDPOINT
+      const endpoint = "/auth/login";
 
-    // if (credentials.role === "admin") {
-    //   endpoint = "/auth/admin/login";
-    // } else if (credentials.role === "parent") {
-    //   endpoint = "/auth/parent/login";
-    // } else if (credentials.role === "student") {
-    //   endpoint = "/auth/student/login";
-    // } else if (credentials.role === "warden") {
-    //   endpoint = "/auth/warden/login";
-    // }
+      // ✅ SEND ROLE ALSO
+      const loginData = {
+        email: credentials.email,
+        password: credentials.password,
+        role: credentials.role,
+      };
 
-    let endpoint = "/auth/login";
-   
-    const loginData = {
-  email: credentials.email,
-  password: credentials.password,
-  role: credentials.role
-};
+      const response = await api.post(endpoint, loginData);
 
-    const response = await api.post(endpoint, loginData);
+      console.log("Login response:", response.data);
 
-    console.log("Login response:", response.data);
+      if (response.data.success) {
+        const { token, user } = response.data;
 
-    if (response.data.success) {
-      const { token, user } = response.data;
+        localStorage.setItem("token", token);
+        localStorage.setItem("user", JSON.stringify(user));
 
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+        setToken(token);
+        setUser(user);
 
-      setToken(token);
-      setUser(user);
+        toast.success(`Welcome back, ${user.name || "User"}!`);
 
-      toast.success(`Welcome back, ${user.name || 'User'}!`);
+        // ✅ redirect based on role
+        if (user.role === "admin") navigate("/admin/dashboard");
+        else if (user.role === "parent") navigate("/parent/dashboard");
+        else if (user.role === "student") navigate("/student/dashboard");
+        else if (user.role === "warden") navigate("/warden/dashboard");
+        else navigate("/dashboard");
 
-    
-      if (user.role === 'admin') {
-        navigate('/admin/dashboard');
-      } else if (user.role === 'parent') {
-        navigate('/parent/dashboard');
-      } else if (user.role === 'student') {
-        navigate('/student/dashboard');
-      } else if (user.role === 'warden') {
-        navigate('/warden/dashboard');
+        return { success: true, user };
       } else {
-        navigate('/dashboard');
+        toast.error(response.data.message || "Login failed");
+        return { success: false };
       }
+    } catch (error) {
+      console.error("Login error:", error);
 
-      return { success: true, user };
-    } else {
-      toast.error(response.data.message || "Login failed");
-      return { success: false };
+      const message =
+        error.response?.data?.message || "Login failed. Please try again.";
+
+      toast.error(message);
+      return { success: false, message };
+    } finally {
+      setLoading(false);
     }
+  };
 
-  } catch (error) {
-    console.error("Login error:", error);
-
-    const message =
-      error.response?.data?.message || "Login failed. Please try again.";
-
-    toast.error(message);
-
-    return { success: false, message };
-  } finally {
-    setLoading(false);
-  }
-};
-
-  
+  // ✅ REGISTER
   const register = async (userData) => {
     setLoading(true);
 
@@ -127,7 +111,6 @@ const login = async (credentials) => {
         toast.error(response.data.message || "Registration failed");
         return { success: false };
       }
-
     } catch (error) {
       const message =
         error.response?.data?.message || "Registration failed";
@@ -139,7 +122,7 @@ const login = async (credentials) => {
     }
   };
 
-  
+  // ✅ LOGOUT
   const logout = () => {
     localStorage.removeItem("token");
     localStorage.removeItem("user");
@@ -148,7 +131,6 @@ const login = async (credentials) => {
     setUser(null);
 
     toast.success("Logged out successfully");
-
     navigate("/login");
   };
 
@@ -160,12 +142,8 @@ const login = async (credentials) => {
     register,
     logout,
     isAuthenticated: !!user,
-    role: user?.role
+    role: user?.role,
   };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  );
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 };
