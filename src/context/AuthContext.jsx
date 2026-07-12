@@ -44,23 +44,25 @@ const login = async (credentials) => {
     console.log("Sending login request with:", credentials);
 
    
+    // let endpoint = "/auth/login";
+
+    // if (credentials.role === "admin") {
+    //   endpoint = "/auth/admin/login";
+    // } else if (credentials.role === "parent") {
+    //   endpoint = "/auth/parent/login";
+    // } else if (credentials.role === "student") {
+    //   endpoint = "/auth/student/login";
+    // } else if (credentials.role === "warden") {
+    //   endpoint = "/auth/warden/login";
+    // }
+
     let endpoint = "/auth/login";
-
-    if (credentials.role === "admin") {
-      endpoint = "/auth/admin/login";
-    } else if (credentials.role === "parent") {
-      endpoint = "/auth/parent/login";
-    } else if (credentials.role === "student") {
-      endpoint = "/auth/student/login";
-    } else if (credentials.role === "warden") {
-      endpoint = "/auth/warden/login";
-    }
-
    
     const loginData = {
-      email: credentials.email,
-      password: credentials.password
-    };
+  email: credentials.email,
+  password: credentials.password,
+  role: credentials.role
+};
 
     const response = await api.post(endpoint, loginData);
 
