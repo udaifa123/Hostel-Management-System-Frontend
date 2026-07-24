@@ -32,11 +32,11 @@ It provides a responsive and role-based interface for managing hostel operations
 
 ```bash
 src/
- ├── components/     # Reusable UI components
- ├── pages/          # Page-level components
- ├── services/       # API calls
- ├── routes/         # Routing logic
- ├── assets/         # Images & static files
+ ├── components/    
+ ├── pages/         
+ ├── services/      
+ ├── routes/        
+ ├── assets/        
  └── App.jsx
 ```
 
