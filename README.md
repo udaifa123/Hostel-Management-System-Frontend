@@ -2,19 +2,19 @@
 
 ## Overview
 
-This is the frontend application of a Hostel Management System built using **React (Vite)**.
-It provides role-based user interfaces for managing hostel operations such as rooms, users, and dashboards.
+This repository contains the frontend application for a Hostel Management System built using **React (Vite)**.
+It provides a responsive and role-based interface for managing hostel operations such as users, rooms, and dashboards.
 
 ---
 
-## Features
+## Key Features
 
-* User authentication (Login / Register)
+* Authentication (Login / Register)
 * Role-based access (Admin / User)
-* Dashboard interface
+* Dashboard for managing hostel activities
 * Room and user management UI
-* Responsive design
-* API integration with backend
+* REST API integration with backend
+* Responsive design for multiple devices
 
 ---
 
@@ -28,7 +28,21 @@ It provides role-based user interfaces for managing hostel operations such as ro
 
 ---
 
-## Setup
+## Application Structure
+
+```bash
+src/
+ ├── components/     # Reusable UI components
+ ├── pages/          # Page-level components
+ ├── services/       # API calls
+ ├── routes/         # Routing logic
+ ├── assets/         # Images & static files
+ └── App.jsx
+```
+
+---
+
+## Getting Started
 
 ```bash
 git clone https://github.com/udaifa123/Hostel-Management-System-Frontend
@@ -37,7 +51,7 @@ npm install
 npm run dev
 ```
 
-App runs on: http://localhost:5173/
+App runs at: http://localhost:5173/
 
 ---
 
@@ -65,13 +79,14 @@ https://github.com/udaifa123/Hostel-Management-System-Backened
 
 ## Future Improvements
 
-* Convert to TypeScript
-* Improve UI/UX
-* Add global state management
-* Better validation
+* Migrate to TypeScript for better scalability
+* Improve validation and error handling
+* Introduce global state management (Redux / Context API)
+* Optimize performance and component reusability
 
 ---
 
 ## Author
 
 Udaifa
+Full Stack Developer
